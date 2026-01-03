@@ -1,6 +1,6 @@
 "use client";
 
-import { GameCard, GameCardProps } from "@/components/game-card";
+import { GameCard, type GameCardProps } from "@/components/game-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardHeader, CardFooter } from "@/components/ui/card";
 
@@ -10,9 +10,12 @@ interface GameGridProps {
   onPlay: (id: string) => void;
 }
 
+const GRID_CLASSES =
+  "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+
 export function GameGrid({ games, playedIds, onPlay }: GameGridProps) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className={GRID_CLASSES}>
       {games.map((game) => (
         <GameCard
           key={game.id}
@@ -27,7 +30,7 @@ export function GameGrid({ games, playedIds, onPlay }: GameGridProps) {
 
 export function GameGridSkeleton({ count = 12 }: { count?: number }) {
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className={GRID_CLASSES}>
       {Array.from({ length: count }).map((_, i) => (
         <Card key={i}>
           <CardHeader className="pb-2">
