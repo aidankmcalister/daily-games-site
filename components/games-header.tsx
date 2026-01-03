@@ -24,6 +24,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
+import { ThemeToggle } from "@/components/theme-toggle";
 import type { Topic } from "@/app/generated/prisma/client";
 import { TOPICS } from "@/lib/constants";
 import { Search, X, RotateCcw, Plus } from "lucide-react";
@@ -119,75 +120,81 @@ export function GamesHeader({
           </AlertDialog>
         )}
 
-        <AlertDialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-          <AlertDialogTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-auto h-7 gap-1.5 text-xs"
-            >
-              <Plus className="h-3 w-3" />
-              Add Game
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Add Custom Game</AlertDialogTitle>
-              <AlertDialogDescription>
-                Add a new game to your collection.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <div className="space-y-4 py-4">
-              <Field>
-                <FieldLabel htmlFor="game-title">Title</FieldLabel>
-                <Input
-                  id="game-title"
-                  placeholder="Game name"
-                  value={newGameTitle}
-                  onChange={(e) => setNewGameTitle(e.target.value)}
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="game-link">Link</FieldLabel>
-                <Input
-                  id="game-link"
-                  placeholder="https://example.com/game"
-                  value={newGameLink}
-                  onChange={(e) => setNewGameLink(e.target.value)}
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="game-topic">Category</FieldLabel>
-                <Select
-                  value={newGameTopic}
-                  onValueChange={(v) => setNewGameTopic(v as Topic)}
-                >
-                  <SelectTrigger id="game-topic" className="w-full capitalize">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TOPICS.map((t) => (
-                      <SelectItem key={t} value={t} className="capitalize">
-                        {t}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-            </div>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
+        <div className="ml-auto flex items-center gap-2">
+          <AlertDialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
+            <AlertDialogTrigger asChild>
               <Button
-                onClick={handleAddGame}
-                disabled={
-                  isSubmitting || !newGameTitle.trim() || !newGameLink.trim()
-                }
+                variant="outline"
+                size="sm"
+                className="h-8 gap-1.5 text-xs"
               >
-                {isSubmitting ? "Adding..." : "Add Game"}
+                <Plus className="h-3 w-3" />
+                Add Game
               </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Add Custom Game</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Add a new game to your collection.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="space-y-4 py-4">
+                <Field>
+                  <FieldLabel htmlFor="game-title">Title</FieldLabel>
+                  <Input
+                    id="game-title"
+                    placeholder="Game name"
+                    value={newGameTitle}
+                    onChange={(e) => setNewGameTitle(e.target.value)}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="game-link">Link</FieldLabel>
+                  <Input
+                    id="game-link"
+                    placeholder="https://example.com/game"
+                    value={newGameLink}
+                    onChange={(e) => setNewGameLink(e.target.value)}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="game-topic">Category</FieldLabel>
+                  <Select
+                    value={newGameTopic}
+                    onValueChange={(v) => setNewGameTopic(v as Topic)}
+                  >
+                    <SelectTrigger
+                      id="game-topic"
+                      className="w-full capitalize"
+                    >
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TOPICS.map((t) => (
+                        <SelectItem key={t} value={t} className="capitalize">
+                          {t}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </div>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <Button
+                  onClick={handleAddGame}
+                  disabled={
+                    isSubmitting || !newGameTitle.trim() || !newGameLink.trim()
+                  }
+                >
+                  {isSubmitting ? "Adding..." : "Add Game"}
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+          <ThemeToggle />
+        </div>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

@@ -38,7 +38,7 @@ export function GameCard({
     <Card
       onClick={handleClick}
       className={cn(
-        "cursor-pointer hover:bg-accent transition-all duration-75",
+        "cursor-pointer hover:opacity-75 transition-all duration-75",
         isPlayed && "opacity-50 grayscale"
       )}
     >
