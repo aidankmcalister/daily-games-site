@@ -65,22 +65,20 @@ export function GameCard({
           >
             {topic}
           </Badge>
+          {isPlayed && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant="outline" className="ml-auto cursor-help">
+                  Played
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Resets at midnight</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </CardHeader>
-      <CardFooter className="pt-0">
-        {isPlayed && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Badge variant="outline" className="ml-auto cursor-help">
-                Played
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Resets at midnight</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-      </CardFooter>
     </Card>
   );
 }
