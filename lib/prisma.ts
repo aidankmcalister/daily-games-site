@@ -5,15 +5,30 @@ const globalForPrisma = global as unknown as {
   prisma: PrismaClient;
 };
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
+// Check if using TCP postgres:// URL or HTTP prisma+postgres:// URL
+const databaseUrl = process.env.DATABASE_URL || "";
+const isTcpConnection =
+  databaseUrl.startsWith("postgres://") ||
+  databaseUrl.startsWith("postgresql://");
 
-const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    adapter,
+let prisma: PrismaClient;
+
+if (globalForPrisma.prisma) {
+  prisma = globalForPrisma.prisma;
+} else if (isTcpConnection) {
+  // Use PrismaPg adapter for TCP connections
+  const adapter = new PrismaPg({
+    connectionString: databaseUrl,
   });
+  prisma = new PrismaClient({ adapter });
+} else {
+  // Use direct PrismaClient for Prisma Postgres HTTP connections
+  // PrismaClient requires an adapter for HTTP connections
+  const adapter = new PrismaPg({
+    connectionString: databaseUrl,
+  });
+  prisma = new PrismaClient({ adapter });
+}
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 

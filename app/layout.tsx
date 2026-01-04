@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ImpersonationProvider } from "@/components/impersonation-provider";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -47,7 +48,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <ImpersonationProvider>{children}</ImpersonationProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

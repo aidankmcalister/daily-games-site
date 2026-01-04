@@ -1,7 +1,11 @@
-import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { Topic } from "@/app/generated/prisma/client";
+import prisma from "@/lib/prisma";
+import { getCurrentUser, canManageGames } from "@/lib/auth-helpers";
+import type { Topic } from "@/app/generated/prisma/client";
 
+export const dynamic = "force-dynamic";
+
+// GET all games (public)
 export async function GET() {
   try {
     const games = await prisma.game.findMany({
@@ -17,8 +21,14 @@ export async function GET() {
   }
 }
 
+// POST create new game (admin+ only)
 export async function POST(request: Request) {
   try {
+    const currentUser = await getCurrentUser();
+    if (!currentUser || !canManageGames(currentUser.role)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
     const body = await request.json();
     const { title, link, topic } = body as {
       title: string;
@@ -28,17 +38,13 @@ export async function POST(request: Request) {
 
     if (!title || !link || !topic) {
       return NextResponse.json(
-        { error: "Title, link, and topic are required" },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
     const game = await prisma.game.create({
-      data: {
-        title,
-        link,
-        topic,
-      },
+      data: { title, link, topic },
     });
 
     return NextResponse.json(game, { status: 201 });

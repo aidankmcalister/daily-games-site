@@ -1,0 +1,479 @@
+[
+  {
+    "id": "4b9dec27-20bb-4735-b578-7ce2afe7493c",
+    "title": "Angle",
+    "link": "https://angle.wtf/",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.601Z",
+    "updatedAt": "2026-01-03T18:55:41.199Z"
+  },
+  {
+    "id": "6e8cba12-5487-4bac-9fc1-b027941ab953",
+    "title": "Bandle",
+    "link": "https://bandle.app/",
+    "topic": "entertainment",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.242Z",
+    "updatedAt": "2026-01-03T19:00:27.620Z"
+  },
+  {
+    "id": "d8010fcb-3ed6-4af0-be56-8fae1c5787ae",
+    "title": "Bracket City",
+    "link": "https://www.theatlantic.com/games/bracket-city/",
+    "topic": "trivia",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.357Z",
+    "updatedAt": "2026-01-03T19:00:32.060Z"
+  },
+  {
+    "id": "850891dc-ba2e-45d1-a40d-9024ffd1c3e9",
+    "title": "COSTCODLE",
+    "link": "https://costcodle.com/",
+    "topic": "trivia",
+    "played": false,
+    "createdAt": "2026-01-03T18:12:31.765Z",
+    "updatedAt": "2026-01-03T18:12:31.765Z"
+  },
+  {
+    "id": "3cf513a8-917c-4d6b-870b-f904b2eb72eb",
+    "title": "Chess Puzzle",
+    "link": "https://www.chess.com/daily-chess-puzzle",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.706Z",
+    "updatedAt": "2026-01-03T19:00:20.326Z"
+  },
+  {
+    "id": "71571a47-16d6-490b-b8e7-ee9d5ae17a0b",
+    "title": "Chronophoto",
+    "link": "https://www.chronophoto.app/",
+    "topic": "trivia",
+    "played": false,
+    "createdAt": "2026-01-03T23:19:00.621Z",
+    "updatedAt": "2026-01-03T23:19:00.621Z"
+  },
+  {
+    "id": "9bb969c8-1e76-4fc1-aae3-3cc46e986f47",
+    "title": "Cine2Nerdle",
+    "link": "https://www.cinenerdle2.app/",
+    "topic": "entertainment",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.307Z",
+    "updatedAt": "2026-01-03T18:55:41.635Z"
+  },
+  {
+    "id": "7de8c968-a146-438c-8be5-df8fc3380e31",
+    "title": "Cinematrix",
+    "link": "https://www.vulture.com/article/daily-movie-grid-trivia-game-cinematrix.html",
+    "topic": "entertainment",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.290Z",
+    "updatedAt": "2026-01-03T19:00:29.494Z"
+  },
+  {
+    "id": "17d598a8-9591-4201-b707-abedf0d73029",
+    "title": "Circuits",
+    "link": "https://www.puzzmo.com/game/circuits/",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.766Z",
+    "updatedAt": "2026-01-03T18:55:41.414Z"
+  },
+  {
+    "id": "78a50d0f-e55f-471b-898a-ba51b8de8910",
+    "title": "Connections",
+    "link": "https://www.nytimes.com/games/connections",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.392Z",
+    "updatedAt": "2026-01-03T19:00:08.341Z"
+  },
+  {
+    "id": "35024f50-effb-4e22-95ad-b3bfadf5a5d6",
+    "title": "Contexto",
+    "link": "https://contexto.me/en/",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T23:20:03.740Z",
+    "updatedAt": "2026-01-03T23:20:03.740Z"
+  },
+  {
+    "id": "d72d4c7e-6f38-4229-9581-66134c533a78",
+    "title": "Cryptic Crossword",
+    "link": "https://www.minutecryptic.com/",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.553Z",
+    "updatedAt": "2026-01-03T18:55:41.107Z"
+  },
+  {
+    "id": "065d9c9c-65b8-48f8-9e6e-ee481c873b84",
+    "title": "Daily Tens",
+    "link": "https://dailytens.com/",
+    "topic": "trivia",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.374Z",
+    "updatedAt": "2026-01-03T18:55:41.699Z"
+  },
+  {
+    "id": "4d6c43c7-f681-4f90-aec4-681b53dabd01",
+    "title": "Dodeku",
+    "link": "https://dodeku.com/",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.651Z",
+    "updatedAt": "2026-01-03T18:55:41.333Z"
+  },
+  {
+    "id": "e3d5c88a-eda2-4302-bd19-0b0271a9bb6c",
+    "title": "Feudle",
+    "link": "https://googlefeud.com/feudle/",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.533Z",
+    "updatedAt": "2026-01-03T19:00:13.495Z"
+  },
+  {
+    "id": "923ea64b-1e36-4d4c-80d6-c19bc3651c1a",
+    "title": "Flagle",
+    "link": "https://www.flagle.io/",
+    "topic": "geography",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.195Z",
+    "updatedAt": "2026-01-03T18:55:41.511Z"
+  },
+  {
+    "id": "e34aa17f-1b49-4f0b-9443-8c824c090f36",
+    "title": "Food Guessr",
+    "link": "https://www.foodguessr.com/",
+    "topic": "food",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.500Z",
+    "updatedAt": "2026-01-03T18:55:41.832Z"
+  },
+  {
+    "id": "1bd5ef6a-d5ac-4fb0-a170-19715e835c69",
+    "title": "Framed",
+    "link": "https://framed.wtf/",
+    "topic": "entertainment",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.225Z",
+    "updatedAt": "2026-01-03T19:00:26.910Z"
+  },
+  {
+    "id": "f621cd70-82de-430b-80d7-15d4fb53a247",
+    "title": "Gamedle Character",
+    "link": "https://www.gamedle.wtf/characters#",
+    "topic": "gaming",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.422Z",
+    "updatedAt": "2026-01-03T19:00:34.834Z"
+  },
+  {
+    "id": "2177b326-ca42-4b61-aa73-b954ff9379fa",
+    "title": "Gamedle Classic",
+    "link": "https://www.gamedle.wtf/classic#",
+    "topic": "gaming",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.406Z",
+    "updatedAt": "2026-01-03T19:00:34.220Z"
+  },
+  {
+    "id": "6ea89d3a-9212-46f0-8dea-2f5f52eb8c54",
+    "title": "Globle",
+    "link": "https://globle-game.com/",
+    "topic": "geography",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.146Z",
+    "updatedAt": "2026-01-03T19:00:23.794Z"
+  },
+  {
+    "id": "5c545d83-1913-4faa-87b8-5de276a06824",
+    "title": "Guess The Game",
+    "link": "https://guessthe.game/",
+    "topic": "gaming",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.437Z",
+    "updatedAt": "2026-01-03T18:55:41.764Z"
+  },
+  {
+    "id": "01ae948e-29db-4324-a54c-bbc0dd03946c",
+    "title": "Guess The Movie",
+    "link": "https://guessthemovie.name/",
+    "topic": "entertainment",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.340Z",
+    "updatedAt": "2026-01-03T18:55:41.667Z"
+  },
+  {
+    "id": "6448b754-e1e6-4cb6-8755-aa8d5b5e02ef",
+    "title": "Guess the Audio",
+    "link": "https://guesstheaudio.com/",
+    "topic": "entertainment",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.257Z",
+    "updatedAt": "2026-01-03T18:55:41.575Z"
+  },
+  {
+    "id": "7e81830d-9fb8-428e-b29c-40bad23714a8",
+    "title": "Jumblie",
+    "link": "https://jumblie.com/",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.569Z",
+    "updatedAt": "2026-01-03T19:00:14.815Z"
+  },
+  {
+    "id": "67ba1c21-bcae-47cb-a76c-dfb95e9c8687",
+    "title": "Lyricle",
+    "link": "https://www.lyricle.app/",
+    "topic": "entertainment",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.274Z",
+    "updatedAt": "2026-01-03T19:00:28.865Z"
+  },
+  {
+    "id": "0f91f1f5-2dfc-47a8-a780-5e134ba0cda2",
+    "title": "Mathler",
+    "link": "https://www.mathler.com/",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.634Z",
+    "updatedAt": "2026-01-03T19:00:17.500Z"
+  },
+  {
+    "id": "572c4605-d3c9-44ba-9161-8c1b6161e7a0",
+    "title": "Metaflora",
+    "link": "https://flora.metazooa.com/",
+    "topic": "nature",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.484Z",
+    "updatedAt": "2026-01-03T19:00:37.369Z"
+  },
+  {
+    "id": "6ee74577-6332-4547-be51-83cafa98c76c",
+    "title": "Metazooa",
+    "link": "https://metazooa.com/",
+    "topic": "nature",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.469Z",
+    "updatedAt": "2026-01-03T19:00:36.703Z"
+  },
+  {
+    "id": "0890bd77-15d2-429a-8229-4ce0898514a7",
+    "title": "Mini Crossword",
+    "link": "https://minicrossword.com/",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.427Z",
+    "updatedAt": "2026-01-03T19:00:09.796Z"
+  },
+  {
+    "id": "bb290381-b58e-4057-8c9c-bde3e69e729b",
+    "title": "Minigolfle",
+    "link": "https://minigolfle.com/",
+    "topic": "sports",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.516Z",
+    "updatedAt": "2026-01-03T18:55:41.848Z"
+  },
+  {
+    "id": "88cbe3c3-b18a-4e12-b3d9-b1eb5081a22c",
+    "title": "Move to Movie",
+    "link": "https://movietomovie.com/",
+    "topic": "entertainment",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.323Z",
+    "updatedAt": "2026-01-03T19:00:30.860Z"
+  },
+  {
+    "id": "29491554-693b-45b1-ab3f-20d3e0e0fbf4",
+    "title": "Neighborle",
+    "link": "https://neighborle.com/",
+    "topic": "geography",
+    "played": false,
+    "createdAt": "2026-01-03T23:20:40.536Z",
+    "updatedAt": "2026-01-03T23:20:40.536Z"
+  },
+  {
+    "id": "d5a883d2-a50f-40a2-97d0-d96259783e01",
+    "title": "Nerdle",
+    "link": "https://nerdlegame.com/",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.618Z",
+    "updatedAt": "2026-01-03T19:00:16.776Z"
+  },
+  {
+    "id": "f2b87f87-a870-4a53-9313-f159df20ac2f",
+    "title": "Padlock",
+    "link": "https://www.padlockgame.net/",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.666Z",
+    "updatedAt": "2026-01-03T19:00:18.795Z"
+  },
+  {
+    "id": "867f2dcb-1e9b-4e45-b525-f8c3419b5570",
+    "title": "Pocket Puzzle",
+    "link": "https://playpocketpuzzles.com/foursquare/home",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.734Z",
+    "updatedAt": "2026-01-03T18:55:41.396Z"
+  },
+  {
+    "id": "11965fea-e883-4a12-9f81-12ba6d883501",
+    "title": "SpellCheck",
+    "link": "https://spellcheck.xyz/mode_select",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.585Z",
+    "updatedAt": "2026-01-03T18:55:41.152Z"
+  },
+  {
+    "id": "192c2171-232e-4f5f-8062-736aa2e65e61",
+    "title": "Squaredle",
+    "link": "https://squaredle.app/?level=xp",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.460Z",
+    "updatedAt": "2026-01-03T19:00:11.085Z"
+  },
+  {
+    "id": "bf185ad7-1713-4c60-b08e-a4e7a21bfbed",
+    "title": "Squirdle",
+    "link": "https://squirdle.fireblend.com/daily.html",
+    "topic": "gaming",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.453Z",
+    "updatedAt": "2026-01-03T18:55:41.780Z"
+  },
+  {
+    "id": "d6487549-50ec-4049-89f6-3b90d10f4c33",
+    "title": "Strands",
+    "link": "https://www.nytimes.com/games/strands",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.410Z",
+    "updatedAt": "2026-01-03T19:00:08.897Z"
+  },
+  {
+    "id": "80fa581d-d438-49ab-a366-8e4ecedfa063",
+    "title": "Sudoku",
+    "link": "https://sudoku.com/challenges",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.682Z",
+    "updatedAt": "2026-01-03T18:55:41.364Z"
+  },
+  {
+    "id": "d69f8fbf-443f-4e5d-b807-0d9a40854beb",
+    "title": "Timeguessr",
+    "link": "https://timeguessr.com/",
+    "topic": "trivia",
+    "played": false,
+    "createdAt": "2026-01-03T23:19:24.895Z",
+    "updatedAt": "2026-01-03T23:19:24.895Z"
+  },
+  {
+    "id": "cfc52b7a-7c39-42e0-b758-ddd9611bc2de",
+    "title": "Toppled",
+    "link": "https://bythomas.co.uk/toppled/",
+    "topic": "puzzle",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.861Z",
+    "updatedAt": "2026-01-03T18:55:41.430Z"
+  },
+  {
+    "id": "408424e5-684a-4f8c-8895-ffb97edf7312",
+    "title": "Tradle",
+    "link": "https://games.oec.world/en/tradle/",
+    "topic": "geography",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.163Z",
+    "updatedAt": "2026-01-03T19:00:24.513Z"
+  },
+  {
+    "id": "ef71c09f-49f9-4ec7-8a8b-e05c0fc120f6",
+    "title": "Travle",
+    "link": "https://travle.earth/?travle-lang=en",
+    "topic": "geography",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.179Z",
+    "updatedAt": "2026-01-03T19:00:25.140Z"
+  },
+  {
+    "id": "e64545bd-2cb4-4782-9792-ee1c5fba3f29",
+    "title": "UrbanStats",
+    "link": "https://urbanstats.org/quiz.html",
+    "topic": "geography",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.210Z",
+    "updatedAt": "2026-01-03T19:00:26.307Z"
+  },
+  {
+    "id": "e7e9e149-4e5b-455c-8137-00118bceaf3a",
+    "title": "Verticle",
+    "link": "https://verticle.netlify.app/",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.499Z",
+    "updatedAt": "2026-01-03T18:55:41.029Z"
+  },
+  {
+    "id": "e4cd845d-84de-4cdb-adae-035cd441dfe9",
+    "title": "Waffle",
+    "link": "https://wafflegame.net/daily",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.483Z",
+    "updatedAt": "2026-01-03T19:00:11.664Z"
+  },
+  {
+    "id": "9399a8b0-2833-4dee-aa40-c94a27354ea6",
+    "title": "Wikipedia Game",
+    "link": "https://www.thewikipediagame.com/",
+    "topic": "trivia",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.390Z",
+    "updatedAt": "2026-01-03T19:00:33.549Z"
+  },
+  {
+    "id": "63a5575d-6c95-4c04-b59f-060faf7dfbca",
+    "title": "Word Search",
+    "link": "https://games.washingtonpost.com/games/daily-word-search",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.444Z",
+    "updatedAt": "2026-01-03T19:00:10.480Z"
+  },
+  {
+    "id": "335f47af-d0f3-4cd5-9417-ee13317a160b",
+    "title": "Wordle",
+    "link": "https://www.nytimes.com/games/wordle/index.html",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.139Z",
+    "updatedAt": "2026-01-03T19:00:07.780Z"
+  },
+  {
+    "id": "a6ae883d-5915-47f4-b3a7-3ffca9e4b7a1",
+    "title": "Worldle",
+    "link": "https://worldle.teuteuf.fr/",
+    "topic": "geography",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:26.130Z",
+    "updatedAt": "2026-01-03T19:00:23.190Z"
+  },
+  {
+    "id": "c1b16555-7ec5-4af3-a318-3fc543fbbad3",
+    "title": "Xordle",
+    "link": "https://xordle.org/",
+    "topic": "words",
+    "played": false,
+    "createdAt": "2026-01-03T17:49:25.516Z",
+    "updatedAt": "2026-01-03T18:55:41.045Z"
+  }
+]
