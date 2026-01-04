@@ -21,23 +21,26 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { TOPICS, TOPIC_COLORS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, Archive } from "lucide-react";
 import type { Topic } from "@/app/generated/prisma/client";
 import { useState } from "react";
 
-interface Game {
+export interface Game {
   id: string;
   title: string;
   link: string;
   topic: string;
   playCount: number;
   createdAt: string;
+  archived: boolean;
 }
 
 interface GameItemProps {
   game: Game;
   isEditing: boolean;
   canManage: boolean;
+  isSelected?: boolean;
+  onSelect?: (checked: boolean) => void;
   onEdit: (game: Game) => void;
   onDelete: (id: string) => void;
   onUpdate: (
@@ -51,6 +54,8 @@ export function GameItem({
   game,
   isEditing,
   canManage,
+  isSelected,
+  onSelect,
   onEdit,
   onDelete,
   onUpdate,
@@ -72,7 +77,7 @@ export function GameItem({
 
   if (isEditing) {
     return (
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full pl-8">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1 w-full">
           <Input
             value={title}
@@ -122,11 +127,33 @@ export function GameItem({
   }
 
   return (
-    <div className="flex items-center gap-4 w-full">
+    <div
+      className={cn(
+        "flex items-center gap-4 w-full",
+        game.archived && "opacity-60 grayscale"
+      )}
+    >
+      {/* Selection Checkbox */}
+      {canManage && onSelect && (
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={(e) => onSelect(e.target.checked)}
+          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+        />
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-[180px_200px_minmax(0,1fr)_100px] gap-4 items-center flex-1 min-w-0">
-        <span className="text-sm font-medium truncate" title={game.title}>
-          {game.title}
-        </span>
+        <div className="flex items-center gap-2 min-w-0">
+          {game.archived && (
+            <Badge variant="outline" className="h-5 text-[10px] px-1 bg-muted">
+              Archived
+            </Badge>
+          )}
+          <span className="text-sm font-medium truncate" title={game.title}>
+            {game.title}
+          </span>
+        </div>
 
         <div className="flex items-center">
           <Badge

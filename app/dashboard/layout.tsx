@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
 import { BarChart3, List } from "lucide-react";
 import Link from "next/link";
+import { UserButton } from "@/components/user-button";
 
 export default function DashboardLayout({
   children,
@@ -19,11 +20,14 @@ export default function DashboardLayout({
   return (
     <main className="min-h-screen px-4 py-8 md:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
-        <PageHeader
-          title="Your Dashboard"
-          subtitle="Track your daily games progress"
-          backHref="/"
-        />
+        <div className="flex items-start justify-between">
+          <PageHeader
+            title="Your Dashboard"
+            subtitle="Track your daily games progress"
+            backHref="/"
+          />
+          <UserButton />
+        </div>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">

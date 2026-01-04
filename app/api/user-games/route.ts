@@ -42,27 +42,51 @@ export async function POST(request: Request) {
       );
     }
 
-    // Upsert - create if doesn't exist, update playedAt if it does
-    const userGame = await prisma.userGame.upsert({
-      where: {
-        userId_gameId: {
+    // Use transaction to ensure all updates happen or none
+    const [userGame] = await prisma.$transaction([
+      // 1. Upsert UserGame (current status)
+      prisma.userGame.upsert({
+        where: {
+          userId_gameId: {
+            userId: session.user.id,
+            gameId,
+          },
+        },
+        update: { playedAt: new Date(), played: true },
+        create: {
+          userId: session.user.id,
+          gameId,
+          played: true,
+        },
+      }),
+      // 2. Increment global play count
+      prisma.game.update({
+        where: { id: gameId },
+        data: { playCount: { increment: 1 } },
+      }),
+      // 3. Create play log (history)
+      prisma.gamePlayLog.create({
+        data: {
           userId: session.user.id,
           gameId,
         },
-      },
-      update: { playedAt: new Date(), played: true },
-      create: {
-        userId: session.user.id,
-        gameId,
-        played: true,
-      },
-    });
-
-    // Also increment global play count
-    await prisma.game.update({
-      where: { id: gameId },
-      data: { playCount: { increment: 1 } },
-    });
+      }),
+      // 4. Update Daily Stats
+      prisma.dailyStats.upsert({
+        where: {
+          date_gameId: {
+            date: new Date(new Date().setHours(0, 0, 0, 0)),
+            gameId,
+          },
+        },
+        update: { playCount: { increment: 1 } },
+        create: {
+          date: new Date(new Date().setHours(0, 0, 0, 0)),
+          gameId,
+          playCount: 1,
+        },
+      }),
+    ]);
 
     return NextResponse.json(userGame);
   } catch (error) {

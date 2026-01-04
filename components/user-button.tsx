@@ -28,6 +28,7 @@ import {
   Check,
   Settings,
   BarChart3,
+  TrendingUp,
 } from "lucide-react";
 import type { Role } from "@/app/generated/prisma/client";
 

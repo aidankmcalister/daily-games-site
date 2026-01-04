@@ -24,6 +24,18 @@ export const TOPIC_COLORS: Record<string, string> = {
   sports: "bg-cyan-500/20 text-cyan-700 dark:text-cyan-300",
 };
 
+export const TOPIC_BAR_COLORS: Record<string, string> = {
+  words: "bg-blue-500",
+  puzzle: "bg-purple-500",
+  geography: "bg-green-500",
+  trivia: "bg-yellow-500",
+  entertainment: "bg-pink-500",
+  gaming: "bg-red-500",
+  nature: "bg-emerald-500",
+  food: "bg-orange-500",
+  sports: "bg-cyan-500",
+};
+
 export function extractDomain(url: string): string {
   try {
     return new URL(url).hostname.replace("www.", "");

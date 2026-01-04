@@ -83,11 +83,13 @@ export function GameCard({
         animationFillMode: "both",
       }}
       className={cn(
-        "cursor-pointer transition-all duration-75 group relative overflow-hidden border-muted h-full flex flex-col justify-center",
-        "animate-in fade-in slide-in-from-bottom-4 duration-100",
-        "hover:shadow-lg hover:-translate-y-0.5 hover:border-border",
+        "cursor-pointer transition-all duration-300 ease-out group relative overflow-hidden border-muted h-full flex flex-col justify-center",
+        "animate-in fade-in slide-in-from-bottom-4 duration-500",
+        "hover:shadow-xl hover:-translate-y-1 hover:border-primary/50 hover:scale-[1.02]",
         TOPIC_SHADOWS[topic],
-        isPlayed ? "bg-muted/40 opacity-60 grayscale" : "bg-card"
+        isPlayed
+          ? "bg-muted/40 opacity-60 grayscale hover:grayscale-0 hover:opacity-100"
+          : "bg-card"
       )}
     >
       {/* Corner NEW ribbon */}

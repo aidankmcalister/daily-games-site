@@ -10,6 +10,7 @@ export default async function Page() {
 
   try {
     games = await prisma.game.findMany({
+      where: { archived: false },
       orderBy: { title: "asc" },
     });
   } catch {
@@ -17,26 +18,16 @@ export default async function Page() {
   }
 
   return (
-    <main className="min-h-screen px-4 py-8 md:px-8 lg:px-12">
+    <main className="min-h-screen px-4 pt-4 pb-8 md:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
-        <header className="mb-8 flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
-              Daily Games
-            </h1>
-            <p className="mt-2 text-muted-foreground">
-              Click a game to play. Progress resets at midnight.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <UserButton />
-          </div>
-        </header>
         {games.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
+            <h1 className="text-2xl font-bold tracking-tight mb-2">
+              Daily Games
+            </h1>
             <p className="text-lg text-muted-foreground">No games yet.</p>
             <p className="text-sm text-muted-foreground">
-              Add a game using the button above, or run the seed script.
+              Add a game using the admin tools, or run the seed script.
             </p>
           </div>
         ) : (

@@ -5,10 +5,25 @@ import type { Topic } from "@/app/generated/prisma/client";
 
 export const dynamic = "force-dynamic";
 
-// GET all games (public)
-export async function GET() {
+// GET all games (public, filtered by default)
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const includeArchived = searchParams.get("includeArchived") === "true";
+
+    let where = { archived: false };
+
+    // Allow admins to fetch archived games
+    if (includeArchived) {
+      const currentUser = await getCurrentUser();
+      if (currentUser && canManageGames(currentUser.role)) {
+        // @ts-ignore - filtering is optional when admin
+        where = {};
+      }
+    }
+
     const games = await prisma.game.findMany({
+      where,
       orderBy: { title: "asc" },
     });
     return NextResponse.json(games);

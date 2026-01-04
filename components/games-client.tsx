@@ -58,6 +58,87 @@ export function GamesClient({ games: initialGames }: { games: Game[] }) {
     clearLocalPlayed,
   } = usePlayedGames(gameIds);
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if user is typing in an input
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (e.key === "/") {
+        e.preventDefault();
+        const searchInput = document.getElementById("search-input-main");
+        searchInput?.focus();
+      }
+
+      if (e.key.toLowerCase() === "l") {
+        e.preventDefault();
+        setIsLuckyModalOpen(true);
+      }
+
+      // Grid Navigation & Actions
+      const activeEl = document.activeElement as HTMLElement;
+      const isGameCard = activeEl?.dataset?.gameCard === "true";
+
+      if (isGameCard) {
+        const gameId = activeEl.dataset.gameId;
+
+        if (e.key === "h" || e.key === "H") {
+          e.preventDefault();
+          if (gameId) handleHide(gameId);
+        }
+
+        if (e.key === "p" || e.key === "P") {
+          e.preventDefault();
+          if (gameId) handlePlay(gameId);
+        }
+
+        if (
+          gameId &&
+          ["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)
+        ) {
+          e.preventDefault();
+          const cards = Array.from(
+            document.querySelectorAll('[data-game-card="true"]')
+          ) as HTMLElement[];
+          const currentIndex = cards.indexOf(activeEl);
+          if (currentIndex === -1) return;
+
+          let targetIndex = currentIndex;
+          const colCount = getGridColumnCount(cards);
+
+          if (e.key === "ArrowRight") targetIndex = currentIndex + 1;
+          if (e.key === "ArrowLeft") targetIndex = currentIndex - 1;
+          if (e.key === "ArrowDown") targetIndex = currentIndex + colCount;
+          if (e.key === "ArrowUp") targetIndex = currentIndex - colCount;
+
+          if (targetIndex >= 0 && targetIndex < cards.length) {
+            cards[targetIndex].focus();
+          }
+        }
+      }
+    };
+
+    // Helper to determine grid columns dynamically
+    const getGridColumnCount = (cards: HTMLElement[]) => {
+      if (cards.length < 2) return 1;
+      const firstTop = cards[0].getBoundingClientRect().top;
+      // Find first card that is on a different row
+      const firstNextRow = cards.find(
+        (c) => c.getBoundingClientRect().top > firstTop + 10 // +10 fuzziness
+      );
+      if (!firstNextRow) return cards.length; // All in one row
+      return cards.indexOf(firstNextRow);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   // Sync localStorage to server on sign-in
   useEffect(() => {
     if (isAuthenticated && !isLoading) {

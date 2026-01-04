@@ -300,6 +300,33 @@ export function SettingsTab() {
             </Field>
           </CardContent>
         </Card>
+
+        {/* Data Management */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="text-base">Data Management</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                variant="secondary"
+                onClick={() => window.open("/api/admin/export/games", "_blank")}
+              >
+                Export Games (JSON)
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => window.open("/api/admin/export/users", "_blank")}
+              >
+                Export Users (JSON)
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Downloads a JSON file containing all records. Sensitive data is
+              redacted.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

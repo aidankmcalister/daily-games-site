@@ -40,6 +40,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { ShortcutsHelp } from "@/components/shortcuts-help";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,6 +57,7 @@ export default function RootLayout({
             <ListsProvider>{children}</ListsProvider>
           </ImpersonationProvider>
           <Toaster />
+          <ShortcutsHelp />
         </ThemeProvider>
       </body>
     </html>
