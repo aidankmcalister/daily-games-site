@@ -72,6 +72,8 @@ export function FeelingLuckyModal({
         setWinner(winningGame);
         setIsSpinning(false);
         fireConfetti();
+        const audio = new Audio("/airhorn.mp3");
+        audio.play().catch((e) => console.error("Audio play failed:", e));
       }
     };
 
