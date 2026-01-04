@@ -116,7 +116,7 @@ export function GamesHeader({
             variant="outline"
             size="sm"
             onClick={onRandom}
-            className="group relative overflow-hidden border-primary/20 hover:border-primary/50 hover:bg-primary/5 hidden sm:flex"
+            className="group relative h-7 overflow-hidden border-primary/20 hover:border-primary/50 hover:bg-primary/5 hidden sm:flex"
           >
             <span className="relative z-10 flex items-center gap-2">
               <Sparkles className="h-4 w-4 group-hover:animate-bounce" />
