@@ -11,6 +11,12 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { TOPIC_COLORS, extractDomain } from "@/lib/constants";
 import { ExternalLink } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface GameCardProps {
   id: string;
@@ -59,9 +65,16 @@ export function GameCard({
           {topic}
         </Badge>
         {isPlayed && (
-          <Badge variant="outline" className="ml-auto">
-            Played
-          </Badge>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Badge variant="outline" className="ml-auto cursor-help">
+                Played
+              </Badge>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Resets at midnight</p>
+            </TooltipContent>
+          </Tooltip>
         )}
       </CardFooter>
     </Card>

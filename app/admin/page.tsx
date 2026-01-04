@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -93,6 +93,22 @@ export default function AdminPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [activeTab, setActiveTab] = useState<"games" | "users">("games");
   const [isLoading, setIsLoading] = useState(true);
+
+  // Search and filter states for games
+  const [gameSearch, setGameSearch] = useState("");
+  const [gameTopicFilter, setGameTopicFilter] = useState<Topic | "all">("all");
+  const [gameSortBy, setGameSortBy] = useState<"title" | "topic" | "createdAt">(
+    "title"
+  );
+  const [gameSortOrder, setGameSortOrder] = useState<"asc" | "desc">("asc");
+
+  // Search and filter states for users
+  const [userSearch, setUserSearch] = useState("");
+  const [userRoleFilter, setUserRoleFilter] = useState<Role | "all">("all");
+  const [userSortBy, setUserSortBy] = useState<
+    "name" | "email" | "role" | "createdAt"
+  >("name");
+  const [userSortOrder, setUserSortOrder] = useState<"asc" | "desc">("asc");
 
   // Game form state
   const [editingGame, setEditingGame] = useState<Game | null>(null);
@@ -280,7 +296,66 @@ export default function AdminPage() {
     setEditingGame(null);
   };
 
-  // Loading state
+  const filteredGames = useMemo(() => {
+    const q = gameSearch.trim().toLowerCase();
+
+    return games
+      .filter((game) => {
+        const matchesSearch =
+          q.length === 0 ||
+          game.title.toLowerCase().includes(q) ||
+          game.link.toLowerCase().includes(q);
+        const matchesTopic =
+          gameTopicFilter === "all" || game.topic === gameTopicFilter;
+        return matchesSearch && matchesTopic;
+      })
+      .sort((a, b) => {
+        let comparison = 0;
+
+        if (gameSortBy === "title") {
+          comparison = a.title.localeCompare(b.title);
+        } else if (gameSortBy === "topic") {
+          comparison = a.topic.localeCompare(b.topic);
+        } else {
+          comparison =
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        }
+
+        return gameSortOrder === "asc" ? comparison : -comparison;
+      });
+  }, [games, gameSearch, gameTopicFilter, gameSortBy, gameSortOrder]);
+
+  const filteredUsers = useMemo(() => {
+    const q = userSearch.trim().toLowerCase();
+
+    return users
+      .filter((user) => {
+        const matchesSearch =
+          q.length === 0 ||
+          (user.name || "").toLowerCase().includes(q) ||
+          user.email.toLowerCase().includes(q);
+        const matchesRole =
+          userRoleFilter === "all" || user.role === userRoleFilter;
+        return matchesSearch && matchesRole;
+      })
+      .sort((a, b) => {
+        let comparison = 0;
+
+        if (userSortBy === "name") {
+          comparison = (a.name || "").localeCompare(b.name || "");
+        } else if (userSortBy === "email") {
+          comparison = a.email.localeCompare(b.email);
+        } else if (userSortBy === "role") {
+          comparison = a.role.localeCompare(b.role);
+        } else {
+          comparison =
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        }
+
+        return userSortOrder === "asc" ? comparison : -comparison;
+      });
+  }, [users, userSearch, userRoleFilter, userSortBy, userSortOrder]);
+
   // Loading state
   if (impersonationLoading || isLoading) {
     return (
@@ -366,225 +441,378 @@ export default function AdminPage() {
         {/* Games Tab */}
         {activeTab === "games" && (
           <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold">All Games</h2>
-              {canManageGames && (
-                <AlertDialog
-                  open={showAddDialog}
-                  onOpenChange={setShowAddDialog}
-                >
-                  <AlertDialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-8 gap-1.5">
-                      <Plus className="h-3.5 w-3.5" />
-                      Add Game
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Add Custom Game</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Add a new game to your collection.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <div className="space-y-4 py-4">
-                      <Field>
-                        <FieldLabel htmlFor="game-title">Title</FieldLabel>
-                        <Input
-                          id="game-title"
-                          placeholder="Game name"
-                          value={formTitle}
-                          onChange={(e) => setFormTitle(e.target.value)}
-                        />
-                      </Field>
-                      <Field>
-                        <FieldLabel htmlFor="game-link">Link</FieldLabel>
-                        <Input
-                          id="game-link"
-                          placeholder="https://example.com/game"
-                          value={formLink}
-                          onChange={(e) => setFormLink(e.target.value)}
-                        />
-                      </Field>
-                      <Field>
-                        <FieldLabel htmlFor="game-topic">Category</FieldLabel>
-                        <Select
-                          value={formTopic}
-                          onValueChange={(v) => setFormTopic(v as Topic)}
-                        >
-                          <SelectTrigger
-                            id="game-topic"
-                            className="w-full capitalize"
-                          >
-                            <SelectValue placeholder="Select category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {TOPICS.map((t) => (
-                              <SelectItem
-                                key={t}
-                                value={t}
-                                className="capitalize"
-                              >
-                                {t}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </Field>
-                    </div>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel onClick={resetForm}>
-                        Cancel
-                      </AlertDialogCancel>
-                      <Button
-                        onClick={handleAddGame}
-                        disabled={
-                          isSubmitting || !formTitle.trim() || !formLink.trim()
-                        }
-                      >
-                        {isSubmitting ? "Adding..." : "Add Game"}
-                      </Button>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              )}
-            </div>
-
-            {isLoading ? (
-              <p className="text-muted-foreground">Loading...</p>
-            ) : (
-              <div className="divide-y rounded-lg border">
-                {games.map((game) => (
-                  <div
-                    key={game.id}
-                    className="flex items-center justify-between px-4 py-2.5 hover:bg-muted/50"
+            <div className="space-y-4">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <h2 className="text-lg font-semibold">
+                  All Games ({filteredGames.length})
+                </h2>
+                {canManageGames && (
+                  <AlertDialog
+                    open={showAddDialog}
+                    onOpenChange={setShowAddDialog}
                   >
-                    {editingGame?.id === game.id ? (
-                      <div className="flex-1 flex items-center gap-2">
-                        <Input
-                          value={formTitle}
-                          onChange={(e) => setFormTitle(e.target.value)}
-                          className="h-8 flex-1"
-                          placeholder="Title"
-                        />
-                        <Input
-                          value={formLink}
-                          onChange={(e) => setFormLink(e.target.value)}
-                          className="h-8 flex-1"
-                          placeholder="Link"
-                        />
-                        <Select
-                          value={formTopic}
-                          onValueChange={(v) => setFormTopic(v as Topic)}
-                        >
-                          <SelectTrigger className="h-8 w-[120px] capitalize">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {TOPICS.map((t) => (
-                              <SelectItem
-                                key={t}
-                                value={t}
-                                className="capitalize"
-                              >
-                                {t}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Button
-                          size="sm"
-                          className="h-8"
-                          onClick={handleUpdateGame}
-                          disabled={isSubmitting}
-                        >
-                          Save
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-8"
-                          onClick={resetForm}
-                        >
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 gap-1.5"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        Add Game
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Add Custom Game</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Add a new game to your collection.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <div className="space-y-4 py-4">
+                        <Field>
+                          <FieldLabel htmlFor="game-title">Title</FieldLabel>
+                          <Input
+                            id="game-title"
+                            placeholder="Game name"
+                            value={formTitle}
+                            onChange={(e) => setFormTitle(e.target.value)}
+                          />
+                        </Field>
+                        <Field>
+                          <FieldLabel htmlFor="game-link">Link</FieldLabel>
+                          <Input
+                            id="game-link"
+                            placeholder="https://example.com/game"
+                            value={formLink}
+                            onChange={(e) => setFormLink(e.target.value)}
+                          />
+                        </Field>
+                        <Field>
+                          <FieldLabel htmlFor="game-topic">Category</FieldLabel>
+                          <Select
+                            value={formTopic}
+                            onValueChange={(v) => setFormTopic(v as Topic)}
+                          >
+                            <SelectTrigger
+                              id="game-topic"
+                              className="w-full capitalize"
+                            >
+                              <SelectValue placeholder="Select category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {TOPICS.map((t) => (
+                                <SelectItem
+                                  key={t}
+                                  value={t}
+                                  className="capitalize"
+                                >
+                                  {t}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </Field>
+                      </div>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel onClick={resetForm}>
                           Cancel
+                        </AlertDialogCancel>
+                        <Button
+                          onClick={handleAddGame}
+                          disabled={
+                            isSubmitting ||
+                            !formTitle.trim() ||
+                            !formLink.trim()
+                          }
+                        >
+                          {isSubmitting ? "Adding..." : "Add Game"}
                         </Button>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </div>
+
+              {/* Game search and filters */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <Input
+                    placeholder="Search games..."
+                    value={gameSearch}
+                    onChange={(e) => setGameSearch(e.target.value)}
+                    className="max-w-md"
+                  />
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Select
+                    value={gameTopicFilter}
+                    onValueChange={(value) =>
+                      setGameTopicFilter(value as Topic | "all")
+                    }
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Filter by topic" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Topics</SelectItem>
+                      {TOPICS.map((topic) => (
+                        <SelectItem
+                          key={topic}
+                          value={topic}
+                          className="capitalize"
+                        >
+                          {topic}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={`${gameSortBy}-${gameSortOrder}`}
+                    onValueChange={(value) => {
+                      const [sortBy, order] = value.split("-") as [
+                        "title" | "topic" | "createdAt",
+                        "asc" | "desc"
+                      ];
+                      setGameSortBy(sortBy);
+                      setGameSortOrder(order);
+                    }}
+                  >
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="title-asc">Title (A-Z)</SelectItem>
+                      <SelectItem value="title-desc">Title (Z-A)</SelectItem>
+                      <SelectItem value="topic-asc">Topic (A-Z)</SelectItem>
+                      <SelectItem value="topic-desc">Topic (Z-A)</SelectItem>
+                      <SelectItem value="createdAt-desc">
+                        Newest First
+                      </SelectItem>
+                      <SelectItem value="createdAt-asc">
+                        Oldest First
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="rounded-md border">
+                {isLoading ? (
+                  <p className="text-muted-foreground">Loading...</p>
+                ) : (
+                  <div className="divide-y">
+                    {filteredGames.length === 0 ? (
+                      <div className="p-8 text-center text-muted-foreground">
+                        No games found matching your criteria.
                       </div>
                     ) : (
-                      <>
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="font-medium whitespace-nowrap">
-                            {game.title}
-                          </span>
-                          <Badge
-                            className={cn(
-                              "capitalize text-xs",
-                              TOPIC_COLORS[game.topic]
-                            )}
-                          >
-                            {game.topic}
-                          </Badge>
-                          <span className="text-sm text-muted-foreground">
-                            {game.link}
-                          </span>
-                        </div>
-                        {canManageGames && (
-                          <div className="flex items-center gap-1 ml-4">
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              className="h-7 w-7"
-                              onClick={() => startEditing(game)}
-                            >
-                              <Pencil className="h-3.5 w-3.5" />
-                            </Button>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button
-                                  size="icon"
-                                  variant="ghost"
-                                  className="h-7 w-7 text-destructive hover:text-destructive"
+                      filteredGames.map((game) => (
+                        <div
+                          key={game.id}
+                          className="flex items-center justify-between px-4 py-2.5 hover:bg-muted/50"
+                        >
+                          {editingGame?.id === game.id ? (
+                            <div className="flex-1 flex items-center gap-2">
+                              <Input
+                                value={formTitle}
+                                onChange={(e) => setFormTitle(e.target.value)}
+                                className="h-8 flex-1"
+                                placeholder="Title"
+                              />
+                              <Input
+                                value={formLink}
+                                onChange={(e) => setFormLink(e.target.value)}
+                                className="h-8 flex-1"
+                                placeholder="Link"
+                              />
+                              <Select
+                                value={formTopic}
+                                onValueChange={(v) => setFormTopic(v as Topic)}
+                              >
+                                <SelectTrigger className="h-8 w-[120px] capitalize">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {TOPICS.map((t) => (
+                                    <SelectItem
+                                      key={t}
+                                      value={t}
+                                      className="capitalize"
+                                    >
+                                      {t}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <Button
+                                size="sm"
+                                className="h-8"
+                                onClick={handleUpdateGame}
+                                disabled={isSubmitting}
+                              >
+                                Save
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="h-8"
+                                onClick={resetForm}
+                              >
+                                Cancel
+                              </Button>
+                            </div>
+                          ) : (
+                            <>
+                              <div className="flex items-center gap-3 min-w-0">
+                                <span className="font-medium whitespace-nowrap">
+                                  {game.title}
+                                </span>
+                                <Badge
+                                  className={cn(
+                                    "capitalize text-xs",
+                                    TOPIC_COLORS[game.topic]
+                                  )}
                                 >
-                                  <Trash2 className="h-3.5 w-3.5" />
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>
-                                    Delete {game.title}?
-                                  </AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This action cannot be undone.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => handleDeleteGame(game.id)}
+                                  {game.topic}
+                                </Badge>
+                                <span className="text-sm text-muted-foreground">
+                                  {game.link}
+                                </span>
+                              </div>
+                              {canManageGames && (
+                                <div className="flex items-center gap-1 ml-4">
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-7 w-7"
+                                    onClick={() => startEditing(game)}
                                   >
-                                    Delete
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </div>
-                        )}
-                      </>
+                                    <Pencil className="h-3.5 w-3.5" />
+                                  </Button>
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="h-7 w-7 text-destructive hover:text-destructive"
+                                      >
+                                        <Trash2 className="h-3.5 w-3.5" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                          Delete {game.title}?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          This action cannot be undone.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                          Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                          onClick={() =>
+                                            handleDeleteGame(game.id)
+                                          }
+                                        >
+                                          Delete
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      ))
                     )}
                   </div>
-                ))}
+                )}
               </div>
-            )}
+            </div>
           </div>
         )}
 
         {/* Users Tab */}
         {activeTab === "users" && canManageUsers && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold">All Users</h2>
-            {users.length === 0 ? (
-              <p className="text-muted-foreground">No users yet.</p>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h2 className="text-lg font-semibold">
+                All Users ({filteredUsers.length})
+              </h2>
+            </div>
+
+            {/* User search and filters */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1">
+                <Input
+                  placeholder="Search users..."
+                  value={userSearch}
+                  onChange={(e) => setUserSearch(e.target.value)}
+                  className="max-w-md"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Select
+                  value={userRoleFilter}
+                  onValueChange={(value) =>
+                    setUserRoleFilter(value as Role | "all")
+                  }
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Filter by role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Roles</SelectItem>
+                    {ROLES.map((role) => (
+                      <SelectItem
+                        key={role}
+                        value={role}
+                        className="capitalize"
+                      >
+                        {ROLE_LABELS[role]}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={`${userSortBy}-${userSortOrder}`}
+                  onValueChange={(value) => {
+                    const [sortBy, order] = value.split("-") as [
+                      "name" | "email" | "role" | "createdAt",
+                      "asc" | "desc"
+                    ];
+                    setUserSortBy(sortBy);
+                    setUserSortOrder(order);
+                  }}
+                >
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name-asc">Name (A-Z)</SelectItem>
+                    <SelectItem value="name-desc">Name (Z-A)</SelectItem>
+                    <SelectItem value="email-asc">Email (A-Z)</SelectItem>
+                    <SelectItem value="email-desc">Email (Z-A)</SelectItem>
+                    <SelectItem value="role-asc">Role (A-Z)</SelectItem>
+                    <SelectItem value="role-desc">Role (Z-A)</SelectItem>
+                    <SelectItem value="createdAt-desc">Newest First</SelectItem>
+                    <SelectItem value="createdAt-asc">Oldest First</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {filteredUsers.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground">
+                No users found matching your criteria.
+              </div>
             ) : (
               <div className="divide-y rounded-lg border">
-                {users.map((user) => (
+                {filteredUsers.map((user) => (
                   <div
                     key={user.id}
                     className="flex items-center gap-4 px-4 py-3 hover:bg-muted/50"

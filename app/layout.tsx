@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ImpersonationProvider } from "@/components/impersonation-provider";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -50,6 +51,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <ImpersonationProvider>{children}</ImpersonationProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

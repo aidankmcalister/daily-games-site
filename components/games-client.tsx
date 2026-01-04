@@ -6,6 +6,10 @@ import { GamesHeader } from "@/components/games-header";
 import type { Game } from "@/app/generated/prisma/client";
 import { getPlayedIds, savePlayedIds, isNewDay } from "@/lib/played-state";
 
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
+
 type SortOption = "title" | "topic" | "played";
 
 export function GamesClient({ games }: { games: Game[] }) {
@@ -33,11 +37,26 @@ export function GamesClient({ games }: { games: Game[] }) {
       savePlayedIds(next);
       return next;
     });
+    const game = games.find((g) => g.id === id);
+    if (game) {
+      toast.success("Game played", {
+        description: `Marked ${game.title} as played.`,
+      });
+    }
   };
 
   const handleClear = () => {
     setPlayedIds(new Set());
     savePlayedIds(new Set());
+    toast.success("Progress reset", {
+      description: "All daily progress has been cleared.",
+    });
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setTopicFilter("all");
+    setSortBy("title");
   };
 
   const filteredGames = useMemo(() => {
@@ -80,7 +99,7 @@ export function GamesClient({ games }: { games: Game[] }) {
         onClear={handleClear}
       />
 
-      {(searchQuery || topicFilter !== "all") && (
+      {(searchQuery || topicFilter !== "all") && filteredGames.length > 0 && (
         <p className="text-sm text-muted-foreground">
           Showing {filteredGames.length} of {games.length} games
         </p>
@@ -98,8 +117,21 @@ export function GamesClient({ games }: { games: Game[] }) {
           onPlay={handlePlay}
         />
       ) : (
-        <div className="py-12 text-center text-muted-foreground">
-          No games found matching your criteria.
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="bg-muted/50 rounded-full p-4 mb-4">
+            <Search className="h-8 w-8 text-muted-foreground" />
+          </div>
+          <h3 className="text-lg font-semibold">No games found</h3>
+          <p className="text-muted-foreground mt-2 max-w-sm">
+            We couldn't find any games matching your current search and filters.
+          </p>
+          <Button
+            variant="outline"
+            className="mt-6"
+            onClick={handleClearFilters}
+          >
+            Clear all filters
+          </Button>
         </div>
       )}
     </div>
