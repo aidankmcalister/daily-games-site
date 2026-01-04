@@ -29,6 +29,7 @@ type SortOption = "title" | "topic" | "played";
 interface GamesHeaderProps {
   playedCount: number;
   totalCount: number;
+  filteredCount: number;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   topicFilter: string;
@@ -41,6 +42,7 @@ interface GamesHeaderProps {
 export function GamesHeader({
   playedCount,
   totalCount,
+  filteredCount,
   searchQuery,
   onSearchChange,
   topicFilter,
@@ -68,6 +70,11 @@ export function GamesHeader({
             >
               <X className="h-4 w-4" />
             </button>
+          )}
+          {!searchQuery && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+              {filteredCount} games
+            </span>
           )}
         </div>
 

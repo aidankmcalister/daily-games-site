@@ -9,7 +9,7 @@ export async function PATCH(
     const { id } = await params;
     const game = await prisma.game.update({
       where: { id },
-      data: { played: true },
+      data: { playCount: { increment: 1 } },
     });
     return NextResponse.json(game);
   } catch (error) {

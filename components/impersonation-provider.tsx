@@ -24,6 +24,9 @@ interface ImpersonationContextType {
   isActualOwner: boolean;
   setViewAsRole: (role: Role | null) => void;
   isLoading: boolean;
+  canAccessAdmin: boolean;
+  canManageGames: boolean;
+  canManageUsers: boolean;
   refetchUser: () => Promise<void>;
 }
 
@@ -39,6 +42,13 @@ export function ImpersonationProvider({ children }: { children: ReactNode }) {
   const isActualOwner = currentUser?.role === "owner";
   const effectiveRole =
     isActualOwner && viewAsRole ? viewAsRole : currentUser?.role || null;
+
+  const canAccessAdmin =
+    !!effectiveRole && ["owner", "coowner", "admin"].includes(effectiveRole);
+  const canManageGames =
+    !!effectiveRole && ["owner", "coowner", "admin"].includes(effectiveRole);
+  const canManageUsers =
+    !!effectiveRole && ["owner", "coowner"].includes(effectiveRole);
 
   const fetchUser = async () => {
     try {
@@ -83,6 +93,9 @@ export function ImpersonationProvider({ children }: { children: ReactNode }) {
         isActualOwner,
         setViewAsRole,
         isLoading,
+        canAccessAdmin,
+        canManageGames,
+        canManageUsers,
         refetchUser: fetchUser,
       }}
     >

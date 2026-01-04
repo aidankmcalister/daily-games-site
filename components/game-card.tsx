@@ -23,6 +23,7 @@ export interface GameCardProps {
   title: string;
   link: string;
   topic: string;
+  playCount: number;
   isPlayed: boolean;
   onPlay: (id: string) => void;
 }
@@ -32,6 +33,7 @@ export function GameCard({
   title,
   link,
   topic,
+  playCount,
   isPlayed,
   onPlay,
 }: GameCardProps) {
@@ -44,7 +46,7 @@ export function GameCard({
     <Card
       onClick={handleClick}
       className={cn(
-        "cursor-pointer hover:opacity-75 transition-all duration-75",
+        "cursor-pointer hover:opacity-85 transition-all duration-75",
         isPlayed && "opacity-50 grayscale"
       )}
     >
@@ -56,14 +58,16 @@ export function GameCard({
         <CardDescription className="truncate">
           {extractDomain(link)}
         </CardDescription>
+        <div className="flex items-center gap-1.5 mt-2">
+          <Badge
+            variant="secondary"
+            className={cn("capitalize", TOPIC_COLORS[topic])}
+          >
+            {topic}
+          </Badge>
+        </div>
       </CardHeader>
       <CardFooter className="pt-0">
-        <Badge
-          variant="secondary"
-          className={cn("capitalize", TOPIC_COLORS[topic])}
-        >
-          {topic}
-        </Badge>
         {isPlayed && (
           <Tooltip>
             <TooltipTrigger asChild>

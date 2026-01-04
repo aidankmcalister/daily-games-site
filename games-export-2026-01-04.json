@@ -4,7 +4,6 @@
     "title": "Angle",
     "link": "https://angle.wtf/",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.601Z",
     "updatedAt": "2026-01-03T18:55:41.199Z"
   },
@@ -13,7 +12,6 @@
     "title": "Bandle",
     "link": "https://bandle.app/",
     "topic": "entertainment",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.242Z",
     "updatedAt": "2026-01-03T19:00:27.620Z"
   },
@@ -22,7 +20,6 @@
     "title": "Bracket City",
     "link": "https://www.theatlantic.com/games/bracket-city/",
     "topic": "trivia",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.357Z",
     "updatedAt": "2026-01-03T19:00:32.060Z"
   },
@@ -31,7 +28,6 @@
     "title": "COSTCODLE",
     "link": "https://costcodle.com/",
     "topic": "trivia",
-    "played": false,
     "createdAt": "2026-01-03T18:12:31.765Z",
     "updatedAt": "2026-01-03T18:12:31.765Z"
   },
@@ -40,7 +36,6 @@
     "title": "Chess Puzzle",
     "link": "https://www.chess.com/daily-chess-puzzle",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.706Z",
     "updatedAt": "2026-01-03T19:00:20.326Z"
   },
@@ -49,7 +44,6 @@
     "title": "Chronophoto",
     "link": "https://www.chronophoto.app/",
     "topic": "trivia",
-    "played": false,
     "createdAt": "2026-01-03T23:19:00.621Z",
     "updatedAt": "2026-01-03T23:19:00.621Z"
   },
@@ -58,7 +52,6 @@
     "title": "Cine2Nerdle",
     "link": "https://www.cinenerdle2.app/",
     "topic": "entertainment",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.307Z",
     "updatedAt": "2026-01-03T18:55:41.635Z"
   },
@@ -67,7 +60,6 @@
     "title": "Cinematrix",
     "link": "https://www.vulture.com/article/daily-movie-grid-trivia-game-cinematrix.html",
     "topic": "entertainment",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.290Z",
     "updatedAt": "2026-01-03T19:00:29.494Z"
   },
@@ -76,7 +68,6 @@
     "title": "Circuits",
     "link": "https://www.puzzmo.com/game/circuits/",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.766Z",
     "updatedAt": "2026-01-03T18:55:41.414Z"
   },
@@ -85,7 +76,6 @@
     "title": "Connections",
     "link": "https://www.nytimes.com/games/connections",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.392Z",
     "updatedAt": "2026-01-03T19:00:08.341Z"
   },
@@ -94,7 +84,6 @@
     "title": "Contexto",
     "link": "https://contexto.me/en/",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T23:20:03.740Z",
     "updatedAt": "2026-01-03T23:20:03.740Z"
   },
@@ -103,7 +92,6 @@
     "title": "Cryptic Crossword",
     "link": "https://www.minutecryptic.com/",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.553Z",
     "updatedAt": "2026-01-03T18:55:41.107Z"
   },
@@ -112,7 +100,6 @@
     "title": "Daily Tens",
     "link": "https://dailytens.com/",
     "topic": "trivia",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.374Z",
     "updatedAt": "2026-01-03T18:55:41.699Z"
   },
@@ -121,7 +108,6 @@
     "title": "Dodeku",
     "link": "https://dodeku.com/",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.651Z",
     "updatedAt": "2026-01-03T18:55:41.333Z"
   },
@@ -130,7 +116,6 @@
     "title": "Feudle",
     "link": "https://googlefeud.com/feudle/",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.533Z",
     "updatedAt": "2026-01-03T19:00:13.495Z"
   },
@@ -139,7 +124,6 @@
     "title": "Flagle",
     "link": "https://www.flagle.io/",
     "topic": "geography",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.195Z",
     "updatedAt": "2026-01-03T18:55:41.511Z"
   },
@@ -148,7 +132,6 @@
     "title": "Food Guessr",
     "link": "https://www.foodguessr.com/",
     "topic": "food",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.500Z",
     "updatedAt": "2026-01-03T18:55:41.832Z"
   },
@@ -157,7 +140,6 @@
     "title": "Framed",
     "link": "https://framed.wtf/",
     "topic": "entertainment",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.225Z",
     "updatedAt": "2026-01-03T19:00:26.910Z"
   },
@@ -166,7 +148,6 @@
     "title": "Gamedle Character",
     "link": "https://www.gamedle.wtf/characters#",
     "topic": "gaming",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.422Z",
     "updatedAt": "2026-01-03T19:00:34.834Z"
   },
@@ -175,7 +156,6 @@
     "title": "Gamedle Classic",
     "link": "https://www.gamedle.wtf/classic#",
     "topic": "gaming",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.406Z",
     "updatedAt": "2026-01-03T19:00:34.220Z"
   },
@@ -184,7 +164,6 @@
     "title": "Globle",
     "link": "https://globle-game.com/",
     "topic": "geography",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.146Z",
     "updatedAt": "2026-01-03T19:00:23.794Z"
   },
@@ -193,7 +172,6 @@
     "title": "Guess The Game",
     "link": "https://guessthe.game/",
     "topic": "gaming",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.437Z",
     "updatedAt": "2026-01-03T18:55:41.764Z"
   },
@@ -202,7 +180,6 @@
     "title": "Guess The Movie",
     "link": "https://guessthemovie.name/",
     "topic": "entertainment",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.340Z",
     "updatedAt": "2026-01-03T18:55:41.667Z"
   },
@@ -211,7 +188,6 @@
     "title": "Guess the Audio",
     "link": "https://guesstheaudio.com/",
     "topic": "entertainment",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.257Z",
     "updatedAt": "2026-01-03T18:55:41.575Z"
   },
@@ -220,7 +196,6 @@
     "title": "Jumblie",
     "link": "https://jumblie.com/",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.569Z",
     "updatedAt": "2026-01-03T19:00:14.815Z"
   },
@@ -229,7 +204,6 @@
     "title": "Lyricle",
     "link": "https://www.lyricle.app/",
     "topic": "entertainment",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.274Z",
     "updatedAt": "2026-01-03T19:00:28.865Z"
   },
@@ -238,7 +212,6 @@
     "title": "Mathler",
     "link": "https://www.mathler.com/",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.634Z",
     "updatedAt": "2026-01-03T19:00:17.500Z"
   },
@@ -247,7 +220,6 @@
     "title": "Metaflora",
     "link": "https://flora.metazooa.com/",
     "topic": "nature",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.484Z",
     "updatedAt": "2026-01-03T19:00:37.369Z"
   },
@@ -256,7 +228,6 @@
     "title": "Metazooa",
     "link": "https://metazooa.com/",
     "topic": "nature",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.469Z",
     "updatedAt": "2026-01-03T19:00:36.703Z"
   },
@@ -265,7 +236,6 @@
     "title": "Mini Crossword",
     "link": "https://minicrossword.com/",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.427Z",
     "updatedAt": "2026-01-03T19:00:09.796Z"
   },
@@ -274,7 +244,6 @@
     "title": "Minigolfle",
     "link": "https://minigolfle.com/",
     "topic": "sports",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.516Z",
     "updatedAt": "2026-01-03T18:55:41.848Z"
   },
@@ -283,7 +252,6 @@
     "title": "Move to Movie",
     "link": "https://movietomovie.com/",
     "topic": "entertainment",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.323Z",
     "updatedAt": "2026-01-03T19:00:30.860Z"
   },
@@ -292,7 +260,6 @@
     "title": "Neighborle",
     "link": "https://neighborle.com/",
     "topic": "geography",
-    "played": false,
     "createdAt": "2026-01-03T23:20:40.536Z",
     "updatedAt": "2026-01-03T23:20:40.536Z"
   },
@@ -301,7 +268,6 @@
     "title": "Nerdle",
     "link": "https://nerdlegame.com/",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.618Z",
     "updatedAt": "2026-01-03T19:00:16.776Z"
   },
@@ -310,7 +276,6 @@
     "title": "Padlock",
     "link": "https://www.padlockgame.net/",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.666Z",
     "updatedAt": "2026-01-03T19:00:18.795Z"
   },
@@ -319,7 +284,6 @@
     "title": "Pocket Puzzle",
     "link": "https://playpocketpuzzles.com/foursquare/home",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.734Z",
     "updatedAt": "2026-01-03T18:55:41.396Z"
   },
@@ -328,7 +292,6 @@
     "title": "SpellCheck",
     "link": "https://spellcheck.xyz/mode_select",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.585Z",
     "updatedAt": "2026-01-03T18:55:41.152Z"
   },
@@ -337,25 +300,14 @@
     "title": "Squaredle",
     "link": "https://squaredle.app/?level=xp",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.460Z",
     "updatedAt": "2026-01-03T19:00:11.085Z"
-  },
-  {
-    "id": "bf185ad7-1713-4c60-b08e-a4e7a21bfbed",
-    "title": "Squirdle",
-    "link": "https://squirdle.fireblend.com/daily.html",
-    "topic": "gaming",
-    "played": false,
-    "createdAt": "2026-01-03T17:49:26.453Z",
-    "updatedAt": "2026-01-03T18:55:41.780Z"
   },
   {
     "id": "d6487549-50ec-4049-89f6-3b90d10f4c33",
     "title": "Strands",
     "link": "https://www.nytimes.com/games/strands",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.410Z",
     "updatedAt": "2026-01-03T19:00:08.897Z"
   },
@@ -364,7 +316,6 @@
     "title": "Sudoku",
     "link": "https://sudoku.com/challenges",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.682Z",
     "updatedAt": "2026-01-03T18:55:41.364Z"
   },
@@ -373,7 +324,6 @@
     "title": "Timeguessr",
     "link": "https://timeguessr.com/",
     "topic": "trivia",
-    "played": false,
     "createdAt": "2026-01-03T23:19:24.895Z",
     "updatedAt": "2026-01-03T23:19:24.895Z"
   },
@@ -382,7 +332,6 @@
     "title": "Toppled",
     "link": "https://bythomas.co.uk/toppled/",
     "topic": "puzzle",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.861Z",
     "updatedAt": "2026-01-03T18:55:41.430Z"
   },
@@ -391,7 +340,6 @@
     "title": "Tradle",
     "link": "https://games.oec.world/en/tradle/",
     "topic": "geography",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.163Z",
     "updatedAt": "2026-01-03T19:00:24.513Z"
   },
@@ -400,7 +348,6 @@
     "title": "Travle",
     "link": "https://travle.earth/?travle-lang=en",
     "topic": "geography",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.179Z",
     "updatedAt": "2026-01-03T19:00:25.140Z"
   },
@@ -409,7 +356,6 @@
     "title": "UrbanStats",
     "link": "https://urbanstats.org/quiz.html",
     "topic": "geography",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.210Z",
     "updatedAt": "2026-01-03T19:00:26.307Z"
   },
@@ -418,7 +364,6 @@
     "title": "Verticle",
     "link": "https://verticle.netlify.app/",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.499Z",
     "updatedAt": "2026-01-03T18:55:41.029Z"
   },
@@ -427,7 +372,6 @@
     "title": "Waffle",
     "link": "https://wafflegame.net/daily",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.483Z",
     "updatedAt": "2026-01-03T19:00:11.664Z"
   },
@@ -436,7 +380,6 @@
     "title": "Wikipedia Game",
     "link": "https://www.thewikipediagame.com/",
     "topic": "trivia",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.390Z",
     "updatedAt": "2026-01-03T19:00:33.549Z"
   },
@@ -445,7 +388,6 @@
     "title": "Word Search",
     "link": "https://games.washingtonpost.com/games/daily-word-search",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.444Z",
     "updatedAt": "2026-01-03T19:00:10.480Z"
   },
@@ -454,7 +396,6 @@
     "title": "Wordle",
     "link": "https://www.nytimes.com/games/wordle/index.html",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.139Z",
     "updatedAt": "2026-01-03T19:00:07.780Z"
   },
@@ -463,7 +404,6 @@
     "title": "Worldle",
     "link": "https://worldle.teuteuf.fr/",
     "topic": "geography",
-    "played": false,
     "createdAt": "2026-01-03T17:49:26.130Z",
     "updatedAt": "2026-01-03T19:00:23.190Z"
   },
@@ -472,7 +412,6 @@
     "title": "Xordle",
     "link": "https://xordle.org/",
     "topic": "words",
-    "played": false,
     "createdAt": "2026-01-03T17:49:25.516Z",
     "updatedAt": "2026-01-03T18:55:41.045Z"
   }

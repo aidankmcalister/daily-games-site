@@ -12,7 +12,8 @@ import { Search } from "lucide-react";
 
 type SortOption = "title" | "topic" | "played";
 
-export function GamesClient({ games }: { games: Game[] }) {
+export function GamesClient({ games: initialGames }: { games: Game[] }) {
+  const [games, setGames] = useState<Game[]>(initialGames);
   const [playedIds, setPlayedIds] = useState<Set<string>>(new Set());
   const [isLoaded, setIsLoaded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,8 +38,25 @@ export function GamesClient({ games }: { games: Game[] }) {
       savePlayedIds(next);
       return next;
     });
-    const game = games.find((g) => g.id === id);
-    if (game) {
+
+    const gameIndex = games.findIndex((g) => g.id === id);
+    if (gameIndex !== -1) {
+      const game = games[gameIndex];
+
+      // Optimistic update
+      const updatedGames = [...games];
+      updatedGames[gameIndex] = {
+        ...game,
+        playCount: (game.playCount || 0) + 1,
+      };
+      setGames(updatedGames);
+
+      // API call
+      fetch(`/api/games/${id}/play`, { method: "PATCH" }).catch((err) => {
+        console.error("Failed to update play count:", err);
+        // Revert on failure (optional, but good practice. For now keeping simple)
+      });
+
       toast.success("Game played", {
         description: `Marked ${game.title} as played.`,
       });
@@ -90,6 +108,7 @@ export function GamesClient({ games }: { games: Game[] }) {
       <GamesHeader
         playedCount={playedIds.size}
         totalCount={games.length}
+        filteredCount={filteredGames.length}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         topicFilter={topicFilter}
@@ -99,12 +118,6 @@ export function GamesClient({ games }: { games: Game[] }) {
         onClear={handleClear}
       />
 
-      {(searchQuery || topicFilter !== "all") && filteredGames.length > 0 && (
-        <p className="text-sm text-muted-foreground">
-          Showing {filteredGames.length} of {games.length} games
-        </p>
-      )}
-
       {filteredGames.length > 0 ? (
         <GameGrid
           games={filteredGames.map((g) => ({
@@ -112,6 +125,7 @@ export function GamesClient({ games }: { games: Game[] }) {
             title: g.title,
             link: g.link,
             topic: g.topic,
+            playCount: g.playCount || 0,
           }))}
           playedIds={playedIds}
           onPlay={handlePlay}

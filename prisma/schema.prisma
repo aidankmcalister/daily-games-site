@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../app/generated/prisma"
@@ -15,7 +14,7 @@ model Game {
   topic     Topic    @default(puzzle)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  played    Boolean  @default(false)
+  playCount Int      @default(0)
 
   @@index([topic])
 }

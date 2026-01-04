@@ -8,6 +8,7 @@ interface GameData {
   title: string;
   link: string;
   topic: Topic;
+  playCount?: number;
 }
 
 async function main() {
@@ -24,6 +25,7 @@ async function main() {
         title: g.title,
         link: g.link,
         topic: g.topic as Topic,
+        playCount: 0,
       })
     );
   } else {
@@ -40,7 +42,12 @@ async function main() {
         title: game.title,
         topic: game.topic,
       },
-      create: game,
+      create: {
+        title: game.title,
+        link: game.link,
+        topic: game.topic,
+        playCount: game.playCount || 0,
+      },
     });
     console.log(`  ✓ ${game.title}`);
   }
@@ -70,8 +77,42 @@ function getDefaultGames(): GameData[] {
       link: "https://minicrossword.com/",
       topic: "words",
     },
-    { title: "Angle", link: "https://angle.wtf/", topic: "puzzle" },
-    { title: "Globle", link: "https://globle-game.com/", topic: "geography" },
+    {
+      title: "Angle",
+      link: "https://angle.wtf/",
+      topic: "puzzle",
+      playCount: 42,
+    },
+    {
+      title: "Globle",
+      link: "https://globle-game.com/",
+      topic: "geography",
+      playCount: 15,
+    },
+    {
+      title: "Worldle",
+      link: "https://worldle.teuteuf.fr/",
+      topic: "geography",
+      playCount: 128,
+    },
+    {
+      title: "Travle",
+      link: "https://travle.earth/",
+      topic: "geography",
+      playCount: 64,
+    },
+    {
+      title: "Gamedle",
+      link: "https://www.gamedle.wtf/",
+      topic: "gaming",
+      playCount: 89,
+    },
+    {
+      title: "Costcodle",
+      link: "https://costcodle.com/",
+      topic: "food",
+      playCount: 230,
+    },
   ];
 }
 
