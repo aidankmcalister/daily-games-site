@@ -16,9 +16,10 @@ const GRID_CLASSES =
 export function GameGrid({ games, playedIds, onPlay }: GameGridProps) {
   return (
     <div className={GRID_CLASSES}>
-      {games.map((game) => (
+      {games.map((game, index) => (
         <GameCard
           key={game.id}
+          index={index}
           {...game}
           isPlayed={playedIds.has(game.id)}
           onPlay={onPlay}

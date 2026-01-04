@@ -22,7 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import type { Topic } from "@/app/generated/prisma/client";
 import { TOPICS } from "@/lib/constants";
-import { Search, X, RotateCcw } from "lucide-react";
+import { Search, X, RotateCcw, Sparkles } from "lucide-react";
 
 type SortOption = "title" | "topic" | "played";
 
@@ -37,6 +37,7 @@ interface GamesHeaderProps {
   sortBy: SortOption;
   onSortChange: (sort: SortOption) => void;
   onClear: () => void;
+  onRandom: () => void;
 }
 
 export function GamesHeader({
@@ -50,6 +51,7 @@ export function GamesHeader({
   sortBy,
   onSortChange,
   onClear,
+  onRandom,
 }: GamesHeaderProps) {
   return (
     <div className="space-y-4">
@@ -108,44 +110,53 @@ export function GamesHeader({
             </SelectContent>
           </Select>
 
-          {/* Divider */}
           <div className="mx-1 h-6 w-px bg-border hidden sm:block" />
 
-          {/* Progress Info */}
-          <div className="flex items-center gap-2 whitespace-nowrap pl-1">
-            <span className="text-sm text-muted-foreground font-medium">
-              {playedCount}/{totalCount}
-              <span className="hidden sm:inline"> played</span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onRandom}
+            className="group relative overflow-hidden border-primary/20 hover:border-primary/50 hover:bg-primary/5 hidden sm:flex"
+          >
+            <span className="relative z-10 flex items-center gap-2">
+              <Sparkles className="h-4 w-4 group-hover:animate-bounce" />
+              Feeling Lucky
             </span>
-            {playedCount > 0 && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                    title="Reset Progress"
-                  >
-                    <RotateCcw className="h-4 w-4" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Reset daily progress?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This will unmark all games as played for today.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={onClear}>
-                      Reset
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-          </div>
+          </Button>
+        </div>
+        <div className="mx-1 h-6 w-px bg-border hidden sm:block" />
+
+        <div className="flex items-center gap-2 whitespace-nowrap pl-1">
+          <span className="text-sm text-muted-foreground font-medium">
+            {playedCount}/{totalCount}
+            <span className="hidden sm:inline"> played</span>
+          </span>
+          {playedCount > 0 && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                  title="Reset Progress"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset daily progress?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will unmark all games as played for today.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={onClear}>Reset</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
         </div>
       </div>
     </div>

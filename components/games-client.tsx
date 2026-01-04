@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 
+import { FeelingLuckyModal } from "@/components/feeling-lucky-modal";
+
 type SortOption = "title" | "topic" | "played";
 
 export function GamesClient({ games: initialGames }: { games: Game[] }) {
@@ -19,11 +21,22 @@ export function GamesClient({ games: initialGames }: { games: Game[] }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("title");
   const [topicFilter, setTopicFilter] = useState("all");
+  const [isLuckyModalOpen, setIsLuckyModalOpen] = useState(false);
 
   useEffect(() => {
-    setPlayedIds(getPlayedIds());
+    const validIds = new Set<string>();
+    const storedIds = getPlayedIds();
+
+    // Filter out IDs that no longer exist
+    storedIds.forEach((id) => {
+      if (games.some((g) => g.id === id)) {
+        validIds.add(id);
+      }
+    });
+
+    setPlayedIds(validIds);
     setIsLoaded(true);
-  }, []);
+  }, [games]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,6 +90,10 @@ export function GamesClient({ games: initialGames }: { games: Game[] }) {
     setSortBy("title");
   };
 
+  const handleRandomGame = () => {
+    setIsLuckyModalOpen(true);
+  };
+
   const filteredGames = useMemo(() => {
     const query = searchQuery.toLowerCase();
     return games
@@ -116,6 +133,15 @@ export function GamesClient({ games: initialGames }: { games: Game[] }) {
         sortBy={sortBy}
         onSortChange={setSortBy}
         onClear={handleClear}
+        onRandom={handleRandomGame}
+      />
+
+      <FeelingLuckyModal
+        open={isLuckyModalOpen}
+        onOpenChange={setIsLuckyModalOpen}
+        games={games}
+        playedIds={playedIds}
+        onPlay={handlePlay}
       />
 
       {filteredGames.length > 0 ? (
