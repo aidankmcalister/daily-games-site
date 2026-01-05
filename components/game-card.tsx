@@ -42,6 +42,7 @@ function isWithinDays(date: Date, days: number): boolean {
 export interface GameCardProps {
   id: string;
   title: string;
+  description?: string;
   link: string;
   topic: string;
   playCount: number;
@@ -55,6 +56,7 @@ export interface GameCardProps {
 export function GameCard({
   id,
   title,
+  description,
   link,
   topic,
   isPlayed,
@@ -75,7 +77,7 @@ export function GameCard({
 
   const isNew = createdAt && isWithinDays(new Date(createdAt), 7);
 
-  return (
+  const cardContent = (
     <Card
       onClick={handleClick}
       style={{
@@ -84,8 +86,8 @@ export function GameCard({
       }}
       className={cn(
         "cursor-pointer transition-all duration-200 ease-out group relative overflow-hidden border-muted h-full flex flex-col justify-center",
-        "animate-in fade-in slide-in-from-bottom-2 duration-300",
-        "hover:shadow-xl hover:-translate-y-1 hover:border-primary/50 hover:scale-[1.02]",
+        "animate-in fade-in slide-in-from-bottom-2 duration-200",
+        "hover:shadow-md hover:-translate-y-0.5 hover:border-primary/50 hover:scale-[1.01]",
         TOPIC_SHADOWS[topic],
         isPlayed
           ? "bg-muted/40 opacity-60 grayscale hover:grayscale-0 hover:opacity-100"
@@ -155,7 +157,7 @@ export function GameCard({
           )}
         </div>
 
-        <div className="pt-3 flex items-center gap-2">
+        <div className="pt-3 flex items-center justify-between gap-2">
           <Badge
             variant="secondary"
             className={cn("capitalize font-normal", TOPIC_COLORS[topic])}
@@ -166,4 +168,6 @@ export function GameCard({
       </CardHeader>
     </Card>
   );
+
+  return cardContent;
 }

@@ -1,6 +1,5 @@
 import prisma from "@/lib/prisma";
 import { GamesClient } from "@/components/games-client";
-import { UserButton } from "@/components/user-button";
 import type { Game } from "@/app/generated/prisma/client";
 
 export const revalidate = 60;

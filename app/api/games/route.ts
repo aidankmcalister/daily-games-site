@@ -45,10 +45,16 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, link, topic } = body as {
+    const {
+      title,
+      link,
+      topic,
+      description = "",
+    } = body as {
       title: string;
       link: string;
       topic: Topic;
+      description?: string;
     };
 
     if (!title || !link || !topic) {
@@ -59,7 +65,7 @@ export async function POST(request: Request) {
     }
 
     const game = await prisma.game.create({
-      data: { title, link, topic },
+      data: { title, link, topic, description },
     });
 
     return NextResponse.json(game, { status: 201 });

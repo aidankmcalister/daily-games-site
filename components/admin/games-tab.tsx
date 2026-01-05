@@ -52,6 +52,7 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
     title: string;
     link: string;
     topic: Topic;
+    description: string;
   }) => {
     const res = await fetch("/api/games", {
       method: "POST",

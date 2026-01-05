@@ -1,32 +1,26 @@
 import { PrismaClient } from "../app/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Pool } from "pg";
 
 const globalForPrisma = global as unknown as {
   prisma: PrismaClient;
+  pool: Pool;
 };
 
-// Check if using TCP postgres:// URL or HTTP prisma+postgres:// URL
 const databaseUrl = process.env.DATABASE_URL || "";
-const isTcpConnection =
-  databaseUrl.startsWith("postgres://") ||
-  databaseUrl.startsWith("postgresql://");
 
 let prisma: PrismaClient;
 
 if (globalForPrisma.prisma) {
   prisma = globalForPrisma.prisma;
-} else if (isTcpConnection) {
-  // Use PrismaPg adapter for TCP connections
-  const adapter = new PrismaPg({
-    connectionString: databaseUrl,
-  });
-  prisma = new PrismaClient({ adapter });
 } else {
-  // Use direct PrismaClient for Prisma Postgres HTTP connections
-  // PrismaClient requires an adapter for HTTP connections
-  const adapter = new PrismaPg({
-    connectionString: databaseUrl,
-  });
+  // Create a pg Pool for the adapter
+  const pool =
+    globalForPrisma.pool || new Pool({ connectionString: databaseUrl });
+  globalForPrisma.pool = pool;
+
+  // Use PrismaPg adapter with the Pool
+  const adapter = new PrismaPg(pool);
   prisma = new PrismaClient({ adapter });
 }
 
