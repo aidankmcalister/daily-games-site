@@ -3,6 +3,7 @@ import { JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ImpersonationProvider } from "@/components/impersonation-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next";
 import { ListsProvider } from "@/lib/use-lists";
 import "./globals.css";
 
@@ -14,7 +15,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "dles.fun",
   description:
-    "A curated collection of daily puzzles and games. Play word games, trivia, geography challenges, and more. Progress resets at midnight.",
+    "A curated collection of daily puzzles and games. Play word games, trivia, geography challenges, and more.",
   openGraph: {
     title: "dles.fun",
     description:
@@ -43,6 +44,7 @@ export default function RootLayout({
       <body className={`${jetbrainsMono.className} antialiased`}>
         <ThemeProvider>
           <ImpersonationProvider>
+            <Analytics />
             <SiteBanner />
             <ListsProvider>{children}</ListsProvider>
           </ImpersonationProvider>
