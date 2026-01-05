@@ -249,7 +249,7 @@ export function GamesClient({ games: initialGames }: { games: Game[] }) {
 
       <GamesHeader
         playedCount={playedIds.size}
-        totalCount={games.length}
+        totalCount={Math.max(0, games.length - hiddenIds.size)}
         filteredCount={filteredGames.length}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}

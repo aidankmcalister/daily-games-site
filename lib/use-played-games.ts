@@ -51,13 +51,22 @@ export function usePlayedGames(gameIds: string[]): UsePlayedGamesResult {
             const hidden = new Set<string>();
             const dates: Date[] = [];
 
+            const today = new Date().toISOString().split("T")[0];
             userGames.forEach((ug) => {
               if (gameIds.includes(ug.gameId)) {
-                // Only count as played if played field is true
-                if (ug.played) {
+                // Only count as played if played field is true AND it was played today
+                const playedDate = new Date(ug.playedAt)
+                  .toISOString()
+                  .split("T")[0];
+                if (ug.played && playedDate === today) {
                   played.add(ug.gameId);
+                }
+
+                // Still add all dates for streak purposes
+                if (ug.played) {
                   dates.push(new Date(ug.playedAt));
                 }
+
                 if (ug.hidden) {
                   hidden.add(ug.gameId);
                 }

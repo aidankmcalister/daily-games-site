@@ -10,9 +10,23 @@ export default async function StatsPage() {
     redirect("/");
   }
 
-  // Fetch user's played games (not hidden)
+  // Get start of today in server time
+  const now = new Date();
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  );
+
+  // Fetch user's played games (explicitly check for played: true AND played today)
   const userGames = await prisma.userGame.findMany({
-    where: { userId: session.user.id, hidden: false },
+    where: {
+      userId: session.user.id,
+      played: true,
+      playedAt: {
+        gte: startOfToday,
+      },
+    },
     include: { game: true },
     orderBy: { playedAt: "desc" },
   });
@@ -24,7 +38,13 @@ export default async function StatsPage() {
     orderBy: { playedAt: "desc" },
   });
 
-  const totalGames = await prisma.game.count();
+  // Total unarchived games
+  const totalUnarchivedGames = await prisma.game.count({
+    where: { archived: false },
+  });
+
+  // Calculate total games for this user (excluding hidden ones)
+  const totalGames = Math.max(0, totalUnarchivedGames - hiddenGames.length);
 
   // Calculate stats
   const playedDates = userGames.map((ug) => ug.playedAt);
