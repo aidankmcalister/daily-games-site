@@ -2,16 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Dices, Flag } from "lucide-react";
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 import { cn } from "@/lib/utils";
 
-import { UserButton } from "@/components/user-button";
+import { UserButton } from "@/components/layout/user-button";
 import { GameList } from "@/lib/use-lists";
-import { HeaderSearch } from "./header/header-search";
-import { HeaderFilters } from "./header/header-filters";
-import { HeaderStats } from "./header/header-stats";
+import { HeaderSearch } from "../../header/header-search";
+import { HeaderFilters } from "./games-filters";
+import { HeaderStats } from "../../header/header-stats";
 
 type SortOption = "title" | "topic" | "played";
 

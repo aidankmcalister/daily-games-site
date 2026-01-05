@@ -11,10 +11,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 
 interface ResetDefaultsDialogProps {
   isOpen: boolean;

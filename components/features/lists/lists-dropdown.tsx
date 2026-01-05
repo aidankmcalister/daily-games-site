@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, List, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/design/dles-button";
 import {
   Dialog,
   DialogContent,
@@ -68,16 +69,18 @@ export function ListsDropdown({ gameId }: ListsDropdownProps) {
         <Tooltip>
           <TooltipTrigger asChild>
             <DialogTrigger asChild>
-              <button
+              <DlesButton
+                variant="ghost"
+                size="icon-sm"
                 onClick={(e) => e.stopPropagation()}
                 className={cn(
-                  "p-1 rounded-md text-muted-foreground shrink-0",
+                  "p-0 h-7 w-7 text-muted-foreground shrink-0 rounded-md",
                   "opacity-0 group-hover:opacity-100 transition-opacity",
                   "hover:bg-muted hover:text-foreground"
                 )}
               >
                 <List className="h-3.5 w-3.5" />
-              </button>
+              </DlesButton>
             </DialogTrigger>
           </TooltipTrigger>
           <TooltipContent side="top" className="text-xs">
@@ -124,12 +127,12 @@ export function ListsDropdown({ gameId }: ListsDropdownProps) {
                       })}
                     </SelectContent>
                   </Select>
-                  <Button
+                  <DlesButton
                     onClick={handleAdd}
                     disabled={!selectedListId || isAdding}
                   >
                     Add
-                  </Button>
+                  </DlesButton>
                 </div>
               </div>
 
@@ -154,13 +157,13 @@ export function ListsDropdown({ gameId }: ListsDropdownProps) {
                 value={newListName}
                 onChange={(e) => setNewListName(e.target.value)}
               />
-              <Button
+              <DlesButton
                 variant="outline"
                 onClick={handleCreateAndAdd}
                 disabled={!newListName.trim() || isAdding}
               >
                 Create & Add
-              </Button>
+              </DlesButton>
             </div>
           </div>
         </div>

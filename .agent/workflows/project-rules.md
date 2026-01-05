@@ -162,7 +162,7 @@ Use **Lucide React** only. No emojis.
 1. No gradients
 2. No glassmorphism/blur
 3. No heavy shadows
-4. No "Command Center" or "Battle Arena" hero sections
+4. No "Command Center" or "Battle Arena" style hero sections
 5. No emojis
 6. No custom fonts (stick to JetBrains Mono)
 

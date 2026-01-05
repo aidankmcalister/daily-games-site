@@ -1,14 +1,18 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { GameGrid, GameGridSkeleton } from "@/components/game-grid";
-import { GamesHeader } from "@/components/games-header";
+import {
+  GameGrid,
+  GameGridSkeleton,
+} from "@/components/features/games/game-grid";
+import { GamesHeader } from "@/components/features/games/games-header";
 import type { Game } from "@/app/generated/prisma/client";
 import { usePlayedGames } from "@/lib/use-played-games";
 import { useLists } from "@/lib/use-lists";
 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/design/dles-button";
 import { Search } from "lucide-react";
 
 import dynamic from "next/dynamic";
@@ -310,13 +314,13 @@ export function GamesClient({ games: initialGames }: { games: Game[] }) {
           <p className="text-muted-foreground mt-2 max-w-sm">
             We couldn't find any games matching your current search and filters.
           </p>
-          <Button
+          <DlesButton
             variant="outline"
             className="mt-6"
             onClick={handleClearFilters}
           >
             Clear all filters
-          </Button>
+          </DlesButton>
         </div>
       )}
     </div>

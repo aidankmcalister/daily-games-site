@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
-import { GameCard } from "@/components/game-card";
+import { GameCard } from "@/components/features/games/game-card";
 import { Button } from "@/components/ui/button";
 import type { Game } from "@/app/generated/prisma/client";
 

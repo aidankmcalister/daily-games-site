@@ -16,8 +16,8 @@ import {
 import { cn, formatTopic } from "@/lib/utils";
 import { TOPIC_COLORS, extractDomain } from "@/lib/constants";
 import { ExternalLink, EyeOff } from "lucide-react";
-import { ListsDropdown } from "./lists-dropdown";
-import { DlesTopic } from "@/components/dles-topic";
+import { ListsDropdown } from "../lists/lists-dropdown";
+import { DlesTopic } from "@/components/design/dles-topic";
 
 const TOPIC_SHADOWS: Record<string, string> = {
   words: "hover:shadow-blue-500/25 dark:hover:shadow-blue-500/10",
@@ -95,13 +95,13 @@ export function GameCard({
         animationFillMode: "both",
       }}
       className={cn(
-        "cursor-pointer transition-all duration-200 ease-out group relative overflow-hidden border-muted h-full flex flex-col justify-center",
+        "cursor-pointer transition-all duration-200 ease-out group relative overflow-hidden border-border h-full flex flex-col justify-center",
         "animate-in fade-in slide-in-from-bottom-2 duration-200",
-        "hover:shadow-md hover:-translate-y-0.5 hover:border-primary/50 hover:scale-[1.01]",
+        "hover:border-primary/40 hover:-translate-y-0.5",
         TOPIC_SHADOWS[topic],
         isPlayed
           ? "bg-muted/40 opacity-60 grayscale hover:grayscale-0 hover:opacity-100"
-          : "bg-card"
+          : "bg-card hover:bg-muted/5"
       )}
     >
       {/* Corner NEW ribbon */}
@@ -119,7 +119,7 @@ export function GameCard({
       <CardHeader className="p-4 pb-3">
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-1.5 flex-1 min-w-0">
-            <CardTitle className="flex items-center gap-2 text-base md:text-lg leading-tight justify-between">
+            <CardTitle className="flex items-center gap-2 text-base font-bold tracking-tight leading-tight justify-between">
               <div className="flex items-center gap-2">
                 <span className="truncate">{title}</span>
                 <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />

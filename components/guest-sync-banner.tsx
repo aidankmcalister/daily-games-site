@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/design/dles-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, LogIn } from "lucide-react";
 
@@ -14,7 +14,7 @@ export function GuestSyncBanner() {
           <span>Sign in to save history & create lists.</span>
         </div>
 
-        <Button
+        <DlesButton
           size="sm"
           variant="outline"
           className="h-8 gap-2 text-xs w-full sm:w-auto font-medium border-primary/20 bg-background/50 hover:bg-primary/10 hover:border-primary/50 transition-all group"
@@ -22,7 +22,7 @@ export function GuestSyncBanner() {
         >
           Continue with Google
           <ArrowRight className="h-3.5 w-3.5 opacity-50 group-hover:translate-x-0.5 group-hover:opacity-100 transition-all" />
-        </Button>
+        </DlesButton>
       </CardContent>
     </Card>
   );

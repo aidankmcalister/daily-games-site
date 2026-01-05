@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/design/dles-button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +18,7 @@ export function ThemeToggle() {
   useEffect(() => setMounted(true), []);
 
   if (!mounted)
-    return <Button variant="outline" size="icon" className="h-8 w-8" />;
+    return <DlesButton variant="outline" size="icon-sm" className="h-8 w-8" />;
 
   const icons = {
     light: <Sun className="h-4 w-4" />,
@@ -29,9 +29,9 @@ export function ThemeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="h-8 w-8">
+        <DlesButton variant="outline" size="icon-sm" className="h-8 w-8">
           {icons[theme as keyof typeof icons] || icons.system}
-        </Button>
+        </DlesButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>

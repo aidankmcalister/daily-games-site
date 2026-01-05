@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 import {
   Trophy,
   Calendar,
@@ -146,14 +146,18 @@ export function RaceHistory({
   }
 
   return (
-    <Card className="border-border/50 bg-card">
+    <Card className="bg-card">
       <CardHeader className="pb-2 px-4">
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Swords className="h-4 w-4" />
             Race History
           </CardTitle>
-          <DlesButton className="h-7 text-xs" href="/race/new">
+          <DlesButton
+            size="sm"
+            className="h-8 text-xs font-bold"
+            href="/race/new"
+          >
             <Plus className="h-3.5 w-3.5" />
             New Race
           </DlesButton>

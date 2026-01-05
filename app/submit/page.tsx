@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/design/dles-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -21,7 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/layout/page-header";
 import { TOPICS } from "@/lib/constants";
 import { Loader2, CheckCircle2, ChevronLeft } from "lucide-react";
 import type { Topic } from "@/app/generated/prisma/client";
@@ -48,7 +48,7 @@ export default function SubmitGamePage() {
         <p className="text-muted-foreground">
           You must be signed in to submit game suggestions.
         </p>
-        <Button onClick={() => router.push("/")}>Go Home</Button>
+        <DlesButton onClick={() => router.push("/")}>Go Home</DlesButton>
       </div>
     );
   }
@@ -101,10 +101,10 @@ export default function SubmitGamePage() {
               shortly and add it to the collection if it fits!
             </p>
             <div className="flex gap-4 mt-4">
-              <Button variant="outline" onClick={() => router.push("/")}>
+              <DlesButton variant="outline" onClick={() => router.push("/")}>
                 Back to Home
-              </Button>
-              <Button
+              </DlesButton>
+              <DlesButton
                 onClick={() => {
                   setTitle("");
                   setLink("");
@@ -114,7 +114,7 @@ export default function SubmitGamePage() {
                 }}
               >
                 Submit Another
-              </Button>
+              </DlesButton>
             </div>
           </CardContent>
         </Card>
@@ -125,16 +125,14 @@ export default function SubmitGamePage() {
   return (
     <div className="container py-8 max-w-2xl mx-auto">
       <div className="mb-8">
-        <Button
+        <DlesButton
           variant="ghost"
           size="sm"
-          asChild
+          href="/"
           className="-ml-4 mb-4 text-muted-foreground"
         >
-          <Link href="/">
-            <ChevronLeft className="h-4 w-4 mr-1" /> Back to Games
-          </Link>
-        </Button>
+          <ChevronLeft className="h-4 w-4 mr-1" /> Back to Games
+        </DlesButton>
         <PageHeader
           title="Submit a Game"
           subtitle="Found a great game? Suggest it for the collection."
@@ -199,20 +197,20 @@ export default function SubmitGamePage() {
             </Field>
           </CardContent>
           <CardFooter className="flex justify-end gap-2 border-t pt-4">
-            <Button
+            <DlesButton
               type="button"
               variant="ghost"
               onClick={() => router.back()}
               disabled={isSubmitting}
             >
               Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            </DlesButton>
+            <DlesButton type="submit" disabled={isSubmitting}>
               {isSubmitting && (
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
               )}
               Submit Game
-            </Button>
+            </DlesButton>
           </CardFooter>
         </form>
       </Card>

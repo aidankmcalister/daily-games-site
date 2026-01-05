@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { DlesTopic } from "@/components/dles-topic";
+import { DlesTopic } from "@/components/design/dles-topic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
@@ -192,14 +192,16 @@ export function ListsClient({ initialLists }: ListsClientProps) {
                       e.key === "Enter" && handleRenameList(list.id)
                     }
                     autoFocus
-                    className="h-8 w-48"
+                    className="h-8 w-48 text-sm"
                   />
                 ) : (
-                  <CardTitle className="text-base">{list.name}</CardTitle>
+                  <CardTitle className="text-base font-semibold">
+                    {list.name}
+                  </CardTitle>
                 )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                    <Button variant="ghost" size="icon-sm">
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -233,7 +235,7 @@ export function ListsClient({ initialLists }: ListsClientProps) {
                     {list.games.map((game) => (
                       <div
                         key={game.id}
-                        className="flex items-center justify-between p-2 rounded-md bg-muted/50 group"
+                        className="flex items-center justify-between p-2 rounded-md bg-muted/50 group hover:bg-muted/80 transition-colors"
                       >
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium">
@@ -243,8 +245,8 @@ export function ListsClient({ initialLists }: ListsClientProps) {
                         </div>
                         <Button
                           variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 opacity-0 group-hover:opacity-100"
+                          size="icon-sm"
+                          className="h-6 w-6 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive"
                           onClick={() => handleRemoveGame(list.id, game.id)}
                         >
                           <Trash2 className="h-3 w-3" />
@@ -253,7 +255,7 @@ export function ListsClient({ initialLists }: ListsClientProps) {
                     ))}
                   </div>
                 )}
-                <p className="text-xs text-muted-foreground mt-3">
+                <p className="text-xs text-muted-foreground mt-3 font-medium">
                   {list.games.length} game{list.games.length !== 1 && "s"}
                 </p>
               </CardContent>

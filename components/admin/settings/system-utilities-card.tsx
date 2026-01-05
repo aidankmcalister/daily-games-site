@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/design/dles-button";
 import { Database, FileJson, Users2, Download } from "lucide-react";
 
 export function SystemUtilitiesCard() {
@@ -15,7 +15,7 @@ export function SystemUtilitiesCard() {
       </CardHeader>
       <CardContent className="space-y-6 flex-1 px-6 pb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Button
+          <DlesButton
             type="button"
             variant="outline"
             className="h-16 flex flex-col items-center justify-center gap-1.5 border-dashed border-border/50 hover:bg-muted/50 hover:border-primary/30 group transition-all"
@@ -28,8 +28,8 @@ export function SystemUtilitiesCard() {
             <span className="text-[10px] text-muted-foreground">
               Full JSON dataset
             </span>
-          </Button>
-          <Button
+          </DlesButton>
+          <DlesButton
             type="button"
             variant="outline"
             className="h-16 flex flex-col items-center justify-center gap-1.5 border-dashed border-border/50 hover:bg-muted/50 hover:border-primary/30 group transition-all"
@@ -42,7 +42,7 @@ export function SystemUtilitiesCard() {
             <span className="text-[10px] text-muted-foreground">
               User stats data
             </span>
-          </Button>
+          </DlesButton>
         </div>
 
         <div className="bg-muted/10 p-4 rounded-xl border border-border/30 mt-auto">

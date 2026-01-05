@@ -11,7 +11,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -21,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DlesTopic } from "@/components/dles-topic";
+import { DlesTopic } from "@/components/design/dles-topic";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { TOPICS } from "@/lib/constants";
 import { formatTopic } from "@/lib/utils";
@@ -37,7 +36,7 @@ interface AddGameDialogProps {
   }) => Promise<void>;
 }
 
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 
 export function AddGameDialog({ onAdd }: AddGameDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -142,9 +141,9 @@ export function AddGameDialog({ onAdd }: AddGameDialogProps) {
           <AlertDialogCancel onClick={() => setIsOpen(false)}>
             Cancel
           </AlertDialogCancel>
-          <Button onClick={handleAdd} disabled={isSubmitting || !isValid}>
+          <DlesButton onClick={handleAdd} disabled={isSubmitting || !isValid}>
             {isSubmitting ? "Adding..." : "Add Game"}
-          </Button>
+          </DlesButton>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

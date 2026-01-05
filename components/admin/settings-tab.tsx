@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,7 +12,7 @@ import { DisplaySettingsCard } from "./settings/display-settings-card";
 import { UserLimitsCard } from "./settings/user-limits-card";
 import { SystemUtilitiesCard } from "./settings/system-utilities-card";
 import { ResetDefaultsDialog } from "./settings/reset-defaults-dialog";
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 
 interface SiteConfig {
   id: string;

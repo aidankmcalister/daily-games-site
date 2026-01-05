@@ -60,7 +60,7 @@ export function DashboardClient({
       {/* Activity Cards - Top Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Most Active Day */}
-        <Card className="border-border/50 bg-card">
+        <Card className="bg-card">
           <CardContent className="p-3">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center">
@@ -79,7 +79,7 @@ export function DashboardClient({
         </Card>
 
         {/* Peak Time */}
-        <Card className="border-border/50 bg-card">
+        <Card className="bg-card">
           <CardContent className="p-3">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-md bg-amber-500/10 flex items-center justify-center">
@@ -98,7 +98,7 @@ export function DashboardClient({
         </Card>
 
         {/* Favorite Category */}
-        <Card className="border-border/50 bg-card">
+        <Card className="bg-card">
           <CardContent className="p-3">
             <div className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-md bg-emerald-500/10 flex items-center justify-center">
@@ -110,13 +110,13 @@ export function DashboardClient({
                     <Badge
                       variant="secondary"
                       className={cn(
-                        "text-xs capitalize",
+                        "text-xs capitalize h-5 px-1.5",
                         TOPIC_COLORS[topCategory.name]
                       )}
                     >
                       {topCategory.name}
                     </Badge>
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-wide">
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wide mt-0.5">
                       Favorite
                     </p>
                   </>
@@ -136,7 +136,7 @@ export function DashboardClient({
 
       {/* Category Breakdown */}
       {sortedCategories.length > 0 && (
-        <Card className="border-border/50 bg-card">
+        <Card className="bg-card">
           <CardHeader className="pb-2 pt-3 px-4">
             <CardTitle className="text-sm font-semibold">Categories</CardTitle>
           </CardHeader>
@@ -168,11 +168,11 @@ export function DashboardClient({
 
       {/* Hidden Games */}
       {hiddenGames.length > 0 && (
-        <Card className="border-border/50 bg-card">
+        <Card className="bg-card">
           <CardHeader className="pb-2 pt-3 px-4">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
               Hidden Games
-              <Badge variant="secondary" className="text-[10px]">
+              <Badge variant="secondary" className="px-1.5 h-5 text-[10px]">
                 {hiddenGames.length}
               </Badge>
             </CardTitle>
@@ -203,7 +203,7 @@ export function DashboardClient({
                   >
                     <div>
                       <p className="font-medium text-sm">{game.title}</p>
-                      <p className="text-[10px] text-muted-foreground capitalize">
+                      <p className="text-xs text-muted-foreground capitalize">
                         {game.topic}
                       </p>
                     </div>
@@ -211,7 +211,7 @@ export function DashboardClient({
                       variant="ghost"
                       size="sm"
                       onClick={handleUnhide}
-                      className="h-7 text-xs gap-1"
+                      className="text-xs gap-1 h-8"
                     >
                       <Eye className="h-3 w-3" />
                       Show

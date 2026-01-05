@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AlertCircle, Megaphone, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/design/dles-button";
 
 interface SiteConfig {
   maintenanceMode: boolean;
@@ -66,10 +66,10 @@ export function SiteBanner() {
   return (
     <div
       className={cn(
-        "relative w-full py-2.5 px-4 flex items-center justify-center text-sm font-medium transition-all group overflow-hidden",
+        "relative w-full py-2 px-4 flex items-center justify-center text-xs font-bold uppercase tracking-wider transition-all group overflow-hidden border-b border-border/40",
         isMaintenance
-          ? "bg-yellow-500/10 text-yellow-800 dark:text-yellow-200"
-          : "bg-indigo-600/10 text-indigo-800 dark:text-indigo-300 border-b border-indigo-500/10"
+          ? "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+          : "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
       )}
     >
       {isMaintenance && (
@@ -105,14 +105,14 @@ export function SiteBanner() {
       </div>
 
       {!isMaintenance && (
-        <Button
+        <DlesButton
           variant="ghost"
-          size="icon"
+          size="icon-sm"
           className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-indigo-800/60 hover:text-indigo-800 hover:bg-indigo-500/10 dark:text-indigo-300/60 dark:hover:text-indigo-300"
           onClick={handleDismiss}
         >
           <X className="h-4 w-4" />
-        </Button>
+        </DlesButton>
       )}
     </div>
   );

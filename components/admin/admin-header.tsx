@@ -1,9 +1,9 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { UserButton } from "@/components/user-button";
+import { UserButton } from "@/components/layout/user-button";
 import { useImpersonation } from "@/components/impersonation-provider";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/layout/page-header";
 import { cn } from "@/lib/utils";
 import type { Role } from "@/app/generated/prisma/client";
 

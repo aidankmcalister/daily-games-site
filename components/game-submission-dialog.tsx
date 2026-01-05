@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DlesTopic } from "@/components/dles-topic";
+import { DlesTopic } from "@/components/design/dles-topic";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { TOPICS } from "@/lib/constants";
 import { formatTopic } from "@/lib/utils";

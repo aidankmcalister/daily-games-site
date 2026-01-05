@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useSession, signIn, signOut } from "@/lib/auth-client";
 import { useTheme } from "next-themes";
 import { useImpersonation } from "@/components/impersonation-provider";
-import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/design/dles-button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +33,7 @@ import {
   List,
 } from "lucide-react";
 import type { Role } from "@/app/generated/prisma/client";
-import { GameSubmissionDialog } from "./game-submission-dialog";
+import { GameSubmissionDialog } from "@/components/game-submission-dialog";
 
 interface SiteConfig {
   enableCommunitySubmissions: boolean;
@@ -66,9 +66,9 @@ export function UserButton() {
 
   if (isPending) {
     return (
-      <Button variant="outline" size="icon" className="h-8 w-8" disabled>
+      <DlesButton variant="outline" size="icon-sm" className="h-8 w-8" disabled>
         <User className="h-4 w-4 animate-pulse" />
-      </Button>
+      </DlesButton>
     );
   }
 
@@ -77,11 +77,11 @@ export function UserButton() {
       <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" className="h-8 w-8">
+            <DlesButton variant="outline" size="icon-sm" className="h-8 w-8">
               <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
               <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">Toggle theme</span>
-            </Button>
+            </DlesButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => setTheme("light")}>
@@ -98,7 +98,7 @@ export function UserButton() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button
+        <DlesButton
           variant="outline"
           size="sm"
           className="h-8"
@@ -106,7 +106,7 @@ export function UserButton() {
         >
           Sign in
           <LogIn className="h-4 w-4 ml-2" />
-        </Button>
+        </DlesButton>
       </div>
     );
   }
@@ -114,9 +114,9 @@ export function UserButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
+        <DlesButton
           variant="outline"
-          size="icon"
+          size="icon-sm"
           className="h-8 w-8 overflow-hidden rounded-full p-0"
         >
           {session.user.image ? (
@@ -132,12 +132,16 @@ export function UserButton() {
           ) : (
             <User className="h-4 w-4" />
           )}
-        </Button>
+        </DlesButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <div className="px-2 py-1.5">
-          <p className="text-sm font-medium">{session.user.name}</p>
-          <p className="text-xs text-muted-foreground">{session.user.email}</p>
+      <DropdownMenuContent align="end" className="w-56 p-1">
+        <div className="px-2 py-2 mb-1 bg-muted/30 rounded-t-sm border-b border-border/50">
+          <p className="text-sm font-bold tracking-tight truncate">
+            {session.user.name}
+          </p>
+          <p className="text-[10px] text-muted-foreground font-mono truncate">
+            {session.user.email}
+          </p>
         </div>
         <DropdownMenuSeparator />
 

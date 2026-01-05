@@ -18,22 +18,24 @@ export function PageHeader({
   children,
 }: PageHeaderProps) {
   return (
-    <header className="mb-8">
-      <div className="flex items-center gap-3 mb-2">
+    <header className="mb-8 border-b border-border pb-4">
+      <div className="flex items-center gap-3 mb-1">
         {backHref && (
           <Link
             href={backHref}
-            className="text-muted-foreground hover:text-foreground transition-all group"
+            className="text-muted-foreground hover:text-primary transition-all group"
           >
             <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
           </Link>
         )}
-        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground/90">
           {title}
         </h1>
         {children}
       </div>
-      {subtitle && <p className="text-muted-foreground">{subtitle}</p>}
+      {subtitle && (
+        <p className="text-muted-foreground text-sm font-medium">{subtitle}</p>
+      )}
     </header>
   );
 }
