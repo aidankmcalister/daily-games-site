@@ -218,6 +218,20 @@ const rawGames = [
       "Find the shortest path to link movies through shared actors and directors.",
   },
   {
+    title: "MapTap",
+    link: "https://maptap.gg/",
+    topic: "geography",
+    description:
+      "Play MapTap - the daily geography game! Find 5 world locations on a 3D globe with historical stories. Free browser-based daily game for geography lovers.",
+  },
+  {
+    title: "Geo Warmup",
+    link: "https://geowarmup.hankiou.com/",
+    topic: "geography",
+    description:
+      "Master world geography with geowarmup! Study flags, capitals, and locations with typing challenges.",
+  },
+  {
     title: "Neighborle",
     link: "https://neighborle.com/",
     topic: "geography",
