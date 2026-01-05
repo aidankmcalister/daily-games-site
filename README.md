@@ -1,105 +1,128 @@
 # Daily Games
 
-A curated hub for discovering, tracking, and playing daily puzzle games. Users can browse games by category, create custom lists, track their play history and streaks, and use the "Feeling Lucky" feature to discover new challenges.
+[dles.fun](https://dles.fun)
 
-## Key Features
+A premium, curated platform for discovering and tracking daily puzzle games. Built with a "Dark Terminal" aesthetic, it offers a seamless experience for tracking progress, competing in races, and organizing your favorite daily challenges.
 
-- **Daily Tracking**: Mark games as played to track your consistency. Progress resets automatically at midnight.
-- **Streaks**: Maintain daily streaks for consistency.
-- **Custom Lists**: Curate your own collections of favorite games.
-  - Create, rename, delete lists.
-  - "Add to List" quick action on every game card.
-  - Filter the home page to view specific lists.
-- **User Dashboard**:
-  - **Stats**: View play counts, completion percentages, and category breakdowns.
-  - **Lists**: Manage your custom game lists.
-- **Admin Panel** (Owner/Co-owner):
-  - **Game Management**: Add, edit, remove games.
-  - **Site Settings**: Configure "New" badge duration, maintenance mode, welcome messages, and topic colors.
-  - **User Management**: View users and manage roles.
-- **Performance**:
-  - Global state management for lists to minimize API requests.
-  - Optimistic UI updates for instant feedback.
+## 🚀 Key Features
 
-## Tech Stack
+### 🎮 **Game Discovery & Tracking**
 
-| Layer     | Technology                                                                     |
-| --------- | ------------------------------------------------------------------------------ |
-| Framework | [Next.js 16](https://nextjs.org) (App Router)                                  |
-| Language  | TypeScript                                                                     |
-| UI        | React 19, [shadcn/ui](https://ui.shadcn.com), [Radix UI](https://radix-ui.com) |
-| Styling   | [Tailwind CSS 4](https://tailwindcss.com)                                      |
-| Database  | PostgreSQL via [Prisma ORM](https://prisma.io)                                 |
-| Auth      | [Better Auth](https://better-auth.com) (Google OAuth)                          |
-| State     | React Context + SWR-like patterns                                              |
-| Icons     | [Lucide React](https://lucide.dev)                                             |
+- **Curated Library**: Browse a vast collection of daily games (Wordle, Connections, etc.) by category.
+- **Daily Tracking**: Mark games as played to track consistency.
+- **Streaks**: Maintain daily streaks to gamify your habit.
+- **"Feeling Lucky"**: A premium, randomized game picker with a "Softened Terminal" aesthetic to find your next challenge instantly.
 
-## File Structure
+### 🏎️ **Races (New)**
+
+- **Competitive Play**: Start a "Race" to challenge yourself or friends against the clock.
+- **System Service**: Auto-generated daily races based on logic, words, or random themes.
+- **Live Status**: Track progress in real-time with "Racing...", "Completed", and "Skipped" states.
+- **History**: View detailed breakdown of past race performance in the dashboard.
+
+### 📊 **Personal Dashboard**
+
+- **Enhanced Stats**: Visual breakdown of games played, completion rates, and category preferences.
+- **Custom Lists**: Create and manage personalized game lists (e.g., "Morning Coffee", "Hard Mode").
+- **Guest Sync**: Persistent banner for guest users to easily sign in and save their progress.
+
+### 🛡️ **Admin Panel**
+
+- **Content Management**: Add/Edit/Delete games and manage topic assignments.
+- **User Management**: Role-based access control (Owner/Admin/User).
+- **System Config**: Toggle maintenance mode, customize welcome messages, and manage site-wide settings.
+
+---
+
+## 🎨 Design System
+
+The application follows a **"Dark Terminal Premium"** design philosophy defined in `design-guidelines.md`:
+
+- **Typography**: **JetBrains Mono** exclusively for a clean, developer-centric feel.
+- **Aesthetic**:
+  - **No Gradients**: Pure, high-contrast dark backgrounds (`bg-zinc-950`).
+  - **Subtle Borders**: `border-zinc-800` for structure without visual noise.
+  - **No "Hacker" Clichés**: Avoids bright green terminal text in favor of softened, professional monochrome with purposeful color accents.
+- **Components**: Custom-built using `shadcn/ui` primitives but significantly styled for the specific design system.
+
+---
+
+## 🛠️ Tech Stack
+
+| Component       | Technology                                               |
+| --------------- | -------------------------------------------------------- |
+| **Framework**   | [Next.js 16](https://nextjs.org) (App Router, Turbopack) |
+| **Language**    | TypeScript                                               |
+| **Styling**     | Tailwind CSS 4, shadcn/ui, Lucide React                  |
+| **Database**    | Prisma Postgres, Prisma ORM                              |
+| **Auth**        | Better Auth (Google OAuth)                               |
+| **State**       | React Context (Optimistic UI updates)                    |
+| **Package Mgr** | Bun                                                      |
+
+---
+
+## 📂 File Structure
 
 ```
 daily-games/
-├── app/                      # Next.js App Router
-│   ├── api/                  # API routes (Auth, Games, Lists, Settings, User-Games)
-│   ├── admin/                # Admin Panel (Games, Users, Settings)
-│   ├── dashboard/            # User Dashboard (Stats, Lists)
-│   ├── layout.tsx            # Global providers (Auth, Theme, Lists)
-│   └── page.tsx              # Home page (Game Grid)
-│
-├── components/               # React components
-│   ├── admin/                # Admin-specific forms and tables
-│   ├── ui/                   # Reusable UI primitives (shadcn)
-│   ├── game-card.tsx         # Game display card with actions
-│   ├── games-client.tsx      # Main game grid controller
-│   ├── games-header.tsx      # Filtering, search, and sorting
-│   ├── lists-dropdown.tsx    # "Add to List" dialog
+├── app/
+│   ├── api/            # Next.js API Routes (Races, Games, Auth)
+│   ├── dashboard/      # User stats and list management
+│   ├── race/           # Race mode logic and UI
+│   ├── admin/          # Admin management screens
+│   └── page.tsx        # Main discovery grid
+├── components/
+│   ├── design-system/  # Core layout primitives
+│   ├── feeling-lucky/  # The unique randomizer modal components
+│   ├── game-card.tsx   # The primary game display unit
 │   └── ...
-│
-├── lib/                      # Utilities and hooks
-│   ├── auth-client.ts        # Client-side auth hooks
-│   ├── use-lists.tsx         # Global Lists Context Provider
-│   ├── use-played-games.ts   # Play tracking logic (Syncs LocalStorage <-> DB)
-│   ├── streaks.ts            # Streak calculation helpers
-│   └── prisma.ts             # Server-side DB client
-│
-├── prisma/                   # Database
-│   ├── schema.prisma         # Data models (User, Game, UserGame, GameList, SiteConfig)
-│   └── seed.ts               # Database seeder
-│
-└── public/                   # Static assets
+├── lib/                # Utilities, hooks, and constants
+└── prisma/             # Database schema and seed scripts
 ```
 
-## Getting Started
+---
 
-1. **Install dependencies**:
+## ⚡ Getting Started
 
-   ```bash
-   bun install
-   ```
+1.  **Install dependencies**:
 
-2. **Environment Setup**:
-   Create a `.env` file with the following variables:
+    ```bash
+    bun install
+    ```
 
-   ```env
-   DATABASE_URL="postgresql://..."
-   BETTER_AUTH_SECRET="..."
-   BETTER_AUTH_URL="http://localhost:3000"
-   GOOGLE_CLIENT_ID="..."
-   GOOGLE_CLIENT_SECRET="..."
-   ```
+2.  **Environment Setup**:
+    Create a `.env` file:
 
-3. **Database Setup**:
+    ```env
+    DATABASE_URL="postgresql://..."
+    BETTER_AUTH_SECRET="..."
+    BETTER_AUTH_URL="http://localhost:3000"
+    GOOGLE_CLIENT_ID="..."
+    GOOGLE_CLIENT_SECRET="..."
+    ```
 
-   ```bash
-   # Create tables
-   bunx prisma migrate dev
+3.  **Database**:
 
-   # Seed initial data
-   bunx tsx prisma/seed.ts
-   ```
+    ```bash
+    # Push schema
+    bunx prisma db push
 
-4. **Run Development Server**:
-   ```bash
-   bun dev
-   ```
+    # Seed verified game data
+    bunx tsx prisma/seed.ts
+    ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+4.  **Run Development Server**:
+
+    ```bash
+    bun dev
+    ```
+
+    Visit [http://localhost:3000](http://localhost:3000).
+
+---
+
+## 🧪 Commands
+
+- `bun run build`: Build for production.
+- `bun run lint`: Run ESLint.
+- `bunx prisma studio`: Open database GUI.
