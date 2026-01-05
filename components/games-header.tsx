@@ -84,7 +84,7 @@ export function GamesHeader(props: GamesHeaderProps) {
               <div>
                 <h1 className="text-3xl font-bold tracking-tight">dles.fun</h1>
                 <p className="text-muted-foreground mt-1">
-                  Progress resets at midnight.
+                  A curated list of daily games my friends and I play.
                 </p>
               </div>
               <div className="flex items-center gap-4">
