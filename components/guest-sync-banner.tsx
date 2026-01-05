@@ -14,7 +14,7 @@ export function GuestSyncBanner() {
     <div className="relative flex items-center justify-between gap-4 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
       <div className="flex items-center gap-3">
         <span className="text-sm text-muted-foreground">
-          Sign in to sync your progress across devices
+          Sign in to create custom lists
         </span>
         <Button
           size="sm"
