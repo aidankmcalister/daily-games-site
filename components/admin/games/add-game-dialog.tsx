@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { TOPICS } from "@/lib/constants";
+import { formatTopic } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import type { Topic } from "@/app/generated/prisma/client";
 
@@ -40,7 +41,7 @@ export function AddGameDialog({ onAdd }: AddGameDialogProps) {
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
-  const [topic, setTopic] = useState<Topic>("puzzle");
+  const [topic, setTopic] = useState<Topic>("words");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isValid =
@@ -56,7 +57,7 @@ export function AddGameDialog({ onAdd }: AddGameDialogProps) {
       setTitle("");
       setLink("");
       setDescription("");
-      setTopic("puzzle");
+      setTopic("words");
       setIsOpen(false);
     } finally {
       setIsSubmitting(false);
@@ -106,7 +107,7 @@ export function AddGameDialog({ onAdd }: AddGameDialogProps) {
               <SelectContent>
                 {TOPICS.map((t) => (
                   <SelectItem key={t} value={t} className="capitalize">
-                    {t}
+                    {formatTopic(t)}
                   </SelectItem>
                 ))}
               </SelectContent>

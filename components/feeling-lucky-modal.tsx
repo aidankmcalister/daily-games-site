@@ -60,48 +60,36 @@ export function FeelingLuckyModal({
         <DialogHeader className="text-center pb-2 relative z-10">
           <DialogTitle className="flex flex-col items-center justify-center gap-2">
             {isSpinning ? (
-              <>
+              <div className="flex flex-col items-center gap-3 py-8">
                 <Loader2
-                  className={cn(
-                    "h-8 w-8 animate-spin",
-                    activeTheme.spinnerInit
-                  )}
+                  className={cn("h-8 w-8 animate-spin", activeTheme.spinnerInit)}
                 />
                 <span
                   className={cn(
-                    "text-xl font-bold bg-clip-text text-transparent bg-linear-to-r animate-pulse",
+                    "text-lg font-medium",
                     activeTheme.spinnerText
                   )}
                 >
-                  SEARCHING FOR WINNER...
+                  Finding your next game...
                 </span>
-              </>
+              </div>
             ) : (
               <>
                 <div
                   className={cn(
-                    "absolute inset-0 blur-3xl animate-pulse -z-10",
-                    activeTheme.glow
-                  )}
-                />
-                <div
-                  className={cn(
-                    "text-sm font-bold tracking-[0.2em] animate-bounce",
+                    "text-sm font-bold tracking-[0.2em] opacity-90",
                     activeTheme.congratsText
                   )}
                 >
-                  ★ CONGRATULATIONS ★
+                  CONGRATULATIONS
                 </div>
                 <span
                   className={cn(
-                    "text-4xl md:text-5xl font-black italic tracking-tighter text-transparent bg-clip-text bg-linear-to-r animate-shimmer drop-shadow-sm",
+                    "text-4xl font-bold tracking-tight",
                     activeTheme.winnerText
                   )}
                 >
                   YOU WON!
-                </span>
-                <span className="text-xs text-muted-foreground font-mono">
-                  (Woah!)
                 </span>
               </>
             )}

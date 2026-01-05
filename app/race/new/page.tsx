@@ -36,8 +36,9 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TOPIC_COLORS } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { cn, formatTopic } from "@/lib/utils";
 import { HeaderSearch } from "@/components/header/header-search";
+import { DlesTopic } from "@/components/dles-topic";
 import { UserButton } from "@/components/user-button";
 import {
   Tooltip,
@@ -63,7 +64,7 @@ interface Game {
 
 const SYSTEM_TEMPLATES = [
   { id: "sys-words", name: "Word Nerd Sprint", topic: "words", icon: Tag },
-  { id: "sys-puzzle", name: "Puzzle Master", topic: "puzzle", icon: Library },
+  { id: "sys-logic", name: "Logic Master", topic: "logic", icon: Library },
   { id: "sys-trivia", name: "Trivia Showdown", topic: "trivia", icon: Trophy },
   { id: "sys-quick5", name: "The Fast Five", count: 5, icon: Dices },
 ];
@@ -393,7 +394,7 @@ export default function NewRacePage() {
                     </SelectItem>
                     {topics.map((t) => (
                       <SelectItem key={t} value={t} className="capitalize">
-                        {t.charAt(0).toUpperCase() + t.slice(1)}
+                        {formatTopic(t)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -455,15 +456,10 @@ export default function NewRacePage() {
                                   >
                                     {game.title}
                                   </span>
-                                  <Badge
-                                    variant="secondary"
-                                    className={cn(
-                                      "w-fit capitalize text-[9px] font-normal px-2 py-0 h-4 border-0 rounded-sm",
-                                      TOPIC_COLORS[game.topic]
-                                    )}
-                                  >
-                                    {game.topic}
-                                  </Badge>
+                                  <DlesTopic
+                                    topic={game.topic}
+                                    className="text-[9px] px-2 py-0 h-4 rounded-sm"
+                                  />
                                 </div>
                               </div>
                             </TooltipTrigger>
@@ -629,15 +625,10 @@ export default function NewRacePage() {
                                   <span className="text-xs font-medium truncate flex-1">
                                     {game.title}
                                   </span>
-                                  <Badge
-                                    variant="secondary"
-                                    className={cn(
-                                      "text-[9px] capitalize px-1.5 h-4 border-none",
-                                      TOPIC_COLORS[game.topic]
-                                    )}
-                                  >
-                                    {game.topic}
-                                  </Badge>
+                                  <DlesTopic
+                                    topic={game.topic}
+                                    className="text-[9px] px-1.5 h-4 border-none"
+                                  />
                                   <button
                                     onClick={() =>
                                       setSelectedGameIds((prev) =>

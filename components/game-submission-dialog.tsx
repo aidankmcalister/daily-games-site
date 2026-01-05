@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { TOPICS } from "@/lib/constants";
+import { formatTopic } from "@/lib/utils";
 import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 
@@ -60,7 +61,7 @@ export function GameSubmissionDialog({
   } = useForm<SuggestionFormValues>({
     resolver: zodResolver(suggestionSchema),
     defaultValues: {
-      topic: "puzzle",
+      topic: "words",
     },
   });
 
@@ -138,7 +139,7 @@ export function GameSubmissionDialog({
               <SelectContent>
                 {TOPICS.map((topic) => (
                   <SelectItem key={topic} value={topic} className="capitalize">
-                    {topic}
+                    {formatTopic(topic)}
                   </SelectItem>
                 ))}
               </SelectContent>

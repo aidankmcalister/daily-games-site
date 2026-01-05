@@ -5,65 +5,65 @@ const rawGames = [
   {
     title: "Angle",
     link: "https://angle.wtf/",
-    topic: "puzzle",
+    topic: "estimation",
     description:
       "Guess the angle shown on screen. Test your geometric intuition with increasingly precise estimates.",
   },
   {
     title: "Bandle",
     link: "https://bandle.app/",
-    topic: "entertainment",
+    topic: "music",
     description:
       "Identify the song from a snippet. More instruments reveal with each guess.",
   },
   {
     title: "Bracket City",
     link: "https://www.theatlantic.com/games/bracket-city/",
-    topic: "trivia",
+    topic: "words",
     description:
       "Tournament-style trivia where you pick winners between two options in various categories.",
   },
   {
     title: "COSTCODLE",
     link: "https://costcodle.com/",
-    topic: "trivia",
+    topic: "estimation",
     description:
       "Guess the price of Costco products. Test your knowledge of bulk shopping deals.",
   },
   {
     title: "Chess Puzzle",
     link: "https://www.chess.com/daily-chess-puzzle",
-    topic: "puzzle",
+    topic: "board_games",
     description:
       "Solve the daily chess puzzle. Find the best move or sequence to win material or checkmate.",
   },
   {
     title: "Chronophoto",
     link: "https://www.chronophoto.app/",
-    topic: "trivia",
+    topic: "history",
     description:
-      "Guess when a historical photo was taken. Navigate through time with visual clues.",
+      "Play the online game that tests your knowledge of pop culture and history. Try to guess the year a picture was taken.",
   },
   {
     title: "Cine2Nerdle",
     link: "https://www.cinenerdle2.app/",
-    topic: "entertainment",
+    topic: "movies_tv",
     description:
-      "Connect movies through shared actors, directors, or other film connections.",
+      "Solve unique, grid-based puzzles designed to test your film knowledge daily, or challenge your friends in head-to-head film linking battles.",
   },
   {
     title: "Cinematrix",
     link: "https://www.vulture.com/article/daily-movie-grid-trivia-game-cinematrix.html",
-    topic: "entertainment",
+    topic: "movies_tv",
     description:
-      "Fill the grid with movies matching row and column categories.",
+      "How well do you know movies? Cinematrix is a daily trivia game where you use the clues to pick a movie for each spot on the grid.",
   },
   {
     title: "Circuits",
     link: "https://www.puzzmo.com/game/circuits/",
-    topic: "puzzle",
+    topic: "words",
     description:
-      "Connect electronic components to complete circuits. Logic meets electrical engineering.",
+      "Connect words to form compound phrases in a grid. Identify the chains that link concepts together.",
   },
   {
     title: "Connections",
@@ -77,35 +77,33 @@ const rawGames = [
     link: "https://contexto.me/en/",
     topic: "words",
     description:
-      "Guess the secret word using AI context clues. Words are ranked by semantic similarity.",
+      "Can you guess the secret word with the help of AI? At each guess it will tell you how close you are to the answer.",
   },
   {
     title: "Cryptic Crossword",
     link: "https://www.minutecryptic.com/",
     topic: "words",
-    description:
-      "Solve quick cryptic crossword clues. Each clue contains wordplay and a definition.",
+    description: "Solve a clue with a hidden meaning.",
   },
   {
     title: "Daily Tens",
     link: "https://dailytens.com/",
     topic: "trivia",
-    description:
-      "Name 10 things in a category before time runs out. Quick-fire list challenges.",
+    description: "Daily Tens trivia game! Can you guess all Ten today?",
   },
   {
     title: "Dodeku",
     link: "https://dodeku.com/",
-    topic: "puzzle",
+    topic: "logic",
     description:
-      "Sudoku variant with 12x12 grid. Fill cells with numbers 1-12 following Sudoku rules.",
+      "Dodeku is a fun daily number logic puzzle! Place the tiles on the grid so they add up to the correct sums.",
   },
   {
     title: "Feudle",
     link: "https://googlefeud.com/feudle/",
-    topic: "words",
+    topic: "trivia",
     description:
-      "Complete the Google autocomplete. Guess what people search for most.",
+      "The world's most popular autocomplete game. How does Google autocomplete this search?",
   },
   {
     title: "Flagle",
@@ -118,137 +116,134 @@ const rawGames = [
     link: "https://www.foodguessr.com/",
     topic: "food",
     description:
-      "Identify dishes from around the world. Test your culinary knowledge.",
+      "Test your knowledge of geography, food, and culture. Challenge yourself to see who can guess where these world dishes are from!",
   },
   {
     title: "Framed",
     link: "https://framed.wtf/",
-    topic: "entertainment",
+    topic: "movies_tv",
     description:
-      "Guess the movie from still frames. More frames reveal with each wrong guess.",
+      "Guess the movie from 6 frames. Come back each day to see if you can guess the daily movie.",
   },
   {
     title: "Gamedle Character",
     link: "https://www.gamedle.wtf/characters#",
-    topic: "gaming",
+    topic: "video_games",
     description:
-      "Identify the video game character from their pixelated image.",
+      "Character daily puzzle. Guess the game from a character image. Fresh challenge every day, reveal hints gradually.",
   },
   {
     title: "Gamedle Classic",
     link: "https://www.gamedle.wtf/classic#",
-    topic: "gaming",
-    description: "Guess the video game from cover art that slowly unblurs.",
+    topic: "video_games",
+    description:
+      "Cover Art daily puzzle. Guess the video game from its official cover. One new challenge every day with streaks and hints.",
   },
   {
     title: "Globle",
     link: "https://globle-game.com/",
     topic: "geography",
     description:
-      "Find the mystery country on a globe. Colors show how close your guesses are.",
+      "Use your geography knowledge to figure out the mystery country in as few guesses as possible!",
   },
   {
     title: "Guess The Game",
     link: "https://guessthe.game/",
-    topic: "gaming",
+    topic: "video_games",
     description:
-      "Identify the video game from screenshots revealed one at a time.",
+      "Try to name the game shown in the screenshots in 6 guesses or less!",
   },
   {
     title: "Guess The Movie",
     link: "https://guessthemovie.name/",
-    topic: "entertainment",
-    description:
-      "Name the film from a single screenshot. Classic movie identification challenge.",
+    topic: "movies_tv",
+    description: "Try to Guess the Movie in 6 guesses or less!",
   },
   {
     title: "Guess the Audio",
     link: "https://guesstheaudio.com/",
-    topic: "entertainment",
-    description:
-      "Identify songs, sounds, or audio clips. Audio recognition challenge.",
+    topic: "music",
+    description: "Try to Guess the Song in 6 guesses or less!",
   },
   {
     title: "Jumblie",
     link: "https://jumblie.com/",
     topic: "words",
-    description: "Unscramble letters to find related words that share a theme.",
+    description: "A word search game with new words and themes daily.",
   },
   {
     title: "Lyricle",
     link: "https://www.lyricle.app/",
-    topic: "entertainment",
-    description: "Guess the song from its lyrics revealed line by line.",
+    topic: "music",
+    description: "Guess the song from the Lyrics!",
   },
   {
     title: "Mathler",
     link: "https://www.mathler.com/",
-    topic: "puzzle",
+    topic: "logic",
     description:
-      "Create a math equation that equals the target number using given digits and operators.",
+      "Play Mathler, the daily math Wordle-style puzzle. Guess the hidden equation in 6 tries.",
   },
   {
     title: "Metaflora",
     link: "https://flora.metazooa.com/",
     topic: "nature",
-    description:
-      "Guess the plant species. Clues reveal taxonomy with each guess.",
+    description: "Become an evolutionary detective to find the Mystery Plant!",
   },
   {
     title: "Metazooa",
     link: "https://metazooa.com/",
     topic: "nature",
-    description:
-      "Identify the animal. Taxonomic hints guide you through the animal kingdom.",
+    description: "Become an evolutionary detective to find the Mystery Animal!",
   },
   {
     title: "Mini Crossword",
     link: "https://minicrossword.com/",
     topic: "words",
     description:
-      "Quick 5x5 crossword puzzle. Perfect for a fast word challenge.",
+      "Our daily mini crossword puzzle is the perfect sized crossword puzzle for anyone looking for a quick brain exercise.",
   },
   {
     title: "Minigolfle",
     link: "https://minigolfle.com/",
-    topic: "sports",
+    topic: "video_games",
     description:
-      "Play mini golf in your browser. Aim, shoot, and try to get a hole in one.",
+      "Minigolfle - Daily Mini Golf Game. Aim, shoot, and try to get a hole in one.",
   },
   {
     title: "Move to Movie",
     link: "https://movietomovie.com/",
-    topic: "entertainment",
+    topic: "movies_tv",
     description:
-      "Connect two movies through shared actors. Find the shortest path between films.",
+      "Find the shortest path to link movies through shared actors and directors.",
   },
   {
     title: "Neighborle",
     link: "https://neighborle.com/",
     topic: "geography",
     description:
-      "Guess the country from its neighbors. Geography puzzle with border clues.",
+      "Neighborle is a daily geography game, inspired by Wordle. Can you guess the neighboring countries on the map?",
   },
   {
     title: "Nerdle",
     link: "https://nerdlegame.com/",
-    topic: "puzzle",
+    topic: "logic",
     description:
-      "Wordle for math. Guess the equation with numbers, operators, and equals sign.",
+      "Nerdle - guess the solution in 6 tries - try classic, mini, speed and pro modes.",
   },
   {
     title: "Padlock",
     link: "https://www.padlockgame.net/",
-    topic: "puzzle",
+    topic: "logic",
     description:
-      "Crack the combination lock. Use logic to find the correct sequence.",
+      "PADLOCK - a cool 4 digit math game brainteaser. A fun number puzzle for those that like to play logic games.",
   },
   {
     title: "Pocket Puzzle",
     link: "https://playpocketpuzzles.com/foursquare/home",
-    topic: "puzzle",
+    topic: "logic",
     description:
-      "Daily logic puzzles in compact format. Various puzzle types to solve.",
+      "Home of new and original word games, including Fix The Mix, Passcodes, Four Square, String Theory, and Letterheads.",
   },
   {
     title: "SpellCheck",
@@ -261,98 +256,97 @@ const rawGames = [
     link: "https://squaredle.app/?level=xp",
     topic: "words",
     description:
-      "Find words in a letter grid. Connect adjacent letters to form words.",
+      "Squaredle is a daily word building game. Swipe letters in the grid to test your vocabulary every day!",
   },
   {
     title: "Strands",
     link: "https://www.nytimes.com/games/strands",
     topic: "words",
-    description:
-      "Find themed words in a letter grid. Discover the spangram that touches both sides.",
+    description: "Find hidden words and uncover the day’s theme.",
   },
   {
     title: "Sudoku",
     link: "https://sudoku.com/challenges",
-    topic: "puzzle",
+    topic: "logic",
     description:
-      "Classic number puzzle. Fill the 9x9 grid so each row, column, and box has 1-9.",
+      "Visit Sudoku Archive, pick a date on the calendar and enjoy fresh sudoku puzzles in our game kingdom!",
   },
   {
     title: "Timeguessr",
     link: "https://timeguessr.com/",
-    topic: "trivia",
+    topic: "history",
     description:
-      "Guess when and where photos were taken. Geography meets history.",
+      "TimeGuessr - the game that tests both your geography and history knowledge. Guess where and when historic photos were taken.",
   },
   {
     title: "Toppled",
     link: "https://bythomas.co.uk/toppled/",
-    topic: "puzzle",
+    topic: "words",
     description:
-      "Stack blocks without toppling. Physics-based puzzle challenge.",
+      "Toppled is a daily word game! Create 4 five-letter words and the wall will be Toppled.",
   },
   {
     title: "Tradle",
     link: "https://games.oec.world/en/tradle/",
     topic: "geography",
     description:
-      "Guess the country from its exports. Learn about global trade patterns.",
+      "Brought to you by the OEC, Tradle is a fun game to learn about the exports of countries.",
   },
   {
     title: "Travle",
     link: "https://travle.earth/?travle-lang=en",
     topic: "geography",
     description:
-      "Find the shortest route between two countries by naming countries along the path.",
+      "Travle: A daily game, get between countries in as few guesses as possible!",
   },
   {
     title: "UrbanStats",
     link: "https://urbanstats.org/quiz.html",
     topic: "geography",
     description:
-      "Compare urban areas. Guess which city has more population, area, or other stats.",
+      "Test your knowledge of geography and statistics! Compare urban areas in a new quiz every day.",
   },
   {
     title: "Verticle",
     link: "https://verticle.netlify.app/",
     topic: "words",
     description:
-      "Guess the word from vertical letter positions. Unique word deduction game.",
+      "Wordle, but everything is normal. Guess the word from vertical letter positions.",
   },
   {
     title: "Waffle",
     link: "https://wafflegame.net/daily",
     topic: "words",
     description:
-      "Rearrange letters in a waffle-shaped grid to form valid words.",
+      "The waffle-shaped daily word game. Rearrange letters in the grid to form valid words.",
   },
   {
     title: "Wikipedia Game",
     link: "https://www.thewikipediagame.com/",
     topic: "trivia",
     description:
-      "Navigate from one Wikipedia article to another using only links.",
+      "Compete to race from one Wikipedia page to another in the least number of steps/links.",
   },
   {
     title: "Word Search",
     link: "https://games.washingtonpost.com/games/daily-word-search",
     topic: "words",
     description:
-      "Find hidden words in a grid of letters. Classic word search puzzle.",
+      "Play Daily Word Search instantly online. A fun and engaging Online game from Washington Post.",
   },
   {
     title: "Wordle",
     link: "https://www.nytimes.com/games/wordle/index.html",
     topic: "words",
     description:
-      "Guess the 5-letter word in 6 tries. Colors show correct letters and positions.",
+      "Guess the hidden word in 6 tries. A new puzzle is available each day.",
   },
   {
     title: "Worldle",
     link: "https://worldle.teuteuf.fr/",
     topic: "geography",
     description:
-      "Identify the country from its silhouette. Distance and direction hints guide you.",
+      "A daily geography game where you guess the country from its shape and get clues with every attempt.",
   },
   {
     title: "Xordle",
@@ -360,6 +354,33 @@ const rawGames = [
     topic: "words",
     description:
       "Two Wordles at once. Colors apply to both hidden words simultaneously.",
+  },
+  {
+    title: "Colorfle",
+    link: "https://colorfle.com/",
+    topic: "colors",
+    description:
+      "Colorfle: the daily color mixing game! Try to match the Colorfle in six tries.",
+  },
+  {
+    title: "Zip",
+    link: "https://www.linkedin.com/games/zip/",
+    topic: "logic",
+    description:
+      "Plot a path through the grid while passing through each number in order. Daily logic puzzle by LinkedIn.",
+  },
+  {
+    title: "Rankle",
+    link: "https://www.rankle.app/",
+    topic: "trivia",
+    description: "Rank 6 things in 4 guesses. There's a new puzzle every day.",
+  },
+  {
+    title: "Shaple",
+    link: "https://swag.github.io/shaple/",
+    topic: "shapes",
+    description:
+      "A daily shape matching game. Choose the shape that matches the target from 2D projections.",
   },
 ];
 
@@ -380,7 +401,7 @@ async function main() {
   console.log(`\n✅ Seeded ${rawGames.length} games successfully!`);
 
   // Auto-promote owner
-  const ownerEmail = "aidankmcalister@gmail.com";
+  const ownerEmail = process.env.OWNER_EMAIL;
   const ownerUser = await prisma.user.findUnique({
     where: { email: ownerEmail },
   });
