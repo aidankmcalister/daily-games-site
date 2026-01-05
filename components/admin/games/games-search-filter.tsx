@@ -9,15 +9,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { DlesTopic } from "@/components/dles-topic";
 import { TOPICS } from "@/lib/constants";
+import { formatTopic } from "@/lib/utils";
 import type { Topic } from "@/app/generated/prisma/client";
 
 interface GamesSearchFilterProps {
   search: string;
   onSearchChange: (value: string) => void;
-  topicFilter: Topic | "all";
-  onTopicFilterChange: (value: Topic | "all") => void;
+  topicFilter: string[];
+  onTopicFilterChange: (value: string[]) => void;
   sortBy: string;
   sortOrder: "asc" | "desc";
   onSortChange: (sortBy: any, sortOrder: "asc" | "desc") => void;
@@ -55,22 +57,55 @@ export function GamesSearchFilter({
         </Button>
       </div>
       <div className="flex flex-wrap gap-2">
-        <Select
-          value={topicFilter}
-          onValueChange={(value) => onTopicFilterChange(value as Topic | "all")}
-        >
-          <SelectTrigger className="w-[140px] h-9 text-xs">
-            <SelectValue placeholder="Topic" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Topics</SelectItem>
-            {TOPICS.map((topic) => (
-              <SelectItem key={topic} value={topic}>
-                <DlesTopic topic={topic} className="text-[10px] px-1.5 h-4" />
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MultiSelect
+          options={[
+            { value: "all", label: "All Topics" },
+            ...TOPICS.map((t) => ({ value: t, label: formatTopic(t) })),
+          ]}
+          value={topicFilter.length === 0 ? ["all"] : topicFilter}
+          onChange={(newTopics) => {
+            // Normalize: treat empty topicFilter as ["all"] for comparison
+            const effectiveCurrentTopics =
+              topicFilter.length === 0 ? ["all"] : topicFilter;
+
+            // If "all" is newly selected (wasn't in previous filter), clear others
+            if (
+              newTopics.includes("all") &&
+              !effectiveCurrentTopics.includes("all")
+            ) {
+              onTopicFilterChange([]);
+              return;
+            }
+
+            // If "all" was present and we selected something else, remove "all"
+            if (
+              effectiveCurrentTopics.includes("all") &&
+              newTopics.length > 1
+            ) {
+              onTopicFilterChange(newTopics.filter((t) => t !== "all"));
+              return;
+            }
+
+            // If we deselected everything, revert to empty (which displays as "all")
+            if (newTopics.length === 0) {
+              onTopicFilterChange([]);
+              return;
+            }
+
+            onTopicFilterChange(newTopics);
+          }}
+          placeholder="Topic"
+          className="w-[180px] h-9"
+          renderLabel={(option) => (
+            <DlesTopic
+              topic={option.value}
+              className="text-[10px] px-1.5 h-5 pointer-events-none"
+            />
+          )}
+          renderSelectedItem={(option) => (
+            <DlesTopic topic={option.value} className="text-[9px] px-1 h-4" />
+          )}
+        />
         <Select
           value={`${sortBy}-${sortOrder}`}
           onValueChange={(value) => {

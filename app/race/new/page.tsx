@@ -15,6 +15,7 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { useLists } from "@/lib/use-lists";
 import { Topic } from "@/app/generated/prisma/client";
 import { toast } from "sonner";
@@ -80,7 +81,7 @@ export default function NewRacePage() {
   const [gamesLoading, setGamesLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTopic, setSelectedTopic] = useState<string>("all");
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [activeStep, setActiveStep] = useState<1 | 2>(1);
 
   useEffect(() => {
@@ -116,7 +117,9 @@ export default function NewRacePage() {
         .toLowerCase()
         .includes(searchQuery.toLowerCase());
       const matchesTopic =
-        selectedTopic === "all" || game.topic === selectedTopic;
+        selectedTopics.length === 0 ||
+        selectedTopics.includes("all") ||
+        selectedTopics.includes(game.topic);
       return matchesSearch && matchesTopic;
     });
     console.log(
@@ -125,11 +128,11 @@ export default function NewRacePage() {
       "(total:",
       allGames.length,
       "topic:",
-      selectedTopic,
+      selectedTopics,
       ")"
     );
     return filtered;
-  }, [allGames, searchQuery, selectedTopic]);
+  }, [allGames, searchQuery, selectedTopics]);
 
   const topics = useMemo(
     () => Array.from(new Set(allGames.map((g) => g.topic))).sort(),
@@ -374,31 +377,55 @@ export default function NewRacePage() {
                   className="flex-1"
                   showKbd
                 />
-                <Select value={selectedTopic} onValueChange={setSelectedTopic}>
-                  <SelectTrigger
-                    size="lg"
-                    className={`w-[160px] h-10 text-sm ${
-                      selectedTopic !== "all"
-                        ? "border-primary bg-primary/5 text-primary"
-                        : ""
-                    }`}
-                  >
-                    <SelectValue placeholder="Category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">
-                      <div className="flex items-center gap-2">
-                        <Tag className="h-4 w-4" />
-                        <span>All Topics</span>
-                      </div>
-                    </SelectItem>
-                    {topics.map((t) => (
-                      <SelectItem key={t} value={t} className="capitalize">
-                        {formatTopic(t)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <MultiSelect
+                  options={[
+                    { value: "all", label: "All Topics" },
+                    ...topics.map((t) => ({ value: t, label: formatTopic(t) })),
+                  ]}
+                  value={selectedTopics.length === 0 ? ["all"] : selectedTopics}
+                  onChange={(newTopics) => {
+                    // Normalize: treat empty selectedTopics as ["all"] for comparison
+                    const effectiveCurrentTopics =
+                      selectedTopics.length === 0 ? ["all"] : selectedTopics;
+
+                    // If "all" is newly selected (wasn't in previous filter), clear others
+                    if (
+                      newTopics.includes("all") &&
+                      !effectiveCurrentTopics.includes("all")
+                    ) {
+                      setSelectedTopics([]);
+                      return;
+                    }
+
+                    // If "all" was present and we selected something else, remove "all"
+                    if (
+                      effectiveCurrentTopics.includes("all") &&
+                      newTopics.length > 1
+                    ) {
+                      setSelectedTopics(newTopics.filter((t) => t !== "all"));
+                      return;
+                    }
+
+                    // If we deselected everything, revert to empty (which displays as "all")
+                    if (newTopics.length === 0) {
+                      setSelectedTopics([]);
+                      return;
+                    }
+
+                    setSelectedTopics(newTopics);
+                  }}
+                  placeholder="Category"
+                  className="w-[200px]"
+                  renderLabel={(option) => (
+                    <DlesTopic
+                      topic={option.value}
+                      className="text-[10px] px-1.5 h-5 pointer-events-none"
+                    />
+                  )}
+                  renderSelectedItem={(option) => (
+                    <DlesTopic topic={option.value} className="gap-1" />
+                  )}
+                />
               </div>
 
               <div className="pt-2">
@@ -445,7 +472,7 @@ export default function NewRacePage() {
                                     <Check className="h-2.5 w-2.5 text-primary-foreground" />
                                   )}
                                 </div>
-                                <div className="flex flex-col gap-1 min-w-0">
+                                <div className="flex flex-col gap-2 min-w-0">
                                   <span
                                     className={cn(
                                       "font-bold text-sm tracking-tight truncate leading-tight transition-colors",

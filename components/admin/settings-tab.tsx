@@ -130,9 +130,31 @@ export function SettingsTab() {
     const resetValues = {
       ...DEFAULT_CONFIG,
     } as SettingsFormValues;
-    reset(resetValues);
-    toast.info("Settings reset to defaults (unsaved)");
     setIsResetDialogOpen(false);
+
+    // Save to server
+    setIsSaving(true);
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(resetValues),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setConfig(updated);
+        reset(resetValues);
+        toast.success("Settings reset to defaults");
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        throw new Error("Failed to reset");
+      }
+    } catch (error) {
+      console.error("Failed to reset settings:", error);
+      toast.error("Failed to reset settings");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const getDiff = () => {

@@ -164,6 +164,7 @@ export function MultiSelect({
                     key={option.value}
                     value={option.value}
                     onSelect={() => handleSelect(option.value)}
+                    onClick={() => handleSelect(option.value)}
                     className="cursor-pointer"
                     data-checked={isSelected}
                   >

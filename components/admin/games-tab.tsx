@@ -17,7 +17,7 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
 
   // Search and filter states
   const [gameSearch, setGameSearch] = useState("");
-  const [gameTopicFilter, setGameTopicFilter] = useState<Topic | "all">("all");
+  const [gameTopicFilter, setGameTopicFilter] = useState<string[]>([]);
   const [gameSortBy, setGameSortBy] = useState<
     "title" | "topic" | "playCount" | "createdAt"
   >("title");
@@ -204,7 +204,9 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
           game.title.toLowerCase().includes(q) ||
           game.link.toLowerCase().includes(q);
         const matchesTopic =
-          gameTopicFilter === "all" || game.topic === gameTopicFilter;
+          gameTopicFilter.length === 0 ||
+          gameTopicFilter.includes("all") ||
+          gameTopicFilter.includes(game.topic);
         return matchesSearch && matchesTopic;
       })
       .sort((a, b) => {
