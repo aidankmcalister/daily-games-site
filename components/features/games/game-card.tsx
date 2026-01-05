@@ -16,8 +16,8 @@ import {
 import { cn, formatTopic } from "@/lib/utils";
 import { TOPIC_COLORS, extractDomain } from "@/lib/constants";
 import { ExternalLink, EyeOff } from "lucide-react";
-import { ListsDropdown } from "./lists-dropdown";
-import { DlesTopic } from "@/components/dles-topic";
+import { ListsDropdown } from "../lists/lists-dropdown";
+import { DlesTopic } from "@/components/design/dles-topic";
 
 const TOPIC_SHADOWS: Record<string, string> = {
   words: "hover:shadow-blue-500/25 dark:hover:shadow-blue-500/10",

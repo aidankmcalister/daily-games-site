@@ -9,12 +9,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MultiSelect } from "@/components/ui/multi-select";
-import { DlesTopic } from "@/components/dles-topic";
+import { DlesTopic } from "@/components/design/dles-topic";
 import { TOPICS } from "@/lib/constants";
 import { cn, formatTopic } from "@/lib/utils";
 import type { Topic } from "@/app/generated/prisma/client";
 import { ArrowDownAZ, Clock, LayoutGrid, Archive } from "lucide-react";
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 
 interface GamesSearchFilterProps {
   search: string;

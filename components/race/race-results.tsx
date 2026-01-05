@@ -4,14 +4,15 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DlesTopic } from "@/components/dles-topic";
+import { DlesTopic } from "@/components/design/dles-topic";
+import { MicroLabel } from "@/components/design/micro-label";
 import { Race } from "@/app/race/[id]/page";
 import { Trophy, Home, RotateCcw, Clock, List } from "lucide-react";
 import Link from "next/link";
 import confetti from "canvas-confetti";
 import { TOPIC_COLORS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/layout/page-header";
 
 interface RaceResultsProps {
   race: Race;

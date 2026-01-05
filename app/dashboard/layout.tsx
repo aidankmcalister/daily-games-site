@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { PageHeader } from "@/components/page-header";
-import { UserButton } from "@/components/user-button";
+import { PageHeader } from "@/components/layout/page-header";
+import { UserButton } from "@/components/layout/user-button";
 
 export default function DashboardLayout({
   children,

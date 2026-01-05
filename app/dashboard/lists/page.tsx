@@ -2,8 +2,8 @@ import { getSession } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { ListsClient } from "./lists-client";
-import { PageHeader } from "@/components/page-header";
-import { UserButton } from "@/components/user-button";
+import { PageHeader } from "@/components/layout/page-header";
+import { UserButton } from "@/components/layout/user-button";
 
 export default async function ListsPage() {
   const session = await getSession();

@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DlesTopic } from "@/components/dles-topic";
+import { DlesTopic } from "@/components/design/dles-topic";
+import { MicroLabel } from "@/components/design/micro-label";
 import { Race, Participant, RaceGame } from "@/app/race/[id]/page";
 import {
   Check,
@@ -110,9 +111,7 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
         {/* Your Progress */}
         <Card className="border-border/50 bg-card/50 shadow-sm flex">
           <CardContent className="flex-1 flex flex-col items-center justify-center text-center gap-2 p-6">
-            <p className="text-[10px] uppercase font-black tracking-[0.25em] text-muted-foreground">
-              You
-            </p>
+            <MicroLabel>You</MicroLabel>
 
             <div className="text-3xl font-black tracking-tight tabular-nums leading-none">
               <span className="text-primary">
@@ -124,18 +123,16 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
               </span>
             </div>
 
-            <p className="text-[10px] uppercase font-bold text-muted-foreground/50 tracking-widest">
+            <MicroLabel className="font-bold text-muted-foreground/50">
               Completed
-            </p>
+            </MicroLabel>
           </CardContent>
         </Card>
 
         {/* Opponent Progress */}
         <Card className="border-border/50 bg-card/50 shadow-sm flex">
           <CardContent className="flex-1 flex flex-col items-center justify-center text-center gap-2 p-6">
-            <p className="text-[10px] uppercase font-black tracking-[0.25em] text-muted-foreground">
-              Opponent
-            </p>
+            <MicroLabel>Opponent</MicroLabel>
 
             <div className="text-3xl font-black tracking-tight tabular-nums leading-none">
               <span className="text-primary">
@@ -147,9 +144,9 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
               </span>
             </div>
 
-            <p className="text-[10px] uppercase font-bold text-muted-foreground/50 tracking-widest">
+            <MicroLabel className="font-bold text-muted-foreground/50">
               Completed
-            </p>
+            </MicroLabel>
           </CardContent>
         </Card>
 
@@ -163,9 +160,9 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
               </span>
             </div>
 
-            <p className="text-[10px] uppercase font-bold text-primary/60 tracking-widest">
+            <MicroLabel className="font-bold text-primary/60">
               Race Time
-            </p>
+            </MicroLabel>
           </CardContent>
         </Card>
       </div>
@@ -227,9 +224,7 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
                   <div className="grid grid-cols-2 gap-2">
                     {/* You Status */}
                     <div className="space-y-1.5">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                        You
-                      </p>
+                      <MicroLabel>You</MicroLabel>
                       {myCompletion ? (
                         myCompletion.skipped ? (
                           <div className="flex items-center gap-2 text-rose-500">
@@ -254,9 +249,7 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
 
                     {/* Opponent Status */}
                     <div className="space-y-1.5 border-l pl-4 border-border/40">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                        Opponent
-                      </p>
+                      <MicroLabel>Opponent</MicroLabel>
                       {opponentCompletion ? (
                         opponentCompletion.skipped ? (
                           <div className="flex items-center gap-2 text-rose-500">

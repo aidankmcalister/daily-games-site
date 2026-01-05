@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Trash2 } from "lucide-react";

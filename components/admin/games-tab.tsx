@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { AddGameDialog } from "./games/add-game-dialog";
 import { BulkActionToolbar } from "./games/bulk-action-toolbar";
 import { GamesSearchFilter } from "./games/games-search-filter";
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 
 export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
   const [games, setGames] = useState<Game[]>([]);

@@ -1,6 +1,9 @@
 "use client";
 
-import { GameCard, type GameCardProps } from "@/components/game-card";
+import {
+  GameCard,
+  type GameCardProps,
+} from "@/components/features/games/game-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardHeader, CardFooter } from "@/components/ui/card";
 

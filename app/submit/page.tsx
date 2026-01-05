@@ -21,7 +21,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Field, FieldLabel } from "@/components/ui/field";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/layout/page-header";
 import { TOPICS } from "@/lib/constants";
 import { Loader2, CheckCircle2, ChevronLeft } from "lucide-react";
 import type { Topic } from "@/app/generated/prisma/client";

@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DlesTopic } from "@/components/dles-topic";
+import { DlesTopic } from "@/components/design/dles-topic";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { TOPICS } from "@/lib/constants";
 import { formatTopic } from "@/lib/utils";
@@ -37,7 +37,7 @@ interface AddGameDialogProps {
   }) => Promise<void>;
 }
 
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 
 export function AddGameDialog({ onAdd }: AddGameDialogProps) {
   const [isOpen, setIsOpen] = useState(false);

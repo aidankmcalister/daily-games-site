@@ -17,7 +17,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { DlesTopic } from "@/components/dles-topic";
+import { DlesTopic } from "@/components/design/dles-topic";
+import { MicroLabel } from "@/components/design/micro-label";
 import {
   Loader2,
   Check,
@@ -37,7 +38,7 @@ import { toast } from "sonner";
 import { Race, Participant, RaceGame } from "@/app/race/[id]/page";
 import { cn } from "@/lib/utils";
 import { TOPIC_COLORS } from "@/lib/constants";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/layout/page-header";
 import {
   DragDropContext,
   Droppable,
@@ -166,9 +167,9 @@ export function RaceLobby({ race, currentUser, onRefresh }: RaceLobbyProps) {
             <CardHeader className="border-b border-border">
               <CardTitle className="text-sm font-bold flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-6 h-6 rounded-md bg-muted text-muted-foreground text-[10px] font-black">
+                  <MicroLabel className="w-6 h-6 rounded-md bg-muted text-muted-foreground flex items-center justify-center p-0">
                     <Link className="h-3.5 w-3.5" />
-                  </div>
+                  </MicroLabel>
                   Invite Link
                 </div>
                 <Badge

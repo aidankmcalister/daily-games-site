@@ -1,8 +1,8 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { DlesTopic } from "@/components/dles-topic";
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesTopic } from "@/components/design/dles-topic";
+import { DlesButton } from "@/components/design/dles-button";
 import { cn } from "@/lib/utils";
 import { TOPIC_COLORS } from "@/lib/constants";
 import { ExternalLink, Check, X, Loader2 } from "lucide-react";

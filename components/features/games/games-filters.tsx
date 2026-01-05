@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MultiSelect } from "@/components/ui/multi-select";
-import { DlesTopic } from "@/components/dles-topic";
+import { DlesTopic } from "@/components/design/dles-topic";
 import { TOPICS } from "@/lib/constants";
 import { Tag, Library, ArrowDownAZ, LayoutGrid, Clock, X } from "lucide-react";
 import { GameList } from "@/lib/use-lists";

@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 };
 
 import { ShortcutsHelp } from "@/components/shortcuts-help";
-import { SiteBanner } from "@/components/site-banner";
+import { SiteBanner } from "@/components/layout/site-banner";
 
 export default function RootLayout({
   children,

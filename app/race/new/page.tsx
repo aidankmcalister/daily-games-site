@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -39,8 +39,8 @@ import { Badge } from "@/components/ui/badge";
 import { TOPIC_COLORS } from "@/lib/constants";
 import { cn, formatTopic } from "@/lib/utils";
 import { HeaderSearch } from "@/components/header/header-search";
-import { DlesTopic } from "@/components/dles-topic";
-import { UserButton } from "@/components/user-button";
+import { DlesTopic } from "@/components/design/dles-topic";
+import { UserButton } from "@/components/layout/user-button";
 import {
   Tooltip,
   TooltipContent,

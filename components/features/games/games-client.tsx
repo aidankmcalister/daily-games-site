@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { GameGrid, GameGridSkeleton } from "@/components/game-grid";
-import { GamesHeader } from "@/components/games-header";
+import {
+  GameGrid,
+  GameGridSkeleton,
+} from "@/components/features/games/game-grid";
+import { GamesHeader } from "@/components/features/games/games-header";
 import type { Game } from "@/app/generated/prisma/client";
 import { usePlayedGames } from "@/lib/use-played-games";
 import { useLists } from "@/lib/use-lists";

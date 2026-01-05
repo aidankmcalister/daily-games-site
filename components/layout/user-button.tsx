@@ -33,7 +33,7 @@ import {
   List,
 } from "lucide-react";
 import type { Role } from "@/app/generated/prisma/client";
-import { GameSubmissionDialog } from "./game-submission-dialog";
+import { GameSubmissionDialog } from "@/components/game-submission-dialog";
 
 interface SiteConfig {
   enableCommunitySubmissions: boolean;

@@ -13,7 +13,7 @@ import {
   Settings,
   TrendingUp,
 } from "lucide-react";
-import { DlesButton } from "@/components/ui/dles-button";
+import { DlesButton } from "@/components/design/dles-button";
 
 export default function AdminLayout({
   children,
