@@ -13,7 +13,7 @@ import {
   Settings,
   TrendingUp,
 } from "lucide-react";
-import Link from "next/link";
+import { DlesButton } from "@/components/ui/dles-button";
 
 export default function AdminLayout({
   children,
@@ -62,9 +62,7 @@ export default function AdminLayout({
         <p className="text-muted-foreground">
           You don't have permission to view this page.
         </p>
-        <Link href="/">
-          <Button>Go Home</Button>
-        </Link>
+        <DlesButton href="/">Go Home</DlesButton>
       </main>
     );
   }
@@ -80,47 +78,28 @@ export default function AdminLayout({
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
-          <Link href="/admin/games">
-            <Button
-              variant={isGamesTab ? "default" : "outline"}
-              className="gap-2"
-            >
-              <Gamepad2 className="h-4 w-4" />
-              Games
-            </Button>
-          </Link>
+          <DlesButton isActive={isGamesTab} href="/admin/games">
+            <Gamepad2 className="h-3.5 w-3.5" />
+            Games
+          </DlesButton>
           {canManageUsers && (
-            <Link href="/admin/users">
-              <Button
-                variant={isUsersTab ? "default" : "outline"}
-                className="gap-2"
-              >
-                <Users className="h-4 w-4" />
-                Users
-              </Button>
-            </Link>
+            <DlesButton isActive={isUsersTab} href="/admin/users">
+              <Users className="h-3.5 w-3.5" />
+              Users
+            </DlesButton>
           )}
-          <Link href="/admin/submissions">
-            <Button
-              variant={
-                pathname === "/admin/submissions" ? "default" : "outline"
-              }
-              className="gap-2"
-            >
-              <TrendingUp className="h-4 w-4" />
-              Submissions
-            </Button>
-          </Link>
+          <DlesButton
+            isActive={pathname === "/admin/submissions"}
+            href="/admin/submissions"
+          >
+            <TrendingUp className="h-3.5 w-3.5" />
+            Submissions
+          </DlesButton>
           {canManageSettings && (
-            <Link href="/admin/settings">
-              <Button
-                variant={isSettingsTab ? "default" : "outline"}
-                className="gap-2"
-              >
-                <Settings className="h-4 w-4" />
-                Settings
-              </Button>
-            </Link>
+            <DlesButton isActive={isSettingsTab} href="/admin/settings">
+              <Settings className="h-3.5 w-3.5" />
+              Settings
+            </DlesButton>
           )}
         </div>
 

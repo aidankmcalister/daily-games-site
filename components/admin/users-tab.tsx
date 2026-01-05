@@ -172,7 +172,7 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
             placeholder="Search users..."
             value={userSearch}
             onChange={(e) => setUserSearch(e.target.value)}
-            className="max-w-md h-9"
+            className="max-w-md h-10 text-xs border-primary/20 hover:border-primary/50 focus:border-primary/50"
           />
         </div>
         <div className="flex flex-wrap gap-2">
@@ -180,7 +180,10 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
             value={userRoleFilter}
             onValueChange={(value) => setUserRoleFilter(value as Role | "all")}
           >
-            <SelectTrigger className="w-[140px] h-9 text-xs">
+            <SelectTrigger
+              size="lg"
+              className="w-[140px] text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5"
+            >
               <SelectValue placeholder="Role" />
             </SelectTrigger>
             <SelectContent>
@@ -203,7 +206,10 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
               setUserSortOrder(order);
             }}
           >
-            <SelectTrigger className="w-[140px] h-9 text-xs">
+            <SelectTrigger
+              size="lg"
+              className="w-[140px] text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5"
+            >
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>

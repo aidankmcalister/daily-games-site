@@ -13,6 +13,7 @@ import { DisplaySettingsCard } from "./settings/display-settings-card";
 import { UserLimitsCard } from "./settings/user-limits-card";
 import { SystemUtilitiesCard } from "./settings/system-utilities-card";
 import { ResetDefaultsDialog } from "./settings/reset-defaults-dialog";
+import { DlesButton } from "@/components/ui/dles-button";
 
 interface SiteConfig {
   id: string;
@@ -203,14 +204,14 @@ export function SettingsTab() {
               onReset={handleReset}
               diff={getDiff()}
             />
-            <Button size="sm" type="submit" disabled={!isDirty || isSaving}>
+            <DlesButton type="submit" disabled={!isDirty || isSaving}>
               {isSaving ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
-                <Save className="h-4 w-4 mr-2" />
+                <Save className="h-3.5 w-3.5" />
               )}
               Save Changes
-            </Button>
+            </DlesButton>
           </div>
         </div>
 

@@ -37,6 +37,8 @@ interface AddGameDialogProps {
   }) => Promise<void>;
 }
 
+import { DlesButton } from "@/components/ui/dles-button";
+
 export function AddGameDialog({ onAdd }: AddGameDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -68,10 +70,10 @@ export function AddGameDialog({ onAdd }: AddGameDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 gap-1.5">
+        <DlesButton>
           <Plus className="h-3.5 w-3.5" />
           Add Game
-        </Button>
+        </DlesButton>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

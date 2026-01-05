@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { DlesButton } from "@/components/ui/dles-button";
 import {
   Trophy,
   Calendar,
@@ -13,7 +13,6 @@ import {
   Swords,
   Plus,
 } from "lucide-react";
-import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Race, Participant } from "@/app/race/[id]/page";
 import { cn } from "@/lib/utils";
@@ -131,12 +130,10 @@ export function RaceHistory({
               <Swords className="h-4 w-4" />
               Race History
             </CardTitle>
-            <Button asChild size="sm" className="gap-1.5 h-7">
-              <Link href="/race/new">
-                <Plus className="h-3.5 w-3.5" />
-                New Race
-              </Link>
-            </Button>
+            <DlesButton className="h-7 text-xs" href="/race/new">
+              <Plus className="h-3.5 w-3.5" />
+              New Race
+            </DlesButton>
           </div>
         </CardHeader>
         <CardContent className="px-4">
@@ -156,12 +153,10 @@ export function RaceHistory({
             <Swords className="h-4 w-4" />
             Race History
           </CardTitle>
-          <Button asChild size="sm" className="gap-1.5 h-7">
-            <Link href="/race/new">
-              <Plus className="h-3.5 w-3.5" />
-              New Race
-            </Link>
-          </Button>
+          <DlesButton className="h-7 text-xs" href="/race/new">
+            <Plus className="h-3.5 w-3.5" />
+            New Race
+          </DlesButton>
         </div>
       </CardHeader>
       <CardContent className="px-4 space-y-4">
@@ -274,11 +269,13 @@ export function RaceHistory({
                     </div>
                   </div>
                 </div>
-                <Button variant="ghost" size="icon" asChild>
-                  <Link href={`/race/${race.id}`}>
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
+                <DlesButton
+                  variant="ghost"
+                  size="icon"
+                  href={`/race/${race.id}`}
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </DlesButton>
               </div>
             );
           })}

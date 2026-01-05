@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Loader2 } from "lucide-react";
+import { Loader2, Clock, Layers } from "lucide-react";
 import type { SubmissionStatus, Topic } from "@/app/generated/prisma/client";
+import { DlesButton } from "@/components/ui/dles-button";
 import { toast } from "sonner";
 import { SubmissionItem } from "./submission-item";
 
@@ -112,26 +113,24 @@ export function SubmissionsTab({
             placeholder="Search submissions..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="max-w-md h-9"
+            className="flex-1 h-10 text-xs border-primary/20 hover:border-primary/50 focus:border-primary/50"
           />
         </div>
         <div className="flex gap-2">
-          <Button
-            variant={statusFilter === "PENDING" ? "default" : "outline"}
-            size="sm"
+          <DlesButton
+            isActive={statusFilter === "PENDING"}
             onClick={() => setStatusFilter("PENDING")}
-            className="h-9"
           >
+            <Clock className="h-3.5 w-3.5" />
             Pending
-          </Button>
-          <Button
-            variant={statusFilter === "ALL" ? "default" : "outline"}
-            size="sm"
+          </DlesButton>
+          <DlesButton
+            isActive={statusFilter === "ALL"}
             onClick={() => setStatusFilter("ALL")}
-            className="h-9"
           >
+            <Layers className="h-3.5 w-3.5" />
             All
-          </Button>
+          </DlesButton>
         </div>
       </div>
 

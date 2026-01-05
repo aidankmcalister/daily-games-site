@@ -14,6 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 
+import { DlesButton } from "@/components/ui/dles-button";
+
 interface ResetDefaultsDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -30,10 +32,10 @@ export function ResetDefaultsDialog({
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>
-        <Button type="button" variant="outline" size="sm">
-          <RotateCcw className="h-4 w-4 mr-2" />
+        <DlesButton type="button">
+          <RotateCcw className="h-3.5 w-3.5" />
           Reset Defaults
-        </Button>
+        </DlesButton>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

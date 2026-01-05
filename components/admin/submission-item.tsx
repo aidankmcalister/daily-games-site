@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { DlesTopic } from "@/components/dles-topic";
-import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/ui/dles-button";
 import { cn } from "@/lib/utils";
 import { TOPIC_COLORS } from "@/lib/constants";
 import { ExternalLink, Check, X, Loader2 } from "lucide-react";
@@ -82,7 +82,7 @@ export function SubmissionItem({
 
       {canManage && submission.status === "PENDING" && (
         <div className="flex items-center gap-1 shrink-0 ml-auto">
-          <Button
+          <DlesButton
             size="icon"
             variant="ghost"
             className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
@@ -94,8 +94,8 @@ export function SubmissionItem({
             ) : (
               <X className="h-3.5 w-3.5" />
             )}
-          </Button>
-          <Button
+          </DlesButton>
+          <DlesButton
             size="icon"
             variant="ghost"
             className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-500/10"
@@ -107,7 +107,7 @@ export function SubmissionItem({
             ) : (
               <Check className="h-3.5 w-3.5" />
             )}
-          </Button>
+          </DlesButton>
         </div>
       )}
 

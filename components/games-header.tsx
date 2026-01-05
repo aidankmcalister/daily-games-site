@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Dices, Flag } from "lucide-react";
+import { DlesButton } from "@/components/ui/dles-button";
+import { cn } from "@/lib/utils";
 
 import { UserButton } from "@/components/user-button";
 import { GameList } from "@/lib/use-lists";
@@ -124,36 +126,27 @@ export function GamesHeader(props: GamesHeaderProps) {
               </div>
 
               <div className="flex items-center gap-2 shrink-0 ml-auto lg:ml-0">
-                <Button
-                  variant="outline"
-                  onClick={onRandom}
-                  className="h-10 gap-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all hover:scale-105"
-                >
-                  <Dices className="h-4 w-4 text-primary" />
+                <DlesButton onClick={onRandom}>
+                  <Dices className="h-4 w-4" />
                   Feeling Lucky
-                </Button>
+                </DlesButton>
 
-                <Button
-                  variant="outline"
-                  className="h-10 gap-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all hover:scale-105"
-                  asChild
-                >
-                  <Link href="/race/new">
-                    <Flag className="h-4 w-4 text-primary" />
-                    Race
-                  </Link>
-                </Button>
+                <DlesButton className="text-primary" href="/race/new">
+                  <Flag className="h-4 w-4" />
+                  Race
+                </DlesButton>
 
                 {isAuthenticated && hiddenCount > 0 && onShowHiddenChange && (
-                  <Button
+                  <DlesButton
                     variant="ghost"
                     size="icon"
                     onClick={() => onShowHiddenChange(!showHidden)}
-                    className={`h-10 w-10 ${
+                    className={cn(
+                      "w-10",
                       showHidden
                         ? "text-primary bg-primary/10"
                         : "text-muted-foreground"
-                    }`}
+                    )}
                     title={
                       showHidden ? "Hide hidden games" : "Show hidden games"
                     }
@@ -163,7 +156,7 @@ export function GamesHeader(props: GamesHeaderProps) {
                     ) : (
                       <Eye className="h-4 w-4" />
                     )}
-                  </Button>
+                  </DlesButton>
                 )}
               </div>
             </div>
@@ -212,15 +205,15 @@ export function GamesHeader(props: GamesHeaderProps) {
                   isCompact
                 />
                 <div className="flex items-center gap-1">
-                  <Button
+                  <DlesButton
                     variant="ghost"
                     size="icon"
-                    className="h-10 w-10 text-primary"
+                    className="w-10 text-primary"
                     onClick={onRandom}
                     title="Feeling Lucky"
                   >
                     <Dices className="h-4 w-4" />
-                  </Button>
+                  </DlesButton>
                   <UserButton />
                 </div>
               </div>

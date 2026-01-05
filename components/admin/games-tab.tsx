@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { AddGameDialog } from "./games/add-game-dialog";
 import { BulkActionToolbar } from "./games/bulk-action-toolbar";
 import { GamesSearchFilter } from "./games/games-search-filter";
+import { DlesButton } from "@/components/ui/dles-button";
 
 export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
   const [games, setGames] = useState<Game[]>([]);
@@ -250,10 +251,7 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
         </h2>
         {canManageGames && (
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-8 gap-1.5"
+            <DlesButton
               onClick={() => fileInputRef.current?.click()}
               disabled={isSubmitting}
             >
@@ -263,7 +261,7 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
                 <FileUp className="h-3.5 w-3.5" />
               )}
               Import CSV
-            </Button>
+            </DlesButton>
             <input
               type="file"
               ref={fileInputRef}

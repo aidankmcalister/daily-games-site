@@ -1,7 +1,6 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -12,8 +11,10 @@ import {
 import { MultiSelect } from "@/components/ui/multi-select";
 import { DlesTopic } from "@/components/dles-topic";
 import { TOPICS } from "@/lib/constants";
-import { formatTopic } from "@/lib/utils";
+import { cn, formatTopic } from "@/lib/utils";
 import type { Topic } from "@/app/generated/prisma/client";
+import { ArrowDownAZ, Clock, LayoutGrid, Archive } from "lucide-react";
+import { DlesButton } from "@/components/ui/dles-button";
 
 interface GamesSearchFilterProps {
   search: string;
@@ -39,24 +40,20 @@ export function GamesSearchFilter({
   onShowArchivedToggle,
 }: GamesSearchFilterProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-4">
+    <div className="flex flex-col sm:flex-row gap-2">
       <div className="flex-1 flex gap-2">
         <Input
           placeholder="Search games..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="flex-1 h-9"
+          className="flex-1 h-10 text-xs border-primary/20 hover:border-primary/50 focus:border-primary/50"
         />
-        <Button
-          variant={showArchived ? "secondary" : "outline"}
-          size="sm"
-          onClick={onShowArchivedToggle}
-          className="h-9 whitespace-nowrap"
-        >
+        <DlesButton isActive={showArchived} onClick={onShowArchivedToggle}>
+          <Archive className="h-3.5 w-3.5" />
           {showArchived ? "Hide Archived" : "Show Archived"}
-        </Button>
+        </DlesButton>
       </div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex gap-2">
         <MultiSelect
           options={[
             { value: "all", label: "All Topics" },
@@ -95,7 +92,7 @@ export function GamesSearchFilter({
             onTopicFilterChange(newTopics);
           }}
           placeholder="Topic"
-          className="w-[180px] h-9"
+          className="w-[160px] h-10"
           renderLabel={(option) => (
             <DlesTopic
               topic={option.value}
@@ -107,23 +104,37 @@ export function GamesSearchFilter({
           )}
         />
         <Select
-          value={`${sortBy}-${sortOrder}`}
-          onValueChange={(value) => {
-            const [newSortBy, newOrder] = value.split("-") as [
-              any,
-              "asc" | "desc"
-            ];
-            onSortChange(newSortBy, newOrder);
-          }}
+          value={sortBy}
+          onValueChange={(v) => onSortChange(v, sortOrder)}
         >
-          <SelectTrigger className="w-[140px] h-9 text-xs">
-            <SelectValue placeholder="Sort by" />
+          <SelectTrigger
+            size="lg"
+            className={cn(
+              "w-[140px] h-10 text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5",
+              sortBy !== "title" && "bg-primary/5"
+            )}
+          >
+            <SelectValue placeholder="Sort" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="title-asc">Title (A-Z)</SelectItem>
-            <SelectItem value="title-desc">Title (Z-A)</SelectItem>
-            <SelectItem value="playCount-desc">Most Played</SelectItem>
-            <SelectItem value="createdAt-desc">Newest First</SelectItem>
+            <SelectItem value="title">
+              <div className="flex items-center gap-2">
+                <ArrowDownAZ className="h-4 w-4" />
+                <span>A-Z</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="topic">
+              <div className="flex items-center gap-2">
+                <LayoutGrid className="h-4 w-4" />
+                <span>Category</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="played">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span>Unplayed</span>
+              </div>
+            </SelectItem>
           </SelectContent>
         </Select>
       </div>
