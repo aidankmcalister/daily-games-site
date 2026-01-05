@@ -6,6 +6,11 @@ description: Project conventions and AI assistant rules for dles-fun
 
 Follow these rules for all development on the dles.fun platform.
 
+> [!CAUTION] > **STRICT DESIGN ADHERENCE REQUIRED**
+> You must follow the [Design Guidelines](design-guidelines.md) to a T.
+> Do not deviate from the specified colors, typography, or component patterns.
+> If you find inconsistencies, consult the design-guidelines.md file as the source of truth.
+
 ---
 
 ## 1. Design Philosophy
