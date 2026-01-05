@@ -1,9 +1,9 @@
-import { getSession, getCurrentUser } from "@/lib/auth-helpers";
+import { getSession } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { StatsClient } from "./stats-client";
+import { DashboardClient } from "./dashboard-client";
 
-export default async function StatsPage() {
+export default async function DashboardPage() {
   const session = await getSession();
 
   if (!session?.user?.id) {
@@ -18,11 +18,12 @@ export default async function StatsPage() {
     now.getDate()
   );
 
-  // Fetch user's played games (explicitly check for played: true AND played today)
+  // Fetch user's played games (explicitly check for played: true AND played today AND NOT hidden)
   const userGames = await prisma.userGame.findMany({
     where: {
       userId: session.user.id,
       played: true,
+      hidden: false,
       playedAt: {
         gte: startOfToday,
       },
@@ -56,7 +57,7 @@ export default async function StatsPage() {
   });
 
   return (
-    <StatsClient
+    <DashboardClient
       playedCount={userGames.length}
       totalGames={totalGames}
       playedDates={playedDates.map((d) => d.toISOString())}

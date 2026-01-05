@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { TOPICS } from "@/lib/constants";
+import { formatTopic } from "@/lib/utils";
 import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 
@@ -31,7 +32,10 @@ const suggestionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   link: z.string().url("Must be a valid URL"),
   topic: z.string().min(1, "Category is required"),
-  description: z.string().optional(),
+  description: z
+    .string()
+    .min(10, "Description must be at least 10 characters")
+    .max(200, "Description must be 200 characters or less"),
 });
 
 type SuggestionFormValues = z.infer<typeof suggestionSchema>;
@@ -57,7 +61,7 @@ export function GameSubmissionDialog({
   } = useForm<SuggestionFormValues>({
     resolver: zodResolver(suggestionSchema),
     defaultValues: {
-      topic: "puzzle",
+      topic: "words",
     },
   });
 
@@ -135,7 +139,7 @@ export function GameSubmissionDialog({
               <SelectContent>
                 {TOPICS.map((topic) => (
                   <SelectItem key={topic} value={topic} className="capitalize">
-                    {topic}
+                    {formatTopic(topic)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -144,14 +148,18 @@ export function GameSubmissionDialog({
           </Field>
 
           <Field>
-            <FieldLabel htmlFor="description">
-              Description (Optional)
-            </FieldLabel>
+            <div className="flex items-center justify-between">
+              <FieldLabel htmlFor="description">Description</FieldLabel>
+              <span className="text-[10px] text-muted-foreground">
+                {watch("description")?.length || 0}/200
+              </span>
+            </div>
             <Textarea
               id="description"
-              placeholder="A brief description of the game..."
+              placeholder="A brief 1-2 sentence description of the game..."
               {...register("description")}
               className="resize-none"
+              maxLength={200}
             />
             {errors.description && <FieldError errors={[errors.description]} />}
           </Field>

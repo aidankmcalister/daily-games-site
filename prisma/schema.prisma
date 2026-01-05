@@ -8,19 +8,21 @@ datasource db {
 }
 
 model Game {
-  id        String   @id @default(uuid())
-  title     String
-  link      String   @unique
-  topic     Topic    @default(puzzle)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  playCount Int      @default(0)
-  archived  Boolean  @default(false)
+  id          String   @id @default(uuid())
+  title       String
+  description String   @default("")
+  link        String   @unique
+  topic       Topic    @default(words)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  playCount   Int      @default(0)
+  archived    Boolean  @default(false)
 
   userGames UserGame[]
   gameLogs  GamePlayLog[]
   dailyStats DailyStats[]
   lists     GameList[] @relation("GameListGames")
+  raceGames RaceGame[]
 
   @@index([topic])
   @@index([archived])
@@ -72,14 +74,20 @@ model SiteConfig {
 
 enum Topic {
   words
-  puzzle
   geography
   trivia
-  entertainment
-  gaming
   nature
   food
   sports
+  colors
+  estimation
+  logic
+  history
+  movies_tv
+  music
+  shapes
+  video_games
+  board_games
 }
 
 enum Role {
@@ -104,9 +112,79 @@ model User {
   gameLogs      GamePlayLog[]
   gameLists     GameList[]
   submissions   GameSubmission[]
+  racesOwned    Race[]
+  raceParticips RaceParticipant[]
 
   @@unique([email])
   @@map("user")
+}
+
+model Race {
+  id          String   @id @default(cuid())
+  name        String
+  createdBy   String?
+  status      RaceStatus @default(waiting)
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  
+  user        User?    @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+  participants RaceParticipant[]
+  raceGames    RaceGame[]
+  
+  @@index([status])
+}
+
+enum RaceStatus {
+  waiting    // Waiting for opponent
+  ready      // Both joined, not started
+  active     // Race in progress
+  completed  // Race finished
+  cancelled  // Race cancelled
+}
+
+model RaceParticipant {
+  id          String   @id @default(cuid())
+  raceId      String
+  userId      String?  // Optional for guest users
+  guestName   String?  // Used when userId is null
+  joinedAt    DateTime @default(now())
+  finishedAt  DateTime?
+  totalTime   Int?     // Seconds
+  
+  race        Race     @relation(fields: [raceId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completions RaceCompletion[]
+  
+  @@unique([raceId, userId])
+  @@index([raceId])
+}
+
+model RaceGame {
+  id          String   @id @default(cuid())
+  raceId      String
+  gameId      String
+  order       Int
+  
+  race        Race     @relation(fields: [raceId], references: [id], onDelete: Cascade)
+  game        Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  completions RaceCompletion[]
+  
+  @@index([raceId])
+}
+
+model RaceCompletion {
+  id              String   @id @default(cuid())
+  raceGameId      String
+  participantId   String
+  completedAt     DateTime @default(now())
+  timeToComplete  Int      // Seconds from race start
+  skipped         Boolean  @default(false)
+  
+  raceGame        RaceGame        @relation(fields: [raceGameId], references: [id], onDelete: Cascade)
+  participant     RaceParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  
+  @@unique([raceGameId, participantId])
 }
 
 model Session {
@@ -186,7 +264,7 @@ model GameSubmission {
   title       String
   link        String
   topic       Topic
-  description String?
+  description String
   submittedBy String
   status      SubmissionStatus @default(PENDING)
   reviewNote  String?

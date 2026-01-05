@@ -30,6 +30,7 @@ import {
   Settings,
   BarChart3,
   TrendingUp,
+  List,
 } from "lucide-react";
 import type { Role } from "@/app/generated/prisma/client";
 import { GameSubmissionDialog } from "./game-submission-dialog";
@@ -204,6 +205,15 @@ export function UserButton() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
+          <a href="/dashboard/lists">
+            <List className="mr-2 h-4 w-4" />
+            Lists
+          </a>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem asChild>
           <a href="/dashboard">
             <BarChart3 className="mr-2 h-4 w-4" />
             Dashboard
@@ -211,10 +221,13 @@ export function UserButton() {
         </DropdownMenuItem>
 
         {config?.enableCommunitySubmissions && (
-          <DropdownMenuItem onClick={() => setIsSubmissionOpen(true)}>
-            <TrendingUp className="mr-2 h-4 w-4" />
-            Suggest New Game
-          </DropdownMenuItem>
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => setIsSubmissionOpen(true)}>
+              <TrendingUp className="mr-2 h-4 w-4" />
+              Suggest New Game
+            </DropdownMenuItem>
+          </>
         )}
 
         {["owner", "coowner", "admin"].includes(

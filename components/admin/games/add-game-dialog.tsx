@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -22,28 +23,41 @@ import {
 } from "@/components/ui/select";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { TOPICS } from "@/lib/constants";
+import { formatTopic } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import type { Topic } from "@/app/generated/prisma/client";
 
 interface AddGameDialogProps {
-  onAdd: (game: { title: string; link: string; topic: Topic }) => Promise<void>;
+  onAdd: (game: {
+    title: string;
+    link: string;
+    topic: Topic;
+    description: string;
+  }) => Promise<void>;
 }
 
 export function AddGameDialog({ onAdd }: AddGameDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
-  const [topic, setTopic] = useState<Topic>("puzzle");
+  const [description, setDescription] = useState("");
+  const [topic, setTopic] = useState<Topic>("words");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isValid =
+    title.trim().length > 0 &&
+    link.trim().length > 0 &&
+    description.trim().length >= 10;
+
   const handleAdd = async () => {
-    if (!title || !link) return;
+    if (!isValid) return;
     setIsSubmitting(true);
     try {
-      await onAdd({ title, link, topic });
+      await onAdd({ title, link, topic, description });
       setTitle("");
       setLink("");
-      setTopic("puzzle");
+      setDescription("");
+      setTopic("words");
       setIsOpen(false);
     } finally {
       setIsSubmitting(false);
@@ -93,21 +107,39 @@ export function AddGameDialog({ onAdd }: AddGameDialogProps) {
               <SelectContent>
                 {TOPICS.map((t) => (
                   <SelectItem key={t} value={t} className="capitalize">
-                    {t}
+                    {formatTopic(t)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </Field>
+          <Field>
+            <div className="flex items-center justify-between">
+              <FieldLabel htmlFor="game-description">Description</FieldLabel>
+              <span className="text-[10px] text-muted-foreground">
+                {description.length}/200
+              </span>
+            </div>
+            <Textarea
+              id="game-description"
+              placeholder="A brief 1-2 sentence description of the game..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="resize-none"
+              maxLength={200}
+            />
+            {description.length > 0 && description.length < 10 && (
+              <p className="text-xs text-destructive mt-1">
+                Description must be at least 10 characters
+              </p>
+            )}
           </Field>
         </div>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => setIsOpen(false)}>
             Cancel
           </AlertDialogCancel>
-          <Button
-            onClick={handleAdd}
-            disabled={isSubmitting || !title.trim() || !link.trim()}
-          >
+          <Button onClick={handleAdd} disabled={isSubmitting || !isValid}>
             {isSubmitting ? "Adding..." : "Add Game"}
           </Button>
         </AlertDialogFooter>

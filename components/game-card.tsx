@@ -13,21 +13,28 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn, formatTopic } from "@/lib/utils";
 import { TOPIC_COLORS, extractDomain } from "@/lib/constants";
 import { ExternalLink, EyeOff } from "lucide-react";
 import { ListsDropdown } from "./lists-dropdown";
+import { DlesTopic } from "@/components/dles-topic";
 
 const TOPIC_SHADOWS: Record<string, string> = {
   words: "hover:shadow-blue-500/25 dark:hover:shadow-blue-500/10",
-  puzzle: "hover:shadow-purple-500/25 dark:hover:shadow-purple-500/10",
   geography: "hover:shadow-green-500/25 dark:hover:shadow-green-500/10",
   trivia: "hover:shadow-yellow-500/25 dark:hover:shadow-yellow-500/10",
-  entertainment: "hover:shadow-pink-500/25 dark:hover:shadow-pink-500/10",
-  gaming: "hover:shadow-red-500/25 dark:hover:shadow-red-500/10",
   nature: "hover:shadow-emerald-500/25 dark:hover:shadow-emerald-500/10",
   food: "hover:shadow-orange-500/25 dark:hover:shadow-orange-500/10",
   sports: "hover:shadow-cyan-500/25 dark:hover:shadow-cyan-500/10",
+  colors: "hover:shadow-indigo-500/25 dark:hover:shadow-indigo-500/10",
+  estimation: "hover:shadow-teal-500/25 dark:hover:shadow-teal-500/10",
+  logic: "hover:shadow-slate-500/25 dark:hover:shadow-slate-500/10",
+  history: "hover:shadow-amber-500/25 dark:hover:shadow-amber-500/10",
+  movies_tv: "hover:shadow-violet-500/25 dark:hover:shadow-violet-500/10",
+  music: "hover:shadow-rose-500/25 dark:hover:shadow-rose-500/10",
+  shapes: "hover:shadow-lime-500/25 dark:hover:shadow-lime-500/10",
+  video_games: "hover:shadow-sky-500/25 dark:hover:shadow-sky-500/10",
+  board_games: "hover:shadow-fuchsia-500/25 dark:hover:shadow-fuchsia-500/10",
 };
 
 /**
@@ -42,6 +49,7 @@ function isWithinDays(date: Date, days: number): boolean {
 export interface GameCardProps {
   id: string;
   title: string;
+  description?: string;
   link: string;
   topic: string;
   playCount: number;
@@ -50,11 +58,13 @@ export interface GameCardProps {
   onHide?: (id: string) => void;
   createdAt?: Date;
   index?: number;
+  minimal?: boolean;
 }
 
 export function GameCard({
   id,
   title,
+  description,
   link,
   topic,
   isPlayed,
@@ -62,8 +72,10 @@ export function GameCard({
   onHide,
   createdAt,
   index = 0,
+  minimal = false,
 }: GameCardProps) {
   const handleClick = () => {
+    if (minimal) return;
     onPlay(id);
     window.open(link, "_blank", "noopener,noreferrer");
   };
@@ -75,7 +87,7 @@ export function GameCard({
 
   const isNew = createdAt && isWithinDays(new Date(createdAt), 7);
 
-  return (
+  const cardContent = (
     <Card
       onClick={handleClick}
       style={{
@@ -84,8 +96,8 @@ export function GameCard({
       }}
       className={cn(
         "cursor-pointer transition-all duration-200 ease-out group relative overflow-hidden border-muted h-full flex flex-col justify-center",
-        "animate-in fade-in slide-in-from-bottom-2 duration-300",
-        "hover:shadow-xl hover:-translate-y-1 hover:border-primary/50 hover:scale-[1.02]",
+        "animate-in fade-in slide-in-from-bottom-2 duration-200",
+        "hover:shadow-md hover:-translate-y-0.5 hover:border-primary/50 hover:scale-[1.01]",
         TOPIC_SHADOWS[topic],
         isPlayed
           ? "bg-muted/40 opacity-60 grayscale hover:grayscale-0 hover:opacity-100"
@@ -113,33 +125,35 @@ export function GameCard({
                 <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
               </div>
               {/* Hide button inline with title */}
-              <div
-                className="flex items-center gap-1"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <ListsDropdown gameId={id} />
-                {onHide && (
-                  <TooltipProvider delayDuration={200}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={handleHide}
-                          className={cn(
-                            "p-1 rounded-md text-muted-foreground shrink-0",
-                            "opacity-0 group-hover:opacity-100 transition-opacity",
-                            "hover:bg-muted hover:text-foreground"
-                          )}
-                        >
-                          <EyeOff className="h-3.5 w-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="text-xs">
-                        Hide game
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
-              </div>
+              {!minimal && (
+                <div
+                  className="flex items-center gap-1"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ListsDropdown gameId={id} />
+                  {onHide && (
+                    <TooltipProvider delayDuration={200}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={handleHide}
+                            className={cn(
+                              "p-1 rounded-md text-muted-foreground shrink-0",
+                              "opacity-0 group-hover:opacity-100 transition-opacity",
+                              "hover:bg-muted hover:text-foreground"
+                            )}
+                          >
+                            <EyeOff className="h-3.5 w-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="text-xs">
+                          Hide game
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
+              )}
             </CardTitle>
             <CardDescription className="truncate font-mono text-xs">
               {extractDomain(link)}
@@ -155,15 +169,12 @@ export function GameCard({
           )}
         </div>
 
-        <div className="pt-3 flex items-center gap-2">
-          <Badge
-            variant="secondary"
-            className={cn("capitalize font-normal", TOPIC_COLORS[topic])}
-          >
-            {topic}
-          </Badge>
+        <div className="pt-3 flex items-center justify-between gap-2">
+          <DlesTopic topic={topic} />
         </div>
       </CardHeader>
     </Card>
   );
+
+  return cardContent;
 }

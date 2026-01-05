@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff, Dices } from "lucide-react";
+import { Eye, EyeOff, Dices, Flag } from "lucide-react";
 
 import { UserButton } from "@/components/user-button";
 import { GameList } from "@/lib/use-lists";
@@ -132,6 +133,17 @@ export function GamesHeader(props: GamesHeaderProps) {
                 >
                   <Dices className="h-4 w-4 text-primary" />
                   Feeling Lucky
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-10 gap-2 border-primary/20 hover:border-primary/50 hover:bg-primary/5 transition-all hover:scale-105"
+                  asChild
+                >
+                  <Link href="/race/new">
+                    <Flag className="h-4 w-4 text-primary" />
+                    Race
+                  </Link>
                 </Button>
 
                 {isAuthenticated && hiddenCount > 0 && onShowHiddenChange && (

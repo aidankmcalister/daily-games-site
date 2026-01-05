@@ -2,37 +2,28 @@
 
 import { signIn } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
-import { LogIn, X } from "lucide-react";
-import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { ArrowRight, LogIn } from "lucide-react";
 
 export function GuestSyncBanner() {
-  const [dismissed, setDismissed] = useState(false);
-
-  if (dismissed) return null;
-
   return (
-    <div className="relative flex items-center justify-between gap-4 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
-      <div className="flex items-center gap-3">
-        <span className="text-sm text-muted-foreground">
-          Sign in to create custom lists
-        </span>
+    <Card className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+      <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 p-0">
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <LogIn className="h-4 w-4" />
+          <span>Sign in to save history & create lists.</span>
+        </div>
+
         <Button
           size="sm"
           variant="outline"
-          className="h-7 gap-1.5"
+          className="h-8 gap-2 text-xs w-full sm:w-auto font-medium border-primary/20 bg-background/50 hover:bg-primary/10 hover:border-primary/50 transition-all group"
           onClick={() => signIn.social({ provider: "google" })}
         >
-          <LogIn className="h-3.5 w-3.5" />
-          Sign in
+          Continue with Google
+          <ArrowRight className="h-3.5 w-3.5 opacity-50 group-hover:translate-x-0.5 group-hover:opacity-100 transition-all" />
         </Button>
-      </div>
-      <button
-        onClick={() => setDismissed(true)}
-        className="text-muted-foreground hover:text-foreground transition-colors"
-        aria-label="Dismiss"
-      >
-        <X className="h-4 w-4" />
-      </button>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
