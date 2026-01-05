@@ -58,6 +58,7 @@ export interface GameCardProps {
   onHide?: (id: string) => void;
   createdAt?: Date;
   index?: number;
+  minimal?: boolean;
 }
 
 export function GameCard({
@@ -71,8 +72,10 @@ export function GameCard({
   onHide,
   createdAt,
   index = 0,
+  minimal = false,
 }: GameCardProps) {
   const handleClick = () => {
+    if (minimal) return;
     onPlay(id);
     window.open(link, "_blank", "noopener,noreferrer");
   };
@@ -122,33 +125,35 @@ export function GameCard({
                 <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
               </div>
               {/* Hide button inline with title */}
-              <div
-                className="flex items-center gap-1"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <ListsDropdown gameId={id} />
-                {onHide && (
-                  <TooltipProvider delayDuration={200}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={handleHide}
-                          className={cn(
-                            "p-1 rounded-md text-muted-foreground shrink-0",
-                            "opacity-0 group-hover:opacity-100 transition-opacity",
-                            "hover:bg-muted hover:text-foreground"
-                          )}
-                        >
-                          <EyeOff className="h-3.5 w-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="text-xs">
-                        Hide game
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
-              </div>
+              {!minimal && (
+                <div
+                  className="flex items-center gap-1"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ListsDropdown gameId={id} />
+                  {onHide && (
+                    <TooltipProvider delayDuration={200}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={handleHide}
+                            className={cn(
+                              "p-1 rounded-md text-muted-foreground shrink-0",
+                              "opacity-0 group-hover:opacity-100 transition-opacity",
+                              "hover:bg-muted hover:text-foreground"
+                            )}
+                          >
+                            <EyeOff className="h-3.5 w-3.5" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="text-xs">
+                          Hide game
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
+              )}
             </CardTitle>
             <CardDescription className="truncate font-mono text-xs">
               {extractDomain(link)}

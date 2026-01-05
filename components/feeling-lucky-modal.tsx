@@ -6,10 +6,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Loader2 } from "lucide-react";
 import type { Game } from "@/app/generated/prisma/client";
 import { cn } from "@/lib/utils";
-import { TOPIC_THEMES } from "./feeling-lucky/themes";
+import { Dices } from "lucide-react";
 import { useFeelingLucky } from "./feeling-lucky/use-feeling-lucky";
 import { FeelingLuckyWinner } from "./feeling-lucky/feeling-lucky-winner";
 import { FeelingLuckySpinner } from "./feeling-lucky/feeling-lucky-spinner";
@@ -43,64 +42,20 @@ export function FeelingLuckyModal({
     }
   };
 
-  const activeTheme =
-    !isSpinning && winner && winner.topic
-      ? TOPIC_THEMES[winner.topic] || TOPIC_THEMES["trivia"]
-      : TOPIC_THEMES["trivia"];
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className={cn(
-          "sm:max-w-md bg-linear-to-b from-zinc-900 via-zinc-900 to-black border-4 overflow-hidden transition-colors duration-500",
-          activeTheme.border,
-          activeTheme.shadow
-        )}
-      >
-        <DialogHeader className="text-center pb-2 relative z-10">
-          <DialogTitle className="flex flex-col items-center justify-center gap-2">
-            {isSpinning ? (
-              <div className="flex flex-col items-center gap-3 py-8">
-                <Loader2
-                  className={cn("h-8 w-8 animate-spin", activeTheme.spinnerInit)}
-                />
-                <span
-                  className={cn(
-                    "text-lg font-medium",
-                    activeTheme.spinnerText
-                  )}
-                >
-                  Finding your next game...
-                </span>
-              </div>
-            ) : (
-              <>
-                <div
-                  className={cn(
-                    "text-sm font-bold tracking-[0.2em] opacity-90",
-                    activeTheme.congratsText
-                  )}
-                >
-                  CONGRATULATIONS
-                </div>
-                <span
-                  className={cn(
-                    "text-4xl font-bold tracking-tight",
-                    activeTheme.winnerText
-                  )}
-                >
-                  YOU WON!
-                </span>
-              </>
-            )}
+      <DialogContent className="sm:max-w-md bg-zinc-950 border-border/50 p-6 flex flex-col justify-between min-h-[520px]">
+        <DialogHeader className="pb-4 border-b border-border/50 shrink-0">
+          <DialogTitle className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+            <Dices className="h-4 w-4 text-primary" />
+            Feeling Lucky
           </DialogTitle>
         </DialogHeader>
 
-        <div className="relative">
+        <div className="pt-6 flex-1 flex flex-col justify-center">
           {!isSpinning && winner ? (
             <FeelingLuckyWinner
               winner={winner}
-              theme={activeTheme}
               onPlay={handlePlayWinner}
               onSpinAgain={spin}
             />
