@@ -1,20 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TOPICS } from "@/lib/constants";
-import { Loader2, Save, RotateCcw } from "lucide-react";
+import { Loader2, Save } from "lucide-react";
+import { toast } from "sonner";
+
+import { SiteStatusCard } from "./settings/site-status-card";
+import { DisplaySettingsCard } from "./settings/display-settings-card";
+import { UserLimitsCard } from "./settings/user-limits-card";
+import { SystemUtilitiesCard } from "./settings/system-utilities-card";
+import { ResetDefaultsDialog } from "./settings/reset-defaults-dialog";
 
 interface SiteConfig {
   id: string;
@@ -22,6 +20,7 @@ interface SiteConfig {
   topicColors: Record<string, string> | null;
   maintenanceMode: boolean;
   welcomeMessage: string | null;
+  showWelcomeMessage: boolean;
   featuredGameIds: string[];
   minPlayStreak: number;
   enableCommunitySubmissions: boolean;
@@ -30,21 +29,48 @@ interface SiteConfig {
   updatedAt: string;
 }
 
-const DEFAULT_CONFIG: Partial<SiteConfig> = {
+const DEFAULT_CONFIG: Omit<
+  SiteConfig,
+  "id" | "updatedAt" | "topicColors" | "featuredGameIds"
+> = {
   newGameDays: 7,
   maintenanceMode: false,
   welcomeMessage: null,
+  showWelcomeMessage: false,
   minPlayStreak: 1,
   enableCommunitySubmissions: false,
   defaultSort: "title",
   maxCustomLists: 10,
 };
 
+const settingsSchema = z.object({
+  newGameDays: z.number().min(1).max(30),
+  maintenanceMode: z.boolean(),
+  welcomeMessage: z.string().nullable(),
+  showWelcomeMessage: z.boolean(),
+  minPlayStreak: z.number().min(0),
+  enableCommunitySubmissions: z.boolean(),
+  defaultSort: z.string(),
+  maxCustomLists: z.number().min(1).max(100),
+});
+
+type SettingsFormValues = z.infer<typeof settingsSchema>;
+
 export function SettingsTab() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+
+  const methods = useForm<SettingsFormValues>({
+    resolver: zodResolver(settingsSchema),
+  });
+
+  const {
+    handleSubmit,
+    reset,
+    formState: { isDirty },
+  } = methods;
 
   useEffect(() => {
     fetchConfig();
@@ -56,59 +82,75 @@ export function SettingsTab() {
       if (res.ok) {
         const data = await res.json();
         setConfig(data);
+        reset({
+          newGameDays: data.newGameDays,
+          maintenanceMode: data.maintenanceMode,
+          welcomeMessage: data.welcomeMessage,
+          showWelcomeMessage: data.showWelcomeMessage,
+          minPlayStreak: data.minPlayStreak,
+          enableCommunitySubmissions: data.enableCommunitySubmissions,
+          defaultSort: data.defaultSort,
+          maxCustomLists: data.maxCustomLists,
+        });
       }
     } catch (error) {
       console.error("Failed to fetch config:", error);
+      toast.error("Failed to load settings");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const updateField = <K extends keyof SiteConfig>(
-    field: K,
-    value: SiteConfig[K]
-  ) => {
-    if (!config) return;
-    setConfig({ ...config, [field]: value });
-    setHasChanges(true);
-  };
-
-  const handleSave = async () => {
-    if (!config) return;
+  const handleSave = async (data: SettingsFormValues) => {
     setIsSaving(true);
     try {
       const res = await fetch("/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          newGameDays: config.newGameDays,
-          maintenanceMode: config.maintenanceMode,
-          welcomeMessage: config.welcomeMessage,
-          minPlayStreak: config.minPlayStreak,
-          enableCommunitySubmissions: config.enableCommunitySubmissions,
-          defaultSort: config.defaultSort,
-          maxCustomLists: config.maxCustomLists,
-        }),
+        body: JSON.stringify(data),
       });
       if (res.ok) {
         const updated = await res.json();
         setConfig(updated);
-        setHasChanges(false);
+        reset(data);
+        toast.success("Settings saved successfully");
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        throw new Error("Failed to save");
       }
     } catch (error) {
       console.error("Failed to save settings:", error);
+      toast.error("Failed to save settings");
     } finally {
       setIsSaving(false);
     }
   };
 
-  const handleReset = () => {
-    if (!config) return;
-    setConfig({
-      ...config,
+  const handleReset = async () => {
+    const resetValues = {
       ...DEFAULT_CONFIG,
-    } as SiteConfig);
-    setHasChanges(true);
+    } as SettingsFormValues;
+    reset(resetValues);
+    toast.info("Settings reset to defaults (unsaved)");
+    setIsResetDialogOpen(false);
+  };
+
+  const getDiff = () => {
+    if (!config) return [];
+    const diff = [];
+    for (const key in DEFAULT_CONFIG) {
+      const k = key as keyof typeof DEFAULT_CONFIG;
+      if (config[k] !== DEFAULT_CONFIG[k]) {
+        diff.push({
+          label: k
+            .replace(/([A-Z])/g, " $1")
+            .replace(/^./, (str) => str.toUpperCase()),
+          current: String(config[k]),
+          default: String(DEFAULT_CONFIG[k]),
+        });
+      }
+    }
+    return diff;
   };
 
   if (isLoading) {
@@ -128,206 +170,41 @@ export function SettingsTab() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Site Configuration</h2>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={handleReset}>
-            <RotateCcw className="h-4 w-4 mr-2" />
-            Reset Defaults
-          </Button>
-          <Button
-            size="sm"
-            onClick={handleSave}
-            disabled={!hasChanges || isSaving}
-          >
-            {isSaving ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Save className="h-4 w-4 mr-2" />
-            )}
-            Save Changes
-          </Button>
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(handleSave)} className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Site Configuration</h2>
+          <div className="flex items-center gap-2">
+            <ResetDefaultsDialog
+              isOpen={isResetDialogOpen}
+              onOpenChange={setIsResetDialogOpen}
+              onReset={handleReset}
+              diff={getDiff()}
+            />
+            <Button size="sm" type="submit" disabled={!isDirty || isSaving}>
+              {isSaving ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Save className="h-4 w-4 mr-2" />
+              )}
+              Save Changes
+            </Button>
+          </div>
         </div>
-      </div>
 
-      {config.updatedAt && (
-        <p className="text-xs text-muted-foreground">
-          Last updated: {new Date(config.updatedAt).toLocaleString()}
-        </p>
-      )}
+        {config.updatedAt && (
+          <p className="text-xs text-muted-foreground">
+            Last updated: {new Date(config.updatedAt).toLocaleString()}
+          </p>
+        )}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Display Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Display Settings</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Field>
-              <FieldLabel htmlFor="newGameDays">
-                New Game Days
-                <span className="text-xs text-muted-foreground ml-2">
-                  How many days a game shows &quot;NEW&quot; ribbon
-                </span>
-              </FieldLabel>
-              <Input
-                id="newGameDays"
-                type="number"
-                min={1}
-                max={30}
-                value={config.newGameDays}
-                onChange={(e) =>
-                  updateField("newGameDays", parseInt(e.target.value) || 7)
-                }
-                className="w-24"
-              />
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="defaultSort">Default Sort</FieldLabel>
-              <Select
-                value={config.defaultSort}
-                onValueChange={(v) => updateField("defaultSort", v)}
-              >
-                <SelectTrigger id="defaultSort" className="w-48">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="title">A-Z</SelectItem>
-                  <SelectItem value="topic">Category</SelectItem>
-                  <SelectItem value="played">Unplayed First</SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="minPlayStreak">
-                Min Play Streak Display
-                <span className="text-xs text-muted-foreground ml-2">
-                  Don&apos;t show streak until user reaches X days
-                </span>
-              </FieldLabel>
-              <Input
-                id="minPlayStreak"
-                type="number"
-                min={0}
-                max={30}
-                value={config.minPlayStreak}
-                onChange={(e) =>
-                  updateField("minPlayStreak", parseInt(e.target.value) || 1)
-                }
-                className="w-24"
-              />
-            </Field>
-          </CardContent>
-        </Card>
-
-        {/* Limits & Features */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Limits & Features</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Field>
-              <FieldLabel htmlFor="maxCustomLists">
-                Max Custom Lists per User
-              </FieldLabel>
-              <Input
-                id="maxCustomLists"
-                type="number"
-                min={1}
-                max={50}
-                value={config.maxCustomLists}
-                onChange={(e) =>
-                  updateField("maxCustomLists", parseInt(e.target.value) || 10)
-                }
-                className="w-24"
-              />
-            </Field>
-
-            <div className="flex items-center justify-between py-2">
-              <div>
-                <p className="text-sm font-medium">Community Submissions</p>
-                <p className="text-xs text-muted-foreground">
-                  Allow users to suggest new games
-                </p>
-              </div>
-              <Switch
-                checked={config.enableCommunitySubmissions}
-                onCheckedChange={(v) =>
-                  updateField("enableCommunitySubmissions", v)
-                }
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Site Status */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-base">Site Status</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between py-2">
-              <div>
-                <p className="text-sm font-medium">Maintenance Mode</p>
-                <p className="text-xs text-muted-foreground">
-                  Show maintenance banner and disable play tracking
-                </p>
-              </div>
-              <Switch
-                checked={config.maintenanceMode}
-                onCheckedChange={(v) => updateField("maintenanceMode", v)}
-              />
-            </div>
-
-            <Field>
-              <FieldLabel htmlFor="welcomeMessage">
-                Welcome Message
-                <span className="text-xs text-muted-foreground ml-2">
-                  Optional announcement banner text
-                </span>
-              </FieldLabel>
-              <Input
-                id="welcomeMessage"
-                placeholder="Enter announcement text..."
-                value={config.welcomeMessage || ""}
-                onChange={(e) =>
-                  updateField("welcomeMessage", e.target.value || null)
-                }
-              />
-            </Field>
-          </CardContent>
-        </Card>
-
-        {/* Data Management */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-base">Data Management</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                variant="secondary"
-                onClick={() => window.open("/api/admin/export/games", "_blank")}
-              >
-                Export Games (JSON)
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={() => window.open("/api/admin/export/users", "_blank")}
-              >
-                Export Users (JSON)
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Downloads a JSON file containing all records. Sensitive data is
-              redacted.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          <SiteStatusCard />
+          <DisplaySettingsCard />
+          <UserLimitsCard />
+          <SystemUtilitiesCard />
+        </div>
+      </form>
+    </FormProvider>
   );
 }

@@ -47,6 +47,7 @@ export async function PATCH(request: Request) {
       "topicColors",
       "maintenanceMode",
       "welcomeMessage",
+      "showWelcomeMessage",
       "featuredGameIds",
       "minPlayStreak",
       "enableCommunitySubmissions",

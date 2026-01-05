@@ -79,12 +79,12 @@ export function GameCard({
     <Card
       onClick={handleClick}
       style={{
-        animationDelay: `${index * 50}ms`,
+        animationDelay: `${index * 30}ms`,
         animationFillMode: "both",
       }}
       className={cn(
-        "cursor-pointer transition-all duration-300 ease-out group relative overflow-hidden border-muted h-full flex flex-col justify-center",
-        "animate-in fade-in slide-in-from-bottom-4 duration-500",
+        "cursor-pointer transition-all duration-200 ease-out group relative overflow-hidden border-muted h-full flex flex-col justify-center",
+        "animate-in fade-in slide-in-from-bottom-2 duration-300",
         "hover:shadow-xl hover:-translate-y-1 hover:border-primary/50 hover:scale-[1.02]",
         TOPIC_SHADOWS[topic],
         isPlayed

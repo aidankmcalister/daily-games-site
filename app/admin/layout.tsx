@@ -5,7 +5,14 @@ import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useImpersonation } from "@/components/impersonation-provider";
 import { AdminHeader } from "@/components/admin/admin-header";
-import { Gamepad2, Users, Loader2, Shield, Settings } from "lucide-react";
+import {
+  Gamepad2,
+  Users,
+  Loader2,
+  Shield,
+  Settings,
+  TrendingUp,
+} from "lucide-react";
 import Link from "next/link";
 
 export default function AdminLayout({
@@ -93,6 +100,17 @@ export default function AdminLayout({
               </Button>
             </Link>
           )}
+          <Link href="/admin/submissions">
+            <Button
+              variant={
+                pathname === "/admin/submissions" ? "default" : "outline"
+              }
+              className="gap-2"
+            >
+              <TrendingUp className="h-4 w-4" />
+              Submissions
+            </Button>
+          </Link>
           {canManageSettings && (
             <Link href="/admin/settings">
               <Button

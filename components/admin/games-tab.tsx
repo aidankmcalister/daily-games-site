@@ -2,31 +2,14 @@
 
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { TOPICS } from "@/lib/constants";
-import { Plus, Loader2, Archive, Trash2, Upload, FileUp } from "lucide-react";
+import { Loader2, FileUp } from "lucide-react";
 import type { Topic } from "@/app/generated/prisma/client";
 import { GameItem, Game } from "./game-item";
 import { toast } from "sonner";
+
+import { AddGameDialog } from "./games/add-game-dialog";
+import { BulkActionToolbar } from "./games/bulk-action-toolbar";
+import { GamesSearchFilter } from "./games/games-search-filter";
 
 export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
   const [games, setGames] = useState<Game[]>([]);
@@ -47,12 +30,6 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
 
   // Game form state
   const [editingGameId, setEditingGameId] = useState<string | null>(null);
-  const [showAddDialog, setShowAddDialog] = useState(false);
-
-  // New game form state
-  const [newTitle, setNewTitle] = useState("");
-  const [newLink, setNewLink] = useState("");
-  const [newTopic, setNewTopic] = useState<Topic>("puzzle");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -71,28 +48,20 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
     }
   };
 
-  const handleAddGame = async () => {
-    if (!newTitle || !newLink) return;
-    setIsSubmitting(true);
-    try {
-      const res = await fetch("/api/games", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: newTitle,
-          link: newLink,
-          topic: newTopic,
-        }),
-      });
-      if (res.ok) {
-        setNewTitle("");
-        setNewLink("");
-        setNewTopic("puzzle");
-        setShowAddDialog(false);
-        fetchGames();
-      }
-    } finally {
-      setIsSubmitting(false);
+  const handleAddGame = async (newGame: {
+    title: string;
+    link: string;
+    topic: Topic;
+  }) => {
+    const res = await fetch("/api/games", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newGame),
+    });
+    if (res.ok) {
+      fetchGames();
+    } else {
+      toast.error("Failed to add game");
     }
   };
 
@@ -126,7 +95,6 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
     }
   };
 
-  // Bulk Actions
   const handleBulkAction = async (
     action: "archive" | "unarchive" | "delete"
   ) => {
@@ -169,7 +137,6 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
     setSelectedIds(next);
   };
 
-  // CSV Import
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -180,13 +147,9 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
       const lines = text.split("\n");
       const gamesToImport: any[] = [];
 
-      // Basic CSV parser: Title, Link, Topic
       for (let i = 1; i < lines.length; i++) {
-        // Skip header
         const line = lines[i].trim();
         if (!line) continue;
-
-        // Handle quotes? Simple split for now as requested format is simple
         const parts = line.split(",");
         if (parts.length >= 3) {
           gamesToImport.push({
@@ -201,16 +164,6 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
         toast.error("No valid games found in CSV");
         return;
       }
-
-      // Bulk Import via standard create API (loop) or bulk API?
-      // Since create API is singular, let's just make a new bulk import API?
-      // Or loop here. Loop is slow but fine for <100 games.
-      // Actually /api/games/bulk import would be better.
-      // But for speed, let's just loop locally or user API modification.
-
-      // Let's assume user wants to use existing API for now to avoid creating another route unless needed.
-      // Actually, I can add 'import' action to bulk route or create separate route.
-      // I'll create a quick loop here, simpler.
 
       let imported = 0;
       setIsSubmitting(true);
@@ -299,8 +252,13 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
               size="sm"
               className="h-8 gap-1.5"
               onClick={() => fileInputRef.current?.click()}
+              disabled={isSubmitting}
             >
-              <FileUp className="h-3.5 w-3.5" />
+              {isSubmitting ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <FileUp className="h-3.5 w-3.5" />
+              )}
               Import CSV
             </Button>
             <input
@@ -310,190 +268,30 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
               accept=".csv"
               onChange={handleFileUpload}
             />
-            <AlertDialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-              <AlertDialogTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 gap-1.5">
-                  <Plus className="h-3.5 w-3.5" />
-                  Add Game
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Add Custom Game</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Add a new game to your collection.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <div className="space-y-4 py-4">
-                  <Field>
-                    <FieldLabel htmlFor="game-title">Title</FieldLabel>
-                    <Input
-                      id="game-title"
-                      placeholder="Game name"
-                      value={newTitle}
-                      onChange={(e) => setNewTitle(e.target.value)}
-                    />
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="game-link">Link</FieldLabel>
-                    <Input
-                      id="game-link"
-                      placeholder="https://example.com/game"
-                      value={newLink}
-                      onChange={(e) => setNewLink(e.target.value)}
-                    />
-                  </Field>
-                  <Field>
-                    <FieldLabel htmlFor="game-topic">Category</FieldLabel>
-                    <Select
-                      value={newTopic}
-                      onValueChange={(v) => setNewTopic(v as Topic)}
-                    >
-                      <SelectTrigger
-                        id="game-topic"
-                        className="w-full capitalize"
-                      >
-                        <SelectValue placeholder="Select category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {TOPICS.map((t) => (
-                          <SelectItem key={t} value={t} className="capitalize">
-                            {t}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                </div>
-                <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => setShowAddDialog(false)}>
-                    Cancel
-                  </AlertDialogCancel>
-                  <Button
-                    onClick={handleAddGame}
-                    disabled={
-                      isSubmitting || !newTitle.trim() || !newLink.trim()
-                    }
-                  >
-                    {isSubmitting ? "Adding..." : "Add Game"}
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <AddGameDialog onAdd={handleAddGame} />
           </div>
         )}
       </div>
 
-      {/* Bulk Actions Bar */}
-      {selectedIds.size > 0 && canManageGames && (
-        <div className="bg-primary/10 border border-primary/20 rounded-md p-2 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-          <span className="text-sm font-medium px-2">
-            {selectedIds.size} selected
-          </span>
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleBulkAction("archive")}
-            >
-              <Archive className="h-4 w-4 mr-2" />
-              Archive
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleBulkAction("unarchive")}
-            >
-              <Upload className="h-4 w-4 mr-2" />
-              Restore
-            </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button size="sm" variant="destructive">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>
-                    Delete {selectedIds.size} games?
-                  </AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => handleBulkAction("delete")}>
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </div>
-      )}
+      <BulkActionToolbar
+        selectedCount={selectedIds.size}
+        onAction={handleBulkAction}
+      />
 
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1 flex gap-2">
-          <Input
-            placeholder="Search games..."
-            value={gameSearch}
-            onChange={(e) => setGameSearch(e.target.value)}
-            className="flex-1 h-9"
-          />
-          <Button
-            variant={showArchived ? "secondary" : "outline"}
-            size="sm"
-            onClick={() => setShowArchived(!showArchived)}
-            className="h-9 whitespace-nowrap"
-          >
-            {showArchived ? "Hide Archived" : "Show Archived"}
-          </Button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Select
-            value={gameTopicFilter}
-            onValueChange={(value) =>
-              setGameTopicFilter(value as Topic | "all")
-            }
-          >
-            <SelectTrigger className="w-[140px] h-9 text-xs">
-              <SelectValue placeholder="Topic" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Topics</SelectItem>
-              {TOPICS.map((topic) => (
-                <SelectItem key={topic} value={topic} className="capitalize">
-                  {topic}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            value={`${gameSortBy}-${gameSortOrder}`}
-            onValueChange={(value) => {
-              const [sortBy, order] = value.split("-") as [
-                "title" | "topic" | "playCount" | "createdAt",
-                "asc" | "desc"
-              ];
-              setGameSortBy(sortBy);
-              setGameSortOrder(order);
-            }}
-          >
-            <SelectTrigger className="w-[140px] h-9 text-xs">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="title-asc">Title (A-Z)</SelectItem>
-              <SelectItem value="title-desc">Title (Z-A)</SelectItem>
-              <SelectItem value="playCount-desc">Most Played</SelectItem>
-              <SelectItem value="createdAt-desc">Newest First</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+      <GamesSearchFilter
+        search={gameSearch}
+        onSearchChange={setGameSearch}
+        topicFilter={gameTopicFilter}
+        onTopicFilterChange={setGameTopicFilter}
+        sortBy={gameSortBy}
+        sortOrder={gameSortOrder}
+        onSortChange={(by, order) => {
+          setGameSortBy(by);
+          setGameSortOrder(order);
+        }}
+        showArchived={showArchived}
+        onShowArchivedToggle={() => setShowArchived(!showArchived)}
+      />
 
       <div className="rounded-md border bg-card">
         {canManageGames && filteredGames.length > 0 && (

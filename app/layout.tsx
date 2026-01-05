@@ -41,6 +41,7 @@ export const metadata: Metadata = {
 };
 
 import { ShortcutsHelp } from "@/components/shortcuts-help";
+import { SiteBanner } from "@/components/site-banner";
 
 export default function RootLayout({
   children,
@@ -54,6 +55,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <ImpersonationProvider>
+            <SiteBanner />
             <ListsProvider>{children}</ListsProvider>
           </ImpersonationProvider>
           <Toaster />

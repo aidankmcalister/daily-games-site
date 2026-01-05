@@ -186,10 +186,18 @@ export function usePlayedGames(gameIds: string[]): UsePlayedGamesResult {
     }
   }, [isAuthenticated]);
 
-  const clearLocalPlayed = useCallback(() => {
+  const clearLocalPlayed = useCallback(async () => {
     setPlayedIds(new Set());
     savePlayedIds(new Set());
-  }, []);
+
+    if (isAuthenticated) {
+      try {
+        await fetch("/api/user-games", { method: "DELETE" });
+      } catch (error) {
+        console.error("Failed to clear database played games:", error);
+      }
+    }
+  }, [isAuthenticated]);
 
   return {
     playedIds,

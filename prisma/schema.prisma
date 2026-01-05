@@ -60,6 +60,7 @@ model SiteConfig {
   topicColors                Json?
   maintenanceMode            Boolean  @default(false)
   welcomeMessage             String?
+  showWelcomeMessage        Boolean  @default(false)
   featuredGameIds            String[]
   minPlayStreak              Int      @default(1)
   enableCommunitySubmissions Boolean  @default(false)

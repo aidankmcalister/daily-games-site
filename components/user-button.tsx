@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useSession, signIn, signOut } from "@/lib/auth-client";
 import { useTheme } from "next-themes";
@@ -31,6 +32,11 @@ import {
   TrendingUp,
 } from "lucide-react";
 import type { Role } from "@/app/generated/prisma/client";
+import { GameSubmissionDialog } from "./game-submission-dialog";
+
+interface SiteConfig {
+  enableCommunitySubmissions: boolean;
+}
 
 const ROLES: Role[] = ["owner", "coowner", "admin", "member"];
 const ROLE_LABELS: Record<Role, string> = {
@@ -45,6 +51,17 @@ export function UserButton() {
   const { theme, setTheme } = useTheme();
   const { isActualOwner, viewAsRole, setViewAsRole, currentUser } =
     useImpersonation();
+  const [isSubmissionOpen, setIsSubmissionOpen] = useState(false);
+  const [config, setConfig] = useState<SiteConfig | null>(null);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => setConfig(data))
+      .catch((err) =>
+        console.error("Failed to fetch settings in UserButton:", err)
+      );
+  }, []);
 
   if (isPending) {
     return (
@@ -193,12 +210,18 @@ export function UserButton() {
           </a>
         </DropdownMenuItem>
 
-        <DropdownMenuSeparator />
+        {config?.enableCommunitySubmissions && (
+          <DropdownMenuItem onClick={() => setIsSubmissionOpen(true)}>
+            <TrendingUp className="mr-2 h-4 w-4" />
+            Suggest New Game
+          </DropdownMenuItem>
+        )}
 
         {["owner", "coowner", "admin"].includes(
           viewAsRole || currentUser?.role || ""
         ) && (
           <>
+            <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <a href="/admin">
                 <Settings className="mr-2 h-4 w-4" />
@@ -214,6 +237,11 @@ export function UserButton() {
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
+
+      <GameSubmissionDialog
+        open={isSubmissionOpen}
+        onOpenChange={setIsSubmissionOpen}
+      />
     </DropdownMenu>
   );
 }
