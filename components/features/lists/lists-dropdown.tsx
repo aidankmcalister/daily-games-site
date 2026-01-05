@@ -74,8 +74,8 @@ export function ListsDropdown({ gameId }: ListsDropdownProps) {
                 size="icon-sm"
                 onClick={(e) => e.stopPropagation()}
                 className={cn(
-                  "p-0 h-7 w-7 text-muted-foreground shrink-0 rounded-md",
-                  "opacity-0 group-hover:opacity-100 transition-opacity",
+                  "p-1 rounded-md text-muted-foreground shrink-0",
+                  "opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity",
                   "hover:bg-muted hover:text-foreground"
                 )}
               >

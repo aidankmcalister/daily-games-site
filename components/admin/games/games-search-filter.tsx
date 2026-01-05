@@ -40,20 +40,17 @@ export function GamesSearchFilter({
   onShowArchivedToggle,
 }: GamesSearchFilterProps) {
   return (
-    <div className="flex flex-col sm:flex-row gap-2">
-      <div className="flex-1 flex gap-2">
-        <Input
-          placeholder="Search games..."
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="flex-1 h-10 text-xs border-primary/20 hover:border-primary/50 focus:border-primary/50"
-        />
-        <DlesButton isActive={showArchived} onClick={onShowArchivedToggle}>
-          <Archive className="h-3.5 w-3.5" />
-          {showArchived ? "Hide Archived" : "Show Archived"}
-        </DlesButton>
-      </div>
-      <div className="flex gap-2">
+    <div className="flex flex-col gap-3 md:flex-row md:items-center">
+      {/* Search Row */}
+      <Input
+        placeholder="Search games..."
+        value={search}
+        onChange={(e) => onSearchChange(e.target.value)}
+        className="h-10 text-base md:text-xs border-primary/20 hover:border-primary/50 focus:border-primary/50 w-full md:flex-1 md:w-auto"
+      />
+
+      {/* Filters Grid */}
+      <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center md:w-auto">
         <MultiSelect
           options={[
             { value: "all", label: "All Topics" },
@@ -61,11 +58,9 @@ export function GamesSearchFilter({
           ]}
           value={topicFilter.length === 0 ? ["all"] : topicFilter}
           onChange={(newTopics) => {
-            // Normalize: treat empty topicFilter as ["all"] for comparison
             const effectiveCurrentTopics =
               topicFilter.length === 0 ? ["all"] : topicFilter;
 
-            // If "all" is newly selected (wasn't in previous filter), clear others
             if (
               newTopics.includes("all") &&
               !effectiveCurrentTopics.includes("all")
@@ -74,7 +69,6 @@ export function GamesSearchFilter({
               return;
             }
 
-            // If "all" was present and we selected something else, remove "all"
             if (
               effectiveCurrentTopics.includes("all") &&
               newTopics.length > 1
@@ -83,7 +77,6 @@ export function GamesSearchFilter({
               return;
             }
 
-            // If we deselected everything, revert to empty (which displays as "all")
             if (newTopics.length === 0) {
               onTopicFilterChange([]);
               return;
@@ -92,7 +85,7 @@ export function GamesSearchFilter({
             onTopicFilterChange(newTopics);
           }}
           placeholder="Topic"
-          className="w-[160px] h-10"
+          className="w-full sm:w-[160px] h-10"
           renderLabel={(option) => (
             <DlesTopic
               topic={option.value}
@@ -110,7 +103,7 @@ export function GamesSearchFilter({
           <SelectTrigger
             size="lg"
             className={cn(
-              "w-[140px] h-10 text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5",
+              "w-full sm:w-[140px] h-10 text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5",
               sortBy !== "title" && "bg-primary/5"
             )}
           >
@@ -137,6 +130,15 @@ export function GamesSearchFilter({
             </SelectItem>
           </SelectContent>
         </Select>
+
+        <DlesButton
+          isActive={showArchived}
+          onClick={onShowArchivedToggle}
+          className="col-span-2 sm:col-span-1 w-full sm:w-auto mt-1 sm:mt-0"
+        >
+          <Archive className="h-3.5 w-3.5" />
+          {showArchived ? "Hide Archived" : "Show Archived"}
+        </DlesButton>
       </div>
     </div>
   );

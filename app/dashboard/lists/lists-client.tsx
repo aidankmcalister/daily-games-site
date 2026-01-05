@@ -237,8 +237,8 @@ export function ListsClient({ initialLists }: ListsClientProps) {
                         key={game.id}
                         className="flex items-center justify-between p-2 rounded-md bg-muted/50 group hover:bg-muted/80 transition-colors"
                       >
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="text-sm font-medium truncate">
                             {game.title}
                           </span>
                           <DlesTopic topic={game.topic} className="text-xs" />

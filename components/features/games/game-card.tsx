@@ -139,7 +139,7 @@ export function GameCard({
                             onClick={handleHide}
                             className={cn(
                               "p-1 rounded-md text-muted-foreground shrink-0",
-                              "opacity-0 group-hover:opacity-100 transition-opacity",
+                              "opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity",
                               "hover:bg-muted hover:text-foreground"
                             )}
                           >

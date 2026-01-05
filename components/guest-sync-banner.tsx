@@ -3,21 +3,23 @@
 import { signIn } from "@/lib/auth-client";
 import { DlesButton } from "@/components/design/dles-button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, LogIn } from "lucide-react";
+import { ArrowRight, Lock } from "lucide-react";
 
 export function GuestSyncBanner() {
   return (
-    <Card className="rounded-lg border border-primary/20 bg-primary/5 p-3">
-      <CardContent className="flex flex-col sm:flex-row items-center justify-between gap-4 p-0">
-        <div className="flex items-center gap-3 text-sm text-muted-foreground">
-          <LogIn className="h-4 w-4" />
-          <span>Sign in to save history & create lists.</span>
+    <Card className="hidden sm:block rounded-lg border border-primary/10 bg-primary/5 p-2">
+      <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-0">
+        <div className="flex items-center gap-3 px-1">
+          <Lock className="h-4 w-4 text-primary shrink-0" />
+          <span className="text-sm font-medium text-muted-foreground leading-tight">
+            Sign in to save race history & create custom lists.
+          </span>
         </div>
 
         <DlesButton
           size="sm"
           variant="outline"
-          className="h-8 gap-2 text-xs w-full sm:w-auto font-medium border-primary/20 bg-background/50 hover:bg-primary/10 hover:border-primary/50 transition-all group"
+          className="w-full sm:w-auto h-9 gap-2 text-xs font-semibold bg-background hover:bg-muted border-primary/20 hover:border-primary/50 text-foreground transition-all group"
           onClick={() => signIn.social({ provider: "google" })}
         >
           Continue with Google

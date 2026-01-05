@@ -77,13 +77,22 @@ export default function AdminLayout({
         <AdminHeader canManageUsers={canManageUsers} />
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
-          <DlesButton isActive={isGamesTab} href="/admin/games">
+        {/* Tabs */}
+        <div className="grid grid-cols-2 md:flex md:flex-row gap-2 mb-6">
+          <DlesButton
+            isActive={isGamesTab}
+            href="/admin/games"
+            className="w-full md:w-auto"
+          >
             <Gamepad2 className="h-3.5 w-3.5" />
             Games
           </DlesButton>
           {canManageUsers && (
-            <DlesButton isActive={isUsersTab} href="/admin/users">
+            <DlesButton
+              isActive={isUsersTab}
+              href="/admin/users"
+              className="w-full md:w-auto"
+            >
               <Users className="h-3.5 w-3.5" />
               Users
             </DlesButton>
@@ -91,12 +100,17 @@ export default function AdminLayout({
           <DlesButton
             isActive={pathname === "/admin/submissions"}
             href="/admin/submissions"
+            className="w-full md:w-auto"
           >
             <TrendingUp className="h-3.5 w-3.5" />
             Submissions
           </DlesButton>
           {canManageSettings && (
-            <DlesButton isActive={isSettingsTab} href="/admin/settings">
+            <DlesButton
+              isActive={isSettingsTab}
+              href="/admin/settings"
+              className="w-full md:w-auto"
+            >
               <Settings className="h-3.5 w-3.5" />
               Settings
             </DlesButton>

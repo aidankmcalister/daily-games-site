@@ -166,23 +166,21 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
       </div>
 
       {/* User search and filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1">
-          <Input
-            placeholder="Search users..."
-            value={userSearch}
-            onChange={(e) => setUserSearch(e.target.value)}
-            className="max-w-md h-10 text-xs border-primary/20 hover:border-primary/50 focus:border-primary/50"
-          />
-        </div>
-        <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center">
+        <Input
+          placeholder="Search users..."
+          value={userSearch}
+          onChange={(e) => setUserSearch(e.target.value)}
+          className="h-10 text-base md:text-xs border-primary/20 hover:border-primary/50 focus:border-primary/50 w-full md:flex-1 md:w-auto"
+        />
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center md:w-auto">
           <Select
             value={userRoleFilter}
             onValueChange={(value) => setUserRoleFilter(value as Role | "all")}
           >
             <SelectTrigger
               size="lg"
-              className="w-[140px] text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5"
+              className="w-full sm:w-[140px] text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5"
             >
               <SelectValue placeholder="Role" />
             </SelectTrigger>
@@ -208,7 +206,7 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
           >
             <SelectTrigger
               size="lg"
-              className="w-[140px] text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5"
+              className="w-full sm:w-[140px] text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5"
             >
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -225,30 +223,32 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
         </div>
       </div>
 
-      <div className="rounded-md border bg-card">
-        <div className="divide-y">
-          {filteredUsers.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground text-sm">
-              No users found.
-            </div>
-          ) : (
-            filteredUsers.map((user) => (
-              <div
-                key={user.id}
-                className="px-4 py-3 hover:bg-muted/40 transition-colors"
-              >
-                <UserItem
-                  user={user}
-                  currentUserRole={effectiveRole as Role}
-                  assignableRoles={getAssignableRoles()}
-                  canChangeRole={canChangeUserRole}
-                  canDelete={canDeleteUser}
-                  onUpdateRole={handleUpdateRole}
-                  onDelete={handleDeleteUser}
-                />
+      <div className="rounded-md border bg-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <div className="divide-y">
+            {filteredUsers.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground text-sm">
+                No users found.
               </div>
-            ))
-          )}
+            ) : (
+              filteredUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className="px-4 py-3 hover:bg-muted/40 transition-colors"
+                >
+                  <UserItem
+                    user={user}
+                    currentUserRole={effectiveRole as Role}
+                    assignableRoles={getAssignableRoles()}
+                    canChangeRole={canChangeUserRole}
+                    canDelete={canDeleteUser}
+                    onUpdateRole={handleUpdateRole}
+                    onDelete={handleDeleteUser}
+                  />
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

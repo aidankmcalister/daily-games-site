@@ -71,32 +71,34 @@ export function HeaderFilters({
   ];
 
   return (
-    <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 no-scrollbar">
+    <div className="grid grid-cols-2 gap-2 w-full md:flex md:w-auto md:gap-2">
       {isAuthenticated && lists.length > 0 && (
-        <Select value={listFilter} onValueChange={onListFilterChange}>
-          <SelectTrigger
-            size="lg"
-            className={cn(
-              "w-[160px] h-10 text-sm border-primary/20 hover:border-primary/50 hover:bg-primary/5",
-              !isCompact && listFilter !== "all" && "bg-primary/5"
-            )}
-          >
-            <SelectValue placeholder="All Games" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">
-              <div className="flex items-center gap-2">
-                <Library className="h-4 w-4" />
-                <span>All Games</span>
-              </div>
-            </SelectItem>
-            {lists.map((l) => (
-              <SelectItem key={l.id} value={l.id}>
-                {l.name}
+        <div className="col-span-2 md:col-span-1 md:w-auto">
+          <Select value={listFilter} onValueChange={onListFilterChange}>
+            <SelectTrigger
+              size="lg"
+              className={cn(
+                "w-full md:w-[160px] h-10 text-sm border-primary/20 hover:border-primary/50 hover:bg-primary/5",
+                !isCompact && listFilter !== "all" && "bg-primary/5"
+              )}
+            >
+              <SelectValue placeholder="All Games" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">
+                <div className="flex items-center gap-2">
+                  <Library className="h-4 w-4" />
+                  <span>All Games</span>
+                </div>
               </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+              {lists.map((l) => (
+                <SelectItem key={l.id} value={l.id}>
+                  {l.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       )}
 
       <MultiSelect
@@ -105,7 +107,7 @@ export function HeaderFilters({
         onChange={handleTopicChange}
         placeholder="Category"
         className={cn(
-          "w-[200px] sm:w-[300px]",
+          "w-full md:w-[160px] lg:w-[220px]",
           !isCompact && topicFilter.length > 0 && !topicFilter.includes("all")
             ? "bg-primary/5"
             : ""
@@ -142,7 +144,7 @@ export function HeaderFilters({
         <SelectTrigger
           size="lg"
           className={cn(
-            "w-[110px] h-10 text-sm border-primary/20 hover:border-primary/50 hover:bg-primary/5",
+            "w-full md:w-[140px] text-xs h-10 border-primary/20 hover:border-primary/50 hover:bg-primary/5",
             !isCompact && sortBy !== "title" && "bg-primary/5"
           )}
         >

@@ -194,16 +194,20 @@ export function SettingsTab() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSave)} className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Site Configuration</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <ResetDefaultsDialog
               isOpen={isResetDialogOpen}
               onOpenChange={setIsResetDialogOpen}
               onReset={handleReset}
               diff={getDiff()}
             />
-            <DlesButton type="submit" disabled={!isDirty || isSaving}>
+            <DlesButton
+              type="submit"
+              disabled={!isDirty || isSaving}
+              className="flex-1 sm:flex-none"
+            >
               {isSaving ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (

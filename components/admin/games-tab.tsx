@@ -250,10 +250,11 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
           All Games ({filteredGames.length})
         </h2>
         {canManageGames && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <DlesButton
               onClick={() => fileInputRef.current?.click()}
               disabled={isSubmitting}
+              className="flex-1 sm:flex-none"
             >
               {isSubmitting ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -294,43 +295,45 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
         onShowArchivedToggle={() => setShowArchived(!showArchived)}
       />
 
-      <div className="rounded-md border bg-card">
-        {canManageGames && filteredGames.length > 0 && (
-          <div className="px-4 py-2 border-b flex items-center gap-4 text-xs text-muted-foreground bg-muted/30">
-            <input
-              type="checkbox"
-              checked={filteredGames.every((g) => selectedIds.has(g.id))}
-              onChange={(e) => handleSelectAll(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-            />
-            <span>Select All</span>
-          </div>
-        )}
-        <div className="divide-y relative">
-          {filteredGames.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground text-sm">
-              No games found.
+      <div className="rounded-md border bg-card overflow-hidden">
+        <div className="overflow-x-auto">
+          {canManageGames && filteredGames.length > 0 && (
+            <div className="px-4 py-2 border-b flex items-center gap-4 text-xs text-muted-foreground bg-muted/30">
+              <input
+                type="checkbox"
+                checked={filteredGames.every((g) => selectedIds.has(g.id))}
+                onChange={(e) => handleSelectAll(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <span>Select All</span>
             </div>
-          ) : (
-            filteredGames.map((game) => (
-              <div
-                key={game.id}
-                className="px-4 py-3 hover:bg-muted/40 transition-colors"
-              >
-                <GameItem
-                  game={game}
-                  isEditing={editingGameId === game.id}
-                  canManage={canManageGames}
-                  isSelected={selectedIds.has(game.id)}
-                  onSelect={(checked) => handleSelectOne(game.id, checked)}
-                  onEdit={() => setEditingGameId(game.id)}
-                  onCancelEdit={() => setEditingGameId(null)}
-                  onUpdate={handleUpdateGame}
-                  onDelete={handleDeleteGame}
-                />
-              </div>
-            ))
           )}
+          <div className="divide-y relative">
+            {filteredGames.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground text-sm">
+                No games found.
+              </div>
+            ) : (
+              filteredGames.map((game) => (
+                <div
+                  key={game.id}
+                  className="px-4 py-3 hover:bg-muted/40 transition-colors"
+                >
+                  <GameItem
+                    game={game}
+                    isEditing={editingGameId === game.id}
+                    canManage={canManageGames}
+                    isSelected={selectedIds.has(game.id)}
+                    onSelect={(checked) => handleSelectOne(game.id, checked)}
+                    onEdit={() => setEditingGameId(game.id)}
+                    onCancelEdit={() => setEditingGameId(null)}
+                    onUpdate={handleUpdateGame}
+                    onDelete={handleDeleteGame}
+                  />
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

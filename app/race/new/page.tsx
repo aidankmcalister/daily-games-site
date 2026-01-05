@@ -4,6 +4,19 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+  SelectLabel,
+} from "@/components/ui/select";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { useLists } from "@/lib/use-lists";
 import { Topic } from "@/app/generated/prisma/client";
 import { toast } from "sonner";
@@ -157,9 +170,28 @@ export default function NewRacePage() {
     }
   };
 
+  // Helper: Get selected game names for summary
+  const selectedGameNames = useMemo(
+    () =>
+      selectedGameIds
+        .map((id) => allGames.find((g) => g.id === id)?.title)
+        .filter(Boolean) as string[],
+    [selectedGameIds, allGames]
+  );
+
+  // Quick 5 random selection
+  const selectQuick5 = () => {
+    const randomGames = [...allGames]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 5);
+    setSelectedGameIds(randomGames.map((g) => g.id));
+    toast.info("Selected 5 random games!");
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 md:px-8 lg:px-12 animate-in fade-in slide-in-from-bottom-2 duration-500 pb-32">
-      <div className="flex items-start justify-between gap-4">
+    <div className="max-w-3xl mx-auto px-4 py-8 pb-32 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      {/* HEADER */}
+      <div className="flex items-start justify-between gap-4 mb-8">
         <PageHeader
           title="Start a Race"
           subtitle="Challenge your friends to see who can finish their daily games the fastest."
@@ -208,30 +240,6 @@ export default function NewRacePage() {
             onClear={() => setSelectedGameIds([])}
             topics={topics}
           />
-
-          <div className="pt-6">
-            <Button
-              className={cn(
-                "w-full h-14 text-sm font-black uppercase tracking-widest rounded-xl transition-all shadow-none border border-transparent",
-                selectedGameIds.length > 0
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.01]"
-                  : "bg-muted text-muted-foreground cursor-not-allowed border-border/30"
-              )}
-              onClick={handleCreateRace}
-              disabled={
-                isSubmitting || gamesLoading || selectedGameIds.length === 0
-              }
-            >
-              {isSubmitting ? (
-                <Loader2 className="mr-3 h-5 w-5 animate-spin" />
-              ) : (
-                <Flag className="mr-3 h-4 w-4" />
-              )}
-              {selectedGameIds.length > 0
-                ? `Create Race (${selectedGameIds.length} Games)`
-                : "Select Games"}
-            </Button>
-          </div>
         </div>
 
         {/* RIGHT COLUMN: Instructions & Selected Games */}

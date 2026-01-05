@@ -82,9 +82,11 @@ export function GamesHeader(props: GamesHeaderProps) {
         <div className="-mx-4 px-4 md:-mx-8 md:px-8 lg:-mx-12 lg:px-12">
           <div className="mx-auto max-w-7xl space-y-6">
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight">dles.fun</h1>
-                <p className="text-muted-foreground mt-1">
+              <div className="space-y-1">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+                  dles.fun
+                </h1>
+                <p className="hidden sm:block text-muted-foreground text-sm sm:text-base max-w-lg">
                   A curated list of daily games my friends and I play.
                 </p>
               </div>
@@ -103,34 +105,44 @@ export function GamesHeader(props: GamesHeaderProps) {
               </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-4">
-              <div className="flex flex-1 flex-col sm:flex-row items-center gap-3 w-full lg:w-auto min-w-0">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center">
+              {/* Row 1/Col 1 on Desktop: Search */}
+              <div className="w-full md:w-[280px] lg:w-[400px] shrink-0">
                 <HeaderSearch
                   query={searchQuery}
                   onChange={onSearchChange}
-                  className="w-full sm:max-w-xs md:max-w-sm lg:max-w-md shrink"
+                  className="w-full"
                   id="search-input-main"
                   showKbd
                 />
-                <HeaderFilters
-                  topicFilter={topicFilter}
-                  onTopicFilterChange={onTopicFilterChange}
-                  listFilter={listFilter}
-                  onListFilterChange={onListFilterChange}
-                  lists={lists}
-                  sortBy={sortBy}
-                  onSortChange={onSortChange}
-                  isAuthenticated={isAuthenticated}
-                />
               </div>
 
-              <div className="flex items-center gap-2 shrink-0 ml-auto lg:ml-0">
-                <DlesButton onClick={onRandom}>
+              {/* Row 2/Col 2 on Desktop: Filters */}
+              <HeaderFilters
+                topicFilter={topicFilter}
+                onTopicFilterChange={onTopicFilterChange}
+                listFilter={listFilter}
+                onListFilterChange={onListFilterChange}
+                lists={lists}
+                sortBy={sortBy}
+                onSortChange={onSortChange}
+                isAuthenticated={isAuthenticated}
+              />
+
+              {/* Row 3/Col 3 on Desktop: Actions */}
+              <div className="flex items-center gap-2 w-full md:w-auto md:ml-auto">
+                <DlesButton
+                  onClick={onRandom}
+                  className="flex-1 md:flex-none justify-center"
+                >
                   <Dices className="h-4 w-4" />
                   Feeling Lucky
                 </DlesButton>
 
-                <DlesButton className="text-primary" href="/race/new">
+                <DlesButton
+                  className="flex-1 md:flex-none justify-center text-primary"
+                  href="/race/new"
+                >
                   <Flag className="h-4 w-4" />
                   Race
                 </DlesButton>
@@ -141,7 +153,7 @@ export function GamesHeader(props: GamesHeaderProps) {
                     size="icon"
                     onClick={() => onShowHiddenChange(!showHidden)}
                     className={cn(
-                      "w-10",
+                      "w-10 shrink-0",
                       showHidden
                         ? "text-primary bg-primary/10"
                         : "text-muted-foreground"

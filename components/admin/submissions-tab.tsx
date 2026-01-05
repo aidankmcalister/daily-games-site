@@ -133,27 +133,29 @@ export function SubmissionsTab({
         </div>
       </div>
 
-      <div className="rounded-md border bg-card">
-        <div className="divide-y">
-          {filteredSubmissions.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground text-sm">
-              No submissions found.
-            </div>
-          ) : (
-            filteredSubmissions.map((sub) => (
-              <div
-                key={sub.id}
-                className="px-4 py-3 hover:bg-muted/40 transition-colors"
-              >
-                <SubmissionItem
-                  submission={sub}
-                  isProcessing={processingId === sub.id}
-                  canManage={canManageGames}
-                  onUpdateStatus={handleUpdateStatus}
-                />
+      <div className="rounded-md border bg-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <div className="divide-y">
+            {filteredSubmissions.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground text-sm">
+                No submissions found.
               </div>
-            ))
-          )}
+            ) : (
+              filteredSubmissions.map((sub) => (
+                <div
+                  key={sub.id}
+                  className="px-4 py-3 hover:bg-muted/40 transition-colors"
+                >
+                  <SubmissionItem
+                    submission={sub}
+                    isProcessing={processingId === sub.id}
+                    canManage={canManageGames}
+                    onUpdateStatus={handleUpdateStatus}
+                  />
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>
