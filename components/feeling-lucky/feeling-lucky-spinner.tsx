@@ -33,10 +33,14 @@ export function FeelingLuckySpinner({ currentGame }: FeelingLuckySpinnerProps) {
       </div>
 
       <div className="flex justify-center">
-        <Badge variant="outline" className="animate-pulse gap-1.5 font-normal">
+        <Button
+          disabled
+          variant="outline"
+          className="animate-pulse gap-1.5 p-2 font-normal"
+        >
           <Loader2 className="h-3 w-3 animate-spin" />
           Finding your next game...
-        </Badge>
+        </Button>
       </div>
     </div>
   );

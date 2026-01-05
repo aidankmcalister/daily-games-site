@@ -165,21 +165,21 @@ export function RaceResults({ race, currentUser }: RaceResultsProps) {
               "h-16 w-16 rounded-full flex items-center justify-center shadow-sm",
               isWinner
                 ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600"
-                : "bg-muted text-muted-foreground"
+                : "bg-red-100 dark:bg-red-900/30 text-red-600"
             )}
           >
             <Trophy className="h-8 w-8" />
           </div>
           <div>
             <h2 className="text-2xl font-black tracking-tight">
-              {isWinner ? "Champion!" : "Results"}
+              {isWinner ? "Victory" : "Defeat"}
             </h2>
             <p className="text-sm font-medium text-muted-foreground">
               {isWinner
-                ? "Excellent performance!"
+                ? "You finished first"
                 : `${
                     winner.user?.name ?? winner.guestName ?? "Opponent"
-                  } won the race.`}
+                  } finished first`}
             </p>
           </div>
         </div>
