@@ -3,19 +3,9 @@
 import { useMemo } from "react";
 import { useSession } from "@/lib/auth-client";
 import { format } from "date-fns";
-import {
-  Trophy,
-  Swords,
-  ArrowRight,
-  Zap,
-  Clock,
-  Calendar,
-  Eye,
-  Target,
-} from "lucide-react";
+import { Swords, ArrowRight, Zap, Clock, Eye, Users } from "lucide-react";
 import { DlesButton } from "@/components/design/dles-button";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 interface RaceStatsClientProps {
@@ -24,7 +14,7 @@ interface RaceStatsClientProps {
   playedDates: string[];
   categoryData: { name: string; count: number }[];
   hiddenGames: { id: string; title: string; topic: string }[];
-  races: any[]; // Prisma structure
+  races: any[];
 }
 
 export function RaceStatsClient({
@@ -43,25 +33,19 @@ export function RaceStatsClient({
 
     let wins = 0;
     let losses = 0;
-
-    // Streak calc
     let currentStreak = 0;
     let bestStreak = 0;
     let tempStreak = 0;
-
-    // Time calc
     let totalTime = 0;
     let timeCount = 0;
     let fastestRaceTime = Number.MAX_SAFE_INTEGER;
     let fastestRaceOpponent = "";
 
-    // Rival calc
     const rivals: Record<
       string,
       { name: string; wins: number; losses: number; games: number }
     > = {};
 
-    // Game calc (Frequency/Performance)
     const gameStats: Record<
       string,
       {
@@ -75,7 +59,6 @@ export function RaceStatsClient({
       }
     > = {};
 
-    // Sort races by date asc for streak calc
     const sortedRaces = [...races].sort(
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
@@ -87,14 +70,12 @@ export function RaceStatsClient({
 
       if (!myP || !oppP) return;
 
-      // Rivals
       const oppKey = oppP.userId || oppP.guestName || "Guest";
       const oppName = oppP.user?.name || oppP.guestName || "Guest";
       if (!rivals[oppKey])
         rivals[oppKey] = { name: oppName, wins: 0, losses: 0, games: 0 };
       rivals[oppKey].games++;
 
-      // Result logic
       const myScore = {
         completed: myP.completions?.filter((c: any) => !c.skipped).length || 0,
         time: myP.totalTime || Number.MAX_SAFE_INTEGER,
@@ -116,11 +97,9 @@ export function RaceStatsClient({
         wins++;
         tempStreak++;
         if (tempStreak > bestStreak) bestStreak = tempStreak;
-        currentStreak = tempStreak; // Since we are iterating chrono, current IS temp at end
+        currentStreak = tempStreak;
+        rivals[oppKey].losses++;
 
-        rivals[oppKey].losses++; // Opponent lost
-
-        // Track Wins per Game Topic/Name
         race.raceGames.forEach((rg: any) => {
           const gid = rg.game.id;
           if (!gameStats[gid])
@@ -134,15 +113,14 @@ export function RaceStatsClient({
               playCount: 0,
             };
           gameStats[gid].count++;
-          gameStats[gid].wins++; // Count wins involving this game
+          gameStats[gid].wins++;
         });
       } else {
         losses++;
         tempStreak = 0;
         currentStreak = 0;
-        rivals[oppKey].wins++; // Opponent won
+        rivals[oppKey].wins++;
 
-        // Track Games Played (even if lost)
         race.raceGames.forEach((rg: any) => {
           const gid = rg.game.id;
           if (!gameStats[gid])
@@ -159,7 +137,6 @@ export function RaceStatsClient({
         });
       }
 
-      // Time Stats
       if (myP.totalTime) {
         totalTime += myP.totalTime;
         timeCount++;
@@ -169,7 +146,6 @@ export function RaceStatsClient({
         }
       }
 
-      // Game Mastery (Splits)
       const myCompletions = myP.completions || [];
       const raceGamesSorted = [...race.raceGames].sort(
         (a: any, b: any) => a.order - b.order
@@ -209,15 +185,13 @@ export function RaceStatsClient({
       races.length > 0 ? Math.round((wins / races.length) * 100) : 0;
     const avgTime = timeCount > 0 ? Math.round(totalTime / timeCount) : 0;
 
-    // Process Rivals
     const rivalList = Object.values(rivals)
       .sort((a, b) => b.games - a.games)
       .slice(0, 3);
 
-    // Process Games
     const gameMastery = Object.values(gameStats)
       .filter((g) => g.playCount > 0)
-      .sort((a, b) => b.playCount - a.playCount); // Sort by plays
+      .sort((a, b) => b.playCount - a.playCount);
 
     return {
       wins,
@@ -243,241 +217,172 @@ export function RaceStatsClient({
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-8 mt-6">
-      {/* 1. COMPREHENSIVE TRACKER DASHBOARD */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* A. PERFORMANCE MATRIX */}
-        <Card className="lg:col-span-2 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-            <Trophy className="h-64 w-64 rotate-12" />
-          </div>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-              <Swords className="h-4 w-4" /> Performance Matrix
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col sm:flex-row gap-8 items-center sm:items-start">
-              {/* Circle Gauge */}
-              <div className="relative shrink-0">
-                <div className="h-32 w-32 relative">
-                  <svg
-                    className="h-full w-full -rotate-90"
-                    viewBox="0 0 100 100"
-                  >
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      strokeWidth="8"
-                      className="stroke-muted/20"
-                    />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="45"
-                      fill="none"
-                      strokeWidth="8"
-                      className={cn(
-                        "stroke-primary transition-all duration-1000 ease-out",
-                        stats && stats.winRate > 50
-                          ? "stroke-emerald-500"
-                          : "stroke-amber-500"
-                      )}
-                      strokeDasharray={`${(stats?.winRate || 0) * 2.83} 283`}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-3xl font-bold tracking-tighter">
-                      {stats?.winRate || 0}%
-                    </span>
-                    <span className="text-[10px] uppercase font-bold text-muted-foreground">
-                      Win Rate
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Stats Grid */}
-              <div className="flex-1 grid grid-cols-2 gap-y-6 gap-x-12 w-full">
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">
-                    Career Record
-                  </p>
-                  <div className="text-3xl font-bold tracking-tight">
-                    {stats?.wins} - {stats?.losses}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Total Races: {stats?.total}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">
-                    Current Streak
-                  </p>
-                  <div className="text-3xl font-bold tracking-tight flex items-center gap-2">
-                    {stats?.currentStreak}{" "}
-                    <Zap
-                      className={cn(
-                        "h-5 w-5",
-                        stats?.currentStreak
-                          ? "text-amber-500 fill-amber-500"
-                          : "text-muted"
-                      )}
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Best: {stats?.bestStreak}
-                  </p>
-                </div>
-                <div className="col-span-2 border-t pt-4 flex gap-8">
-                  <div>
-                    <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">
-                      Avg Pace
-                    </p>
-                    <div className="text-2xl font-mono font-bold">
-                      {stats ? formatTime(stats.avgTime) : "—"}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-[10px] uppercase font-bold text-muted-foreground mb-1">
-                      Fastest Race
-                    </p>
-                    <div className="text-2xl font-mono font-bold text-emerald-500">
-                      {stats ? formatTime(stats.fastestRaceTime) : "—"}
-                    </div>
-                    <p className="text-[10px] text-muted-foreground">
-                      vs {stats?.fastestRaceOpponent || "—"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* B. RIVALS LEADERBOARD */}
-        <Card className="flex flex-col">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-              <Target className="h-4 w-4" /> Top Rivals
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1">
-            {stats?.rivalList.length ? (
-              <div className="space-y-4">
-                {stats.rivalList.map((rival, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center justify-between group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center font-bold text-xs">
-                        {rival.name.charAt(0)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold leading-none">
-                          {rival.name}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">
-                          {rival.games} races
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-sm font-mono font-bold text-emerald-500">
-                        {rival.wins}W
-                      </span>
-                      <span className="text-xs font-mono text-muted-foreground mx-1">
-                        -
-                      </span>
-                      <span className="text-sm font-mono font-bold text-rose-500">
-                        {rival.losses}L
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center text-muted-foreground text-center p-4">
-                <p className="text-sm">No rivals yet.</p>
-                <p className="text-xs opacity-60">Race to build history!</p>
-              </div>
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 space-y-6 mt-6">
+      {/* Stats Overview Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="rounded-xl border border-border/40 bg-card p-4">
+          <p className="text-micro text-muted-foreground/60">Record</p>
+          <p className="text-2xl font-bold tracking-tight mt-1">
+            {stats?.wins ?? 0} - {stats?.losses ?? 0}
+          </p>
+        </div>
+        <div className="rounded-xl border border-border/40 bg-card p-4">
+          <p className="text-micro text-muted-foreground/60">Win Rate</p>
+          <p className="text-2xl font-bold tracking-tight mt-1">
+            {stats?.winRate ?? 0}%
+          </p>
+        </div>
+        <div className="rounded-xl border border-border/40 bg-card p-4">
+          <p className="text-micro text-muted-foreground/60">Current Streak</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-2xl font-bold tracking-tight">
+              {stats?.currentStreak ?? 0}
+            </p>
+            {(stats?.currentStreak ?? 0) > 0 && (
+              <Zap className="h-4 w-4 text-amber-500 fill-amber-500" />
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
+        <div className="rounded-xl border border-border/40 bg-card p-4">
+          <p className="text-micro text-muted-foreground/60">Avg Time</p>
+          <p className="text-2xl font-bold tracking-tight tabular-nums mt-1">
+            {stats ? formatTime(stats.avgTime) : "—"}
+          </p>
+        </div>
       </div>
 
-      {/* 2. GAME MASTERY */}
-      {stats?.gameMastery.length ? (
-        <Card>
-          <CardHeader className="pb-4">
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-              <Clock className="h-4 w-4" /> Game Mastery
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
-              {stats.gameMastery.slice(0, 12).map((game) => (
-                <div
-                  key={game.name}
-                  className="bg-card hover:bg-muted/5 transition-colors rounded-xl p-3 border border-border/40 flex flex-col justify-between gap-2"
-                >
-                  <div>
-                    <p
-                      className="text-xs font-bold truncate tracking-tight"
-                      title={game.name}
-                    >
-                      {game.name}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground">
-                      {game.playCount} plays
-                    </p>
-                  </div>
-                  <div>
-                    <div className="text-lg font-mono font-bold tracking-tight">
-                      {formatTime(game.totalSplit / game.playCount)}
+      {/* Two Column Layout */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* Rivals */}
+        <div className="rounded-xl border border-border/40 bg-card p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Users className="h-4 w-4 text-muted-foreground" />
+            <h3 className="text-heading-card">Top Rivals</h3>
+          </div>
+          {stats?.rivalList.length ? (
+            <div className="space-y-3">
+              {stats.rivalList.map((rival, i) => (
+                <div key={i} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-muted/50 flex items-center justify-center text-body-small font-bold">
+                      {rival.name.charAt(0)}
                     </div>
-                    <p className="text-[10px] text-emerald-500 font-mono">
-                      Best: {formatTime(game.bestSplit)}
-                    </p>
+                    <div>
+                      <p className="text-body font-medium">{rival.name}</p>
+                      <p className="text-micro text-muted-foreground/60">
+                        {rival.games} races
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-body-small tabular-nums">
+                    <span className="text-emerald-500 font-bold">
+                      {rival.wins}W
+                    </span>
+                    <span className="text-muted-foreground mx-1">-</span>
+                    <span className="text-rose-500 font-bold">
+                      {rival.losses}L
+                    </span>
                   </div>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          ) : (
+            <p className="text-body-small text-muted-foreground text-center py-6">
+              No rivals yet. Start racing!
+            </p>
+          )}
+        </div>
+
+        {/* Best Times */}
+        <div className="rounded-xl border border-border/40 bg-card p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <h3 className="text-heading-card">Best Times</h3>
+          </div>
+          <div className="space-y-4">
+            <div>
+              <p className="text-micro text-muted-foreground/60">
+                Fastest Race
+              </p>
+              <p className="text-2xl font-bold tabular-nums text-emerald-500 mt-1">
+                {stats ? formatTime(stats.fastestRaceTime) : "—"}
+              </p>
+              {stats?.fastestRaceOpponent && (
+                <p className="text-micro text-muted-foreground/60 mt-0.5">
+                  vs {stats.fastestRaceOpponent}
+                </p>
+              )}
+            </div>
+            <div className="border-t border-border/20 pt-4">
+              <p className="text-micro text-muted-foreground/60">Best Streak</p>
+              <p className="text-2xl font-bold tracking-tight mt-1">
+                {stats?.bestStreak ?? 0}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Game Mastery */}
+      {stats?.gameMastery.length ? (
+        <div className="rounded-xl border border-border/40 bg-card p-4">
+          <div className="flex items-center gap-2 mb-4">
+            <Swords className="h-4 w-4 text-muted-foreground" />
+            <h3 className="text-heading-card">Game Mastery</h3>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {stats.gameMastery.slice(0, 12).map((game) => (
+              <div
+                key={game.name}
+                className="rounded-lg border border-border/30 p-3 bg-muted/20"
+              >
+                <p
+                  className="text-body-small font-medium truncate"
+                  title={game.name}
+                >
+                  {game.name}
+                </p>
+                <p className="text-micro text-muted-foreground/60">
+                  {game.playCount} plays
+                </p>
+                <p className="text-lg font-bold tabular-nums mt-2">
+                  {formatTime(Math.round(game.totalSplit / game.playCount))}
+                </p>
+                <p className="text-micro text-emerald-500 tabular-nums">
+                  Best: {formatTime(game.bestSplit)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       ) : null}
 
-      {/* 2. HISTORY LOG */}
+      {/* Race History */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between px-1">
+        <div className="flex items-center justify-between">
           <div className="flex items-baseline gap-3">
-            <h3 className="text-lg font-bold tracking-tight">Race History</h3>
-            <p className="font-mono text-xs text-muted-foreground hidden sm:inline-block">
+            <h3 className="text-heading-section">Race History</h3>
+            <span className="text-body-small text-muted-foreground/60 tabular-nums">
               {races.length} races
-            </p>
+            </span>
           </div>
-          <DlesButton
-            href="/race/new"
-            size="sm"
-            className="h-8 text-xs font-bold tracking-wider"
-          >
-            <Swords className="mr-2 h-3 w-3" />
-            Start New Race
+          <DlesButton href="/race/new" size="sm">
+            <Swords className="mr-2 h-3.5 w-3.5" />
+            Start Race
           </DlesButton>
         </div>
 
-        <div className="rounded-md border bg-card overflow-hidden shadow-sm">
+        <div className="rounded-xl border border-border/40 bg-card overflow-hidden">
           {races.length === 0 ? (
-            <div className="p-12 text-center text-muted-foreground text-sm">
-              No completed races found. Start a race to build your history!
+            <div className="p-12 text-center">
+              <p className="text-body text-muted-foreground">
+                No completed races yet. Start a race to build your history!
+              </p>
             </div>
           ) : (
-            <div className="divide-y divide-border/40">
-              <div className="grid grid-cols-12 gap-4 p-3 bg-muted/10 text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/40">
+            <div className="divide-y divide-border/30">
+              {/* Header */}
+              <div className="grid grid-cols-12 gap-4 p-3 bg-muted/30 text-micro text-muted-foreground/60">
                 <div className="col-span-2 sm:col-span-1">Result</div>
                 <div className="col-span-5 sm:col-span-4">Opponent</div>
                 <div className="col-span-3 sm:col-span-2">Date</div>
@@ -487,6 +392,7 @@ export function RaceStatsClient({
                 </div>
                 <div className="hidden sm:block sm:col-span-1"></div>
               </div>
+              {/* Rows */}
               {races.map((race) => {
                 const myP = race.participants.find(
                   (p: any) => p.userId === session?.user?.id
@@ -521,40 +427,40 @@ export function RaceStatsClient({
                 return (
                   <div
                     key={race.id}
-                    className="grid grid-cols-12 gap-4 p-3 items-center hover:bg-muted/30 transition-colors group text-sm"
+                    className="grid grid-cols-12 gap-4 p-3 items-center hover:bg-muted/20 transition-colors group"
                   >
                     <div className="col-span-2 sm:col-span-1">
                       <Badge
                         variant="secondary"
                         className={cn(
-                          "text-[10px] h-5 px-1.5 rounded-sm font-bold justify-center w-fit",
+                          "text-[9px] font-bold h-5 px-1.5 rounded",
                           result === "WON"
-                            ? "bg-emerald-500/5 text-emerald-500 border-emerald-500/20"
-                            : "bg-rose-500/5 text-rose-500 border-rose-500/20"
+                            ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/20"
+                            : "bg-rose-500/10 text-rose-500 border-rose-500/20"
                         )}
                       >
                         {result}
                       </Badge>
                     </div>
-                    <div className="col-span-5 sm:col-span-4 font-medium truncate">
+                    <div className="col-span-5 sm:col-span-4 text-body font-medium truncate">
                       vs {oppName}
                     </div>
-                    <div className="col-span-3 sm:col-span-2 text-muted-foreground text-xs truncate">
+                    <div className="col-span-3 sm:col-span-2 text-body-small text-muted-foreground truncate">
                       {format(new Date(race.createdAt), "MMM d")}
                     </div>
-                    <div className="col-span-2 sm:col-span-2 text-right font-mono text-xs">
+                    <div className="col-span-2 sm:col-span-2 text-right text-body-small tabular-nums">
                       {Math.floor(myScore.time / 60)}:
                       {(myScore.time % 60).toString().padStart(2, "0")}
                     </div>
-                    <div className="hidden sm:block sm:col-span-2 text-right text-xs text-muted-foreground">
+                    <div className="hidden sm:block sm:col-span-2 text-right text-body-small text-muted-foreground">
                       {race.raceGames.length}
                     </div>
                     <div className="hidden sm:block sm:col-span-1 text-right">
                       <DlesButton
                         href={`/race/${race.id}/results`}
                         variant="ghost"
-                        size="icon"
-                        className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                        size="icon-sm"
+                        className="h-6 w-6 opacity-0 group-hover:opacity-100"
                       >
                         <ArrowRight className="h-3 w-3" />
                       </DlesButton>
@@ -567,24 +473,27 @@ export function RaceStatsClient({
         </div>
       </div>
 
-      {/* HIDDEN GAMES */}
+      {/* Hidden Games */}
       {hiddenGames.length > 0 && (
-        <div className="rounded-md border bg-card p-4 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold flex items-center gap-2">
-              <Eye className="h-4 w-4" /> Hidden Games
-            </h3>
-            <Badge variant="secondary">{hiddenGames.length}</Badge>
+        <div className="rounded-xl border border-border/40 bg-card p-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Eye className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-heading-card">Hidden Games</h3>
+            </div>
+            <Badge variant="secondary" className="text-micro">
+              {hiddenGames.length}
+            </Badge>
           </div>
-          <div className="divide-y border rounded-md">
+          <div className="divide-y divide-border/30 rounded-lg border border-border/30">
             {hiddenGames.map((game) => (
               <div
                 key={game.id}
-                className="flex items-center justify-between p-3 py-2 text-sm"
+                className="flex items-center justify-between p-3"
               >
-                <span>{game.title}</span>
+                <span className="text-body">{game.title}</span>
                 <button
-                  className="text-primary hover:underline text-xs"
+                  className="text-body-small text-primary hover:underline"
                   onClick={() => {
                     fetch(`/api/user-games/${game.id}`, {
                       method: "PATCH",

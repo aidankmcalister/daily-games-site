@@ -205,7 +205,7 @@ export function RaceLobby({ race, currentUser, onRefresh }: RaceLobbyProps) {
                   <Loader2 className="h-4 w-4 animate-spin" />
                   Waiting for Opponent...
                 </Button>
-                <p className="text-[10px] text-muted-foreground/60 font-medium italic">
+                <p className="text-micro text-muted-foreground/60 italic">
                   Invite a friend with the link above
                 </p>
               </div>

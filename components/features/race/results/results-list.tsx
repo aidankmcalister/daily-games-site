@@ -42,9 +42,7 @@ export function ResultsList({
     <div className="space-y-4">
       {/* Header Label */}
       <div className="px-1 flex items-center justify-between mb-2">
-        <span className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-          Breakdown
-        </span>
+        <span className="text-micro text-muted-foreground/60">Breakdown</span>
       </div>
 
       <Card className="border-border/60 shadow-sm overflow-hidden">
@@ -77,7 +75,7 @@ export function ResultsList({
                     <a
                       href={game.game.link}
                       target="_blank"
-                      className="font-bold text-sm tracking-tight hover:underline underline-offset-4 decoration-muted-foreground/30"
+                      className="text-body font-bold tracking-tight hover:underline underline-offset-4 decoration-muted-foreground/30"
                     >
                       {game.game.title}
                     </a>
@@ -124,9 +122,7 @@ export function ResultsList({
 
             {/* Total Row */}
             <div className="p-3 px-4 bg-muted/5 border-t border-border/40 flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
-                Total
-              </span>
+              <span className="text-micro text-muted-foreground">Total</span>
               <div className="flex items-center gap-4">
                 {sortedParticipants.map((p, idx) => {
                   const isMe = myParticipantId

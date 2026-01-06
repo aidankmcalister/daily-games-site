@@ -316,8 +316,8 @@ export function GamesClient({
           <div className="bg-muted/50 rounded-full p-4 mb-4">
             <Search className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h3 className="text-lg font-semibold">No games found</h3>
-          <p className="text-muted-foreground mt-2 max-w-sm">
+          <h3 className="text-heading-section">No games found</h3>
+          <p className="text-body text-muted-foreground mt-2 max-w-sm">
             We couldn't find any games matching your current search and filters.
           </p>
           <DlesButton

@@ -149,9 +149,7 @@ export function ListsClient({ initialLists }: ListsClientProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground/60">
-          Your Game Lists
-        </h2>
+        <h2 className="text-micro text-muted-foreground/60">Your Game Lists</h2>
         <Dialog open={isCreating} onOpenChange={setIsCreating}>
           <DialogTrigger asChild>
             <DlesButton size="sm" className="gap-2">
@@ -161,13 +159,13 @@ export function ListsClient({ initialLists }: ListsClientProps) {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[400px] p-0 gap-0 overflow-hidden bg-card border-border/60">
             <DialogHeader className="p-4 py-3 border-b border-border/40 bg-muted/20">
-              <DialogTitle className="text-sm font-black uppercase tracking-widest text-muted-foreground">
+              <DialogTitle className="text-micro text-muted-foreground">
                 Create New List
               </DialogTitle>
             </DialogHeader>
             <div className="p-4 space-y-4">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">
+                <label className="text-micro text-muted-foreground/70">
                   List Name
                 </label>
                 <Input
@@ -184,7 +182,7 @@ export function ListsClient({ initialLists }: ListsClientProps) {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70">
+                <label className="text-micro text-muted-foreground/70">
                   Color Theme
                 </label>
                 <div className="grid grid-cols-6 gap-2">
@@ -273,11 +271,11 @@ export function ListsClient({ initialLists }: ListsClientProps) {
                         className="h-7 text-sm font-semibold -ml-2 px-2 bg-background/80"
                       />
                     ) : (
-                      <h3 className="font-black text-base tracking-tight truncate">
+                      <h3 className="text-heading-card truncate">
                         {list.name}
                       </h3>
                     )}
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 mt-1">
+                    <p className="text-micro text-muted-foreground/60 mt-1">
                       {list.games.length}{" "}
                       {list.games.length === 1 ? "game" : "games"}
                     </p>

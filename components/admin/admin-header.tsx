@@ -37,7 +37,7 @@ export function AdminHeader({ canManageUsers }: { canManageUsers: boolean }) {
       >
         <Badge
           className={cn(
-            "capitalize text-xs",
+            "capitalize text-body-small",
             ROLE_COLORS[effectiveRole || "member"],
             viewAsRole && "border-dashed border-2"
           )}

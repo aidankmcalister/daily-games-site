@@ -1,169 +1,193 @@
-# dles.fun Design System
+# Design Guidelines
 
-extracted from code analysis on 2026-01-05
-
-## 1. Color System
-
-The system uses `oklch` values defined in `app/globals.css` via Tailwind v4 CSS variables.
-
-### Semantic Palette (Light/Dark Mode)
-
-| Token                  | Light Value                 | Dark Value                     | Usage                         |
-| ---------------------- | --------------------------- | ------------------------------ | ----------------------------- |
-| `--background`         | `oklch(1 0 0)` (White)      | `oklch(0.145 0 0)` (Dark Zinc) | Page background               |
-| `--foreground`         | `oklch(0.145 0 0)`          | `oklch(0.985 0 0)`             | Main text                     |
-| `--primary`            | `oklch(0.205 0 0)` (Black)  | `oklch(0.87 0 0)` (White)      | Primary actions/buttons       |
-| `--primary-foreground` | `oklch(0.985 0 0)`          | `oklch(0.205 0 0)`             | Text on primary               |
-| `--secondary`          | `oklch(0.97 0 0)`           | `oklch(0.269 0 0)`             | Secondary buttons/backgrounds |
-| `--muted`              | `oklch(0.97 0 0)`           | `oklch(0.269 0 0)`             | Muted backgrounds             |
-| `--muted-foreground`   | `oklch(0.556 0 0)`          | `oklch(0.708 0 0)`             | Secondary text                |
-| `--border`             | `oklch(0.922 0 0)`          | `oklch(1 0 0 / 10%)`           | Borders                       |
-| `--card`               | `oklch(1 0 0)`              | `oklch(0.205 0 0)`             | Card background               |
-| `--destructive`        | `oklch(0.58 0.22 27)` (Red) | `oklch(0.704 0.191 22.216)`    | Error states                  |
-
-### Topic Colors (from `lib/constants.ts`)
-
-Used for Badges and Topic Indicators. Scale pattern: `bg-{color}-500/20 text-{color}-700` (Light) / `text-{color}-300` (Dark).
-
-- **Words**: Blue
-- **Geography**: Green
-- **Trivia**: Yellow
-- **Entertainment**: Pink (implied from previous context, currently 'Movies/TV' is Violet, 'Music' is Rose)
-- **Nature**: Emerald
-- **Food**: Orange
-- **Sports**: Cyan
-- ...and more (Logic: Slate, History: Amber).
-
-### Status Colors
-
-- **Success**: `text-emerald-500`
-- **Warning**: `text-amber-500`
-- **Danger**: `text-rose-500`
+A comprehensive design system for dles.fun establishing consistent typography, spacing, colors, and component patterns.
 
 ---
 
-## 2. Typography
+## Core Aesthetic
 
-**Font Family**: `JetBrains Mono` (via var `--font-jetbrains-mono` in `globals.css`).
-_Note: Design guidelines mention "JetBrains Mono", and code now implements it._
+**Philosophy:** Dark Terminal Premium
+
+- Clean, minimal interfaces with monospace typography
+- Subtle borders and backgrounds, never heavy
+- Purposeful animations and micro-interactions
+
+---
+
+## Typography
+
+### Font Stack
+
+```css
+--font-heading: var(--font-jetbrains);
+--font-body: var(--font-jetbrains);
+```
+
+### Text Scale
+
+| Class                   | Size        | Weight        | Tracking                   | Usage               |
+| ----------------------- | ----------- | ------------- | -------------------------- | ------------------- |
+| `.text-heading-page`    | `text-3xl`  | `font-black`  | `tracking-tight`           | Page titles         |
+| `.text-heading-section` | `text-lg`   | `font-bold`   | —                          | Section headers     |
+| `.text-heading-card`    | `text-base` | `font-bold`   | `tracking-tight`           | Card titles         |
+| `.text-body`            | `text-sm`   | `font-medium` | —                          | Body text           |
+| `.text-body-small`      | `text-xs`   | `font-medium` | —                          | Small text, buttons |
+| `.text-micro`           | `10px`      | `font-bold`   | `uppercase tracking-wider` | Labels, badges      |
+
+### Usage Examples
+
+```tsx
+// Page title
+<h1 className="text-heading-page text-foreground">Lists</h1>
+
+// Section header
+<h2 className="text-heading-section text-foreground">Your Game Lists</h2>
+
+// Micro label
+<span className="text-micro text-muted-foreground">4 games</span>
+```
+
+---
+
+## Spacing
 
 ### Scale
 
-| Role              | Class                                              | Size/Weight     | Usage                              |
-| ----------------- | -------------------------------------------------- | --------------- | ---------------------------------- |
-| **Page Title**    | `text-2xl font-bold tracking-tight`                | ~1.5rem / 700   | Main page headers (`h1`)           |
-| **Section Title** | `text-lg font-semibold`                            | ~1.125rem / 600 | Major sections                     |
-| **Card Title**    | `text-sm font-bold`                                | 0.875rem / 700  | Card headers                       |
-| **Body Default**  | `text-sm`                                          | 0.875rem        | Standard text                      |
-| **Small Label**   | `text-xs font-medium`                              | 0.75rem / 500   | Button text, secondary labels      |
-| **Micro Label**   | `text-[10px] font-black uppercase tracking-widest` | 0.625rem / 900  | Steps, decorative labels (Race UI) |
+| Token     | Tailwind             | Pixels | Usage                  |
+| --------- | -------------------- | ------ | ---------------------- |
+| `space-1` | `gap-1`, `p-1`       | 4px    | Tight internal spacing |
+| `space-2` | `gap-2`, `p-2`       | 8px    | Component internal     |
+| `space-3` | `gap-3`, `p-3`       | 12px   | Related elements       |
+| `space-4` | `gap-4`, `p-4`       | 16px   | Card padding           |
+| `space-6` | `gap-6`, `space-y-6` | 24px   | Section spacing        |
+| `space-8` | `py-8`               | 32px   | Page sections          |
+
+### Page Layout
+
+```tsx
+// Standard page container
+<main className="min-h-screen px-4 py-8 md:px-8 lg:px-12">
+  <div className="mx-auto max-w-7xl">{/* content */}</div>
+</main>
+```
 
 ---
 
-## 3. Spacing & Layout
+## Colors
 
-The system appears to be `4px` based (Tailwind standard).
+### Semantic Colors (CSS Variables)
 
-### Global Layout
+- `--background` / `--foreground` — Base colors
+- `--muted` / `--muted-foreground` — Secondary text, disabled states
+- `--primary` / `--primary-foreground` — Actions, brand emphasis
+- `--destructive` — Error states, delete actions
+- `--border` / `--border-subtle` — Dividers, card borders
 
-- **Container**: `max-w-7xl` (`mx-auto`)
-- **Page Padding**: `px-4 py-8 md:px-8 lg:px-12`
-- **Section Spacing**: `space-y-4` (tight) or `space-y-8` (loose)
+### Topic Colors
 
-### Component Spacing
+Located in `lib/constants.ts`:
 
-- **Card Padding**: `p-4` (Default), `p-3` (Small/Mobile)
-- **Grid Gaps**: `gap-3` or `gap-4`
+- `TOPIC_COLORS` — Badge styling (bg + border + text)
+- `TOPIC_BAR_COLORS` — Solid fills for progress bars
+- `TOPIC_SHADOWS` — Hover glow effects
+
+### List Colors
+
+- `LIST_COLORS` — 18-color palette for custom lists
+- `LIST_CARD_STYLES` — Card styling with dot indicators
 
 ---
 
-## 4. Components
+## Components
 
 ### Buttons
 
-**Standard Button (`components/ui/button.tsx`)**
+Use `DlesButton` which extends shadcn `Button`:
 
-- **Default Size**: `h-7 px-2 text-xs` (Very Compact)
-- **Variants**: `default` (Solid Primary), `outline` (Border), `ghost` (Hover only), `secondary`.
-- **Radius**: `rounded-md`
+```tsx
+// Default (outline)
+<DlesButton>Action</DlesButton>
 
-**DlesButton (`components/ui/dles-button.tsx`) - _New Standard_**
+// Primary
+<DlesButton variant="default">Save</DlesButton>
 
-- **Default Size**: `h-10` (Standard Height)
-- **Text**: `text-xs font-medium`
-- **Style**: Implicit `outline` (`border-primary/20 hover:bg-primary/5`)
-- **Animation**: `transition-colors` (plus `hover:scale` in some contexts from previous tasks)
+// Ghost
+<DlesButton variant="ghost" size="icon"><Icon /></DlesButton>
 
-### Cards (`components/ui/card.tsx`)
-
-- **Background**: `bg-card`
-- **Border**: `ring-1 ring-foreground/10` (or `border border-border` in overrides)
-- **Radius**: `rounded-lg`
-- **Shadow**: None by default, minimal borders.
-
-### Inputs
-
-- **Height**: `h-10` (Standard)
-- **Background**: `bg-muted` or `bg-transparent`
-- **Border**: `border-border` focus `border-primary/30`
-- **Radius**: `rounded-md`
-
-### Badges
-
-- **Style**: `rounded-full` or `rounded-sm` (Race UI).
-- **Size**: `text-[10px]` (Race UI) or standard `text-xs`.
-
----
-
-## 5. Design Rules & Patterns
-
-1.  **"Dark Terminal Premium" Aesthetic**: High contrast, crisp borders, minimal shadows.
-2.  **Border Radius**:
-    - `rounded-md` (Buttons, Inputs)
-    - `rounded-lg` (Cards, Containers)
-    - `rounded-xl` (Larger containers in Race UI)
-3.  **Shadows**: Generally avoided in favor of borders (`ring-1`, `border`). Hover states use `bg-primary/5` rather than shadow lift.
-4.  **Icons**: Lucide React. Sizes `h-3.5` (Buttons), `h-4` (Standard), `h-5` (Feature).
-
----
-
-## 6. CSS Variables (Tailwind v4)
-
-```css
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --card: oklch(1 0 0);
-  --border: oklch(0.922 0 0);
-  --radius: 0.625rem;
-  --font-geist-mono: "Geist Mono", monospace;
-}
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --primary: oklch(0.87 0 0);
-  --card: oklch(0.205 0 0);
-  --border: oklch(1 0 0 / 10%);
-}
+// With href (renders as Link)
+<DlesButton href="/path">Navigate</DlesButton>
 ```
 
-## 7. Inconsistencies Detected
+**Sizes:** `default` (h-10), `sm` (h-9), `lg` (h-11), `icon` (h-10 w-10), `icon-sm` (h-8 w-8)
 
-1.  **Button Sizing**:
+### Cards
 
-    - `components/ui/button.tsx` defaults to `h-7` (Compact).
-    - `DlesButton` and `app/race/new` use `h-10` (Standard).
-    - _Recommendation_: Standardize on `h-10` for main interactions.
+#### Standard Card
 
-2.  **Font Family**:
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Subtitle</CardDescription>
+  </CardHeader>
+  <CardContent>Content</CardContent>
+</Card>
+```
 
-    - Code uses `Geist Mono`.
-    - Old Guidelines verify `JetBrains Mono`.
-    - _Reality_: Geist Mono is live.
+#### Grid Card (New Standard)
 
-3.  **Card Titles**:
-    - `CardTitle` component is `text-sm font-medium`.
-    - `app/page.tsx` uses `text-2xl` for page headers.
-    - Race UI uses `text-[10px]` uppercase headers.
-    - _Pattern_: Very disparate hierarchy.
+Used for data-dense dashboards like Race Stats and Admin Settings.
+
+```tsx
+<div className="rounded-xl border border-border/40 bg-card p-4">
+  <div className="flex items-center gap-2 mb-4">
+    <Icon className="h-4 w-4 text-muted-foreground" />
+    <h3 className="text-heading-card">Card Title</h3>
+  </div>
+  {/* Content */}
+</div>
+```
+
+### Badges & Topics
+
+Use `DlesTopic` for category badges:
+
+```tsx
+<DlesTopic topic="words" size="sm" />
+```
+
+**Sizes:** `xs`, `sm`, `md`, `lg`
+
+---
+
+## What NOT to Do
+
+❌ Hardcode colors: `text-blue-500` (use topic constants or semantic colors)
+❌ Arbitrary spacing: `mt-[13px]` (use spacing scale)
+❌ Mixed typography: `text-[10px]` (use `.text-micro`)
+❌ Inline opacity: `text-muted-foreground/60` (use defined classes)
+❌ Direct `<Button>` usage (use `DlesButton` wrapper)
+
+---
+
+## Animation Guidelines
+
+### Transitions
+
+- Default: `transition-colors` for hover states
+- Cards: `transition-all duration-200` for hover transforms
+- Fade-in: `animate-in fade-in duration-200`
+
+### Loading States
+
+- Use `Loader2` with `animate-spin`
+- Skeletons for content loading
+
+---
+
+## Accessibility
+
+- All interactive elements must have visible focus states
+- Color contrast: minimum 4.5:1 for text
+- Keyboard navigation supported
+- ARIA labels on icon-only buttons

@@ -11,7 +11,7 @@ export function GuestSyncBanner() {
       <CardContent className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-0">
         <div className="flex items-center gap-3 px-1">
           <Lock className="h-4 w-4 text-primary shrink-0" />
-          <span className="text-sm font-medium text-muted-foreground leading-tight">
+          <span className="text-body text-muted-foreground leading-tight">
             Sign in to save race history & create custom lists.
           </span>
         </div>

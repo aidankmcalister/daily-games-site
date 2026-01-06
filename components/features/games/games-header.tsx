@@ -85,7 +85,7 @@ export function GamesHeader(props: GamesHeaderProps) {
             <div className="flex items-center justify-between">
               <div className="space-y-1">
                 <Logo size="lg" href="/" />
-                <p className="hidden sm:block text-muted-foreground text-sm sm:text-base max-w-lg">
+                <p className="hidden sm:block text-muted-foreground text-body">
                   A curated list of daily games my friends and I play.
                 </p>
               </div>

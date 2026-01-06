@@ -211,7 +211,7 @@ export default function NewRacePage() {
       <div className="fixed bottom-0 left-0 right-0 border-t border-border/40 bg-background/80 backdrop-blur-md z-40 shadow-lg">
         <div className="max-w-3xl mx-auto px-4 py-3 space-y-2">
           {selectedGameIds.length > 0 && (
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center justify-between text-body-small">
               <span className="text-muted-foreground truncate">
                 <span className="font-bold text-foreground">
                   {selectedGameIds.length}
@@ -226,7 +226,7 @@ export default function NewRacePage() {
                   ` +${selectedGameIds.length - 3}`}
               </span>
               <button
-                className="text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+                className="text-micro text-muted-foreground hover:text-destructive transition-colors"
                 onClick={() => setSelectedGameIds([])}
               >
                 Clear

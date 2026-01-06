@@ -44,8 +44,8 @@ export default function SubmitGamePage() {
   if (!session) {
     return (
       <div className="container py-8 max-w-2xl mx-auto flex flex-col items-center justify-center min-h-[50vh] text-center gap-4">
-        <h1 className="text-2xl font-bold">Sign in Required</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-heading-page">Sign in Required</h1>
+        <p className="text-body text-muted-foreground">
           You must be signed in to submit game suggestions.
         </p>
         <DlesButton onClick={() => router.push("/")}>Go Home</DlesButton>
@@ -95,8 +95,8 @@ export default function SubmitGamePage() {
             <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
               <CheckCircle2 className="h-12 w-12 text-green-600 dark:text-green-400" />
             </div>
-            <h2 className="text-2xl font-bold">Submission Received!</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">
+            <h2 className="text-heading-page">Submission Received!</h2>
+            <p className="text-body text-muted-foreground max-w-md mx-auto">
               Thanks for suggesting <strong>{title}</strong>. We'll review it
               shortly and add it to the collection if it fits!
             </p>

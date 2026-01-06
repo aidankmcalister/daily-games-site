@@ -157,6 +157,44 @@
   }
 }
 
+/* Typography Utilities */
+@layer utilities {
+  /* Page title - largest heading */
+  .text-heading-page {
+    @apply text-3xl font-black tracking-tight;
+  }
+
+  /* Section headers */
+  .text-heading-section {
+    @apply text-lg font-bold;
+  }
+
+  /* Card titles */
+  .text-heading-card {
+    @apply text-base font-bold tracking-tight;
+  }
+
+  /* Standard body text */
+  .text-body {
+    @apply text-sm font-medium;
+  }
+
+  /* Small body text, buttons */
+  .text-body-small {
+    @apply text-xs font-medium;
+  }
+
+  /* Micro labels, badges, metadata */
+  .text-micro {
+    @apply text-[10px] font-bold uppercase tracking-wider;
+  }
+
+  /* Extra small micro for tight spaces */
+  .text-micro-xs {
+    @apply text-[8px] font-bold uppercase tracking-wider;
+  }
+}
+
 html {
   overflow-y: scroll;
 }
@@ -166,7 +204,7 @@ html {
 }
 
 body {
-  @apply !min-w-full;
+  @apply min-w-full!;
 }
 
 .no-scrollbar {

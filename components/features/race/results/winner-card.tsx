@@ -49,10 +49,10 @@ export function WinnerCard({ winner, isWinner }: WinnerCardProps) {
           <Trophy className="h-8 w-8" />
         </div>
         <div>
-          <h2 className="text-2xl font-black tracking-tight">
+          <h2 className="text-heading-page">
             {isWinner ? "Victory" : "Defeat"}
           </h2>
-          <p className="text-sm font-medium text-muted-foreground">
+          <p className="text-body text-muted-foreground">
             {isWinner
               ? "You finished first"
               : `${

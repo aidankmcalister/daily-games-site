@@ -10,6 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { DlesSelect } from "@/components/design/dles-select";
 import { DlesTopic } from "@/components/design/dles-topic";
+import { ListChip } from "@/components/features/lists/list-chip";
 import { TOPICS, LIST_CARD_STYLES } from "@/lib/constants";
 import { Tag, Library, ArrowDownAZ, LayoutGrid, Clock, X } from "lucide-react";
 import { GameList } from "@/lib/use-lists";
@@ -79,51 +80,62 @@ export function HeaderFilters({
             value={listFilter}
             onChange={(val) => onListFilterChange(val)}
             options={[
-              { value: "all", label: "All Games" },
+              { value: "all", label: "All Lists" },
               ...lists.map((l) => ({ value: l.id, label: l.name })),
             ]}
             placeholder="All Games"
             className={cn(
-              "w-full md:w-[160px] h-10 text-sm border-primary/20",
+              "w-full md:w-[180px] h-10 text-sm border-primary/20",
               !isCompact && listFilter !== "all" && "bg-primary/5"
             )}
             renderSelected={(option) => {
-              if (option.value === "all") return <span>All Games</span>;
-              const list = lists.find((l) => l.id === option.value);
-              const color = list?.color || "slate";
-              return (
-                <Badge
-                  variant="secondary"
-                  className={cn(
-                    "rounded-full px-2 font-medium border pointer-events-none",
-                    LIST_CARD_STYLES[color]?.card
-                  )}
-                >
-                  {option.label}
-                </Badge>
-              );
-            }}
-            renderOption={(option) => {
               if (option.value === "all") {
+                const totalGames = lists.reduce(
+                  (acc, l) => acc + (l.games?.length || 0),
+                  0
+                );
                 return (
-                  <div className="flex items-center gap-2">
-                    <DlesTopic topic="all" className="w-fit px-3" />
-                    <span>All Games</span>
-                  </div>
+                  <ListChip
+                    label="All Lists"
+                    count={totalGames}
+                    color="slate"
+                    className="w-full border-0 px-2"
+                  />
                 );
               }
               const list = lists.find((l) => l.id === option.value);
               const color = list?.color || "slate";
               return (
-                <Badge
-                  variant="secondary"
-                  className={cn(
-                    "rounded-full px-2 font-medium border pointer-events-none w-fit",
-                    LIST_CARD_STYLES[color]?.card
-                  )}
-                >
-                  {option.label}
-                </Badge>
+                <ListChip
+                  label={option.label}
+                  count={list?.games.length || 0}
+                  color={color}
+                  className="w-full border-0 px-2"
+                />
+              );
+            }}
+            renderOption={(option) => {
+              if (option.value === "all") {
+                const totalGames = lists.reduce(
+                  (acc, l) => acc + (l.games?.length || 0),
+                  0
+                );
+                return (
+                  <ListChip
+                    label="All Lists"
+                    count={totalGames}
+                    color="slate"
+                  />
+                );
+              }
+              const list = lists.find((l) => l.id === option.value);
+              const color = list?.color || "slate";
+              return (
+                <ListChip
+                  label={option.label}
+                  count={list?.games.length || 0}
+                  color={color}
+                />
               );
             }}
           />

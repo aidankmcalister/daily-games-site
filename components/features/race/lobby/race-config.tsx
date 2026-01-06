@@ -35,12 +35,12 @@ export function RaceConfig({
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <Label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
+        <Label className="text-micro text-muted-foreground/60">
           Games in this Race
         </Label>
         <Badge
           variant="secondary"
-          className="font-black rounded-full px-2 py-0 border-none bg-primary/10 text-primary text-[9px]"
+          className="font-black rounded-full px-2 py-0 border-none bg-primary/10 text-primary text-micro-xs"
         >
           {race.raceGames.length}
         </Badge>
@@ -90,7 +90,7 @@ export function RaceConfig({
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <div className="flex items-center gap-3 flex-1 min-w-0  justify-between">
-                                <span className="font-bold text-xs truncate text-foreground/90">
+                                <span className="text-body-small font-bold truncate text-foreground/90">
                                   {rg.game.title}
                                 </span>
                                 <DlesTopic topic={rg.game.topic} />

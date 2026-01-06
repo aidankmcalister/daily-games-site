@@ -66,6 +66,25 @@ export const TOPIC_BAR_COLORS: Record<string, string> = {
   board_games: "bg-fuchsia-500",
 };
 
+// Hover shadow effects for game cards
+export const TOPIC_SHADOWS: Record<string, string> = {
+  words: "hover:shadow-blue-500/25 dark:hover:shadow-blue-500/10",
+  geography: "hover:shadow-green-500/25 dark:hover:shadow-green-500/10",
+  trivia: "hover:shadow-yellow-500/25 dark:hover:shadow-yellow-500/10",
+  nature: "hover:shadow-emerald-500/25 dark:hover:shadow-emerald-500/10",
+  food: "hover:shadow-orange-500/25 dark:hover:shadow-orange-500/10",
+  sports: "hover:shadow-cyan-500/25 dark:hover:shadow-cyan-500/10",
+  colors: "hover:shadow-indigo-500/25 dark:hover:shadow-indigo-500/10",
+  estimation: "hover:shadow-teal-500/25 dark:hover:shadow-teal-500/10",
+  logic: "hover:shadow-slate-500/25 dark:hover:shadow-slate-500/10",
+  history: "hover:shadow-amber-500/25 dark:hover:shadow-amber-500/10",
+  movies_tv: "hover:shadow-violet-500/25 dark:hover:shadow-violet-500/10",
+  music: "hover:shadow-rose-500/25 dark:hover:shadow-rose-500/10",
+  shapes: "hover:shadow-lime-500/25 dark:hover:shadow-lime-500/10",
+  video_games: "hover:shadow-sky-500/25 dark:hover:shadow-sky-500/10",
+  board_games: "hover:shadow-fuchsia-500/25 dark:hover:shadow-fuchsia-500/10",
+};
+
 export const LIST_COLORS: Record<string, string> = {
   slate: "bg-slate-500/20 text-slate-700 dark:text-slate-300",
   red: "bg-red-500/20 text-red-700 dark:text-red-300",

@@ -179,7 +179,7 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 min-h-8">
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-heading-section">
           All Users ({filteredUsers.length})
         </h2>
       </div>
@@ -216,7 +216,7 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
                 <Badge
                   variant="outline"
                   className={cn(
-                    "capitalize rounded-sm text-[10px] px-1.5 h-5 font-mono",
+                    "capitalize rounded-sm text-micro-xs px-1.5 h-5 font-mono",
                     ROLE_COLORS[option.value as Role]
                   )}
                 >
@@ -271,7 +271,7 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
 
       <div className="rounded-md border border-border/40 bg-card overflow-hidden">
         <div className="overflow-x-auto">
-          <div className="grid grid-cols-[auto_1fr] md:grid-cols-[1fr_150px_minmax(0,1.5fr)_130px_50px] gap-4 items-center px-4 py-3 border-b border-border/40 bg-muted/20 text-[10px] font-bold text-muted-foreground uppercase tracking-wider sticky top-0 z-10 backdrop-blur-sm">
+          <div className="grid grid-cols-[auto_1fr] md:grid-cols-[1fr_150px_minmax(0,1.5fr)_130px_50px] gap-4 items-center px-4 py-3 border-b border-border/40 bg-muted/20 text-micro text-muted-foreground sticky top-0 z-10 backdrop-blur-sm">
             <div className="pl-12 md:pl-0">USER IDENTITY</div>
             <div className="hidden md:block">ROLE</div>
             <div className="hidden md:block">EMAIL</div>
@@ -280,7 +280,7 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
           </div>
           <div className="divide-y divide-border/30 px-0">
             {filteredUsers.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground text-sm font-mono border-b border-border/20">
+              <div className="p-8 text-center text-muted-foreground text-body font-mono border-b border-border/20">
                 &gt; No users found.
               </div>
             ) : (

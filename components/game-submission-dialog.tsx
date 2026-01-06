@@ -109,7 +109,7 @@ export function GameSubmissionDialog({
           <Field>
             <Label
               htmlFor="title"
-              className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest mb-1.5 block"
+              className="text-micro text-muted-foreground/60 mb-1.5 block"
             >
               Game Title
             </Label>
@@ -159,7 +159,7 @@ export function GameSubmissionDialog({
             <div className="flex items-center justify-between mb-1.5">
               <Label
                 htmlFor="description"
-                className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest"
+                className="text-micro text-muted-foreground/60"
               >
                 Description
               </Label>

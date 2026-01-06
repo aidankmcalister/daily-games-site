@@ -16,6 +16,7 @@ import { Tag, Library, Trophy, Dices, Gamepad, Globe } from "lucide-react";
 import { TOPIC_COLORS, LIST_CARD_STYLES } from "@/lib/constants";
 import { DlesSelect } from "@/components/design/dles-select";
 import { cn } from "@/lib/utils";
+import { ListChip } from "@/components/features/lists/list-chip";
 
 export const SYSTEM_TEMPLATES = [
   {
@@ -82,7 +83,7 @@ export function RaceSetupForm({
         <div className="space-y-2">
           <label
             htmlFor="raceName"
-            className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 pl-0.5"
+            className="text-micro text-muted-foreground/70 pl-0.5"
           >
             Race Name
           </label>
@@ -99,7 +100,7 @@ export function RaceSetupForm({
           <div className="space-y-2">
             <label
               htmlFor="guestName"
-              className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 pl-0.5"
+              className="text-micro text-muted-foreground/70 pl-0.5"
             >
               Your Name
             </label>
@@ -116,7 +117,7 @@ export function RaceSetupForm({
 
       {/* Quick Start Section */}
       <div className="space-y-3">
-        <h2 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 pl-0.5 flex items-center gap-2">
+        <h2 className="text-micro text-muted-foreground/70 pl-0.5 flex items-center gap-2">
           Quick Start — Presets
         </h2>
         <TooltipProvider delayDuration={300}>
@@ -132,7 +133,7 @@ export function RaceSetupForm({
                     <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                       <Dices className="h-4 w-4 text-primary" />
                     </div>
-                    <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground group-hover:text-foreground">
+                    <span className="text-body-small font-bold uppercase tracking-wider text-muted-foreground group-hover:text-foreground">
                       {count} Random
                     </span>
                   </button>
@@ -169,7 +170,7 @@ export function RaceSetupForm({
                       >
                         <t.icon className="h-4 w-4 opacity-80 group-hover:opacity-100 transition-opacity" />
                       </div>
-                      <span className="relative text-xs font-bold uppercase tracking-wider opacity-80 group-hover:opacity-100">
+                      <span className="relative text-body-small font-bold uppercase tracking-wider opacity-80 group-hover:opacity-100">
                         {t.name}
                       </span>
                     </button>
@@ -191,7 +192,7 @@ export function RaceSetupForm({
                 <div className="w-full border-t border-border/40" />
               </div>
               <div className="relative flex justify-center mb-4">
-                <span className="bg-background px-4 text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60">
+                <span className="bg-background px-4 text-micro text-muted-foreground/60">
                   Or choose a list
                 </span>
               </div>
@@ -201,27 +202,39 @@ export function RaceSetupForm({
               value=""
               onChange={(val) => onTemplateSelect(val as string)}
               options={lists.map((l) => ({ value: l.id, label: l.name }))}
-              placeholder="Select a game list..."
-              className="w-full"
+              placeholder="Select games from a list..."
+              contentClassName="p-2"
               renderOption={(option) => {
                 const list = lists.find((l) => l.id === option.value);
                 const color = list?.color || "slate";
+
                 return (
-                  <div className="flex items-center justify-between w-full">
-                    <Badge
-                      variant="secondary"
-                      className={cn(
-                        "rounded-full px-3 py-1 font-medium border pointer-events-none w-full justify-between",
-                        LIST_CARD_STYLES[color]?.card
-                      )}
-                    >
-                      <span className="truncate">{option.label}</span>
-                      {list && (
-                        <span className="ml-2 text-[10px] opacity-70 font-mono tabular-nums">
-                          {list.gameCount}
-                        </span>
-                      )}
-                    </Badge>
+                  <ListChip
+                    label={option.label}
+                    count={list?.gameCount || 0}
+                    color={color}
+                    className="w-full"
+                  />
+                );
+              }}
+              renderSelected={(option) => {
+                const list = lists.find((l) => l.id === option.value);
+                if (!list) return <span>{option.label}</span>;
+
+                const color = list.color || "slate";
+                const styles = LIST_CARD_STYLES[color];
+
+                return (
+                  <div
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-0.5 rounded-full border text-xs font-medium",
+                      styles?.card
+                    )}
+                  >
+                    <span>{list.name}</span>
+                    <span className="flex items-center gap-1 opacity-80 border-l border-current pl-2 ml-1">
+                      {list.gameCount} <Gamepad className="h-3 w-3" />
+                    </span>
                   </div>
                 );
               }}

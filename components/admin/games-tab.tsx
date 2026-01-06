@@ -245,7 +245,7 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-heading-section">
           All Games ({filteredGames.length})
         </h2>
         {canManageGames && (
@@ -297,7 +297,7 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
       <div className="rounded-md border border-border/40 bg-card overflow-hidden">
         <div className="overflow-x-auto">
           {canManageGames && filteredGames.length > 0 && (
-            <div className="grid grid-cols-[16px_1fr_100px] md:grid-cols-[16px_180px_150px_minmax(0,1fr)_80px_80px] gap-4 items-center px-4 py-3 border-b border-border/40 bg-muted/20 text-[10px] font-bold text-muted-foreground uppercase tracking-wider sticky top-0 z-10 backdrop-blur-sm">
+            <div className="grid grid-cols-[16px_1fr_100px] md:grid-cols-[16px_180px_150px_minmax(0,1fr)_80px_80px] gap-4 items-center px-4 py-3 border-b border-border/40 bg-muted/20 text-micro text-muted-foreground sticky top-0 z-10 backdrop-blur-sm">
               <div className="flex items-center justify-center">
                 <input
                   type="checkbox"

@@ -143,12 +143,12 @@ export function GameItem({
         {game.archived && (
           <Badge
             variant="outline"
-            className="h-5 text-[10px] px-1 bg-muted/40 border-border/40 text-muted-foreground shrink-0"
+            className="h-5 text-micro px-1 bg-muted/40 border-border/40 text-muted-foreground shrink-0"
           >
             Archived
           </Badge>
         )}
-        <span className="text-sm font-medium truncate" title={game.title}>
+        <span className="text-body truncate" title={game.title}>
           {game.title}
         </span>
       </div>

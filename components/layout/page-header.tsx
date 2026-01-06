@@ -27,9 +27,7 @@ export function PageHeader({
             </span>
           </>
         )}
-        <h1 className="text-3xl font-bold tracking-tight text-foreground/90">
-          {title}
-        </h1>
+        <h1 className="text-heading-page text-foreground/90">{title}</h1>
         {children}
       </div>
       {subtitle && (

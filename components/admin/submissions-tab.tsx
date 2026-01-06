@@ -101,7 +101,7 @@ export function SubmissionsTab({
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h2 className="text-lg font-semibold">
+        <h2 className="text-heading-section">
           Game Submissions ({filteredSubmissions.length})
         </h2>
       </div>
@@ -141,7 +141,7 @@ export function SubmissionsTab({
                 <div className="h-12 w-12 rounded-full bg-muted/20 flex items-center justify-center mb-3">
                   <Layers className="h-6 w-6 opacity-20" />
                 </div>
-                <p className="text-sm">No submissions found</p>
+                <p className="text-body">No submissions found</p>
               </div>
             ) : (
               filteredSubmissions.map((sub) => (

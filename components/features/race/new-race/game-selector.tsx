@@ -69,11 +69,13 @@ export function GameSelector({
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground/30" />
-          <p className="text-xs text-muted-foreground/50">Loading games...</p>
+          <p className="text-body-small text-muted-foreground/50">
+            Loading games...
+          </p>
         </div>
       ) : filteredGames.length === 0 ? (
         <div className="text-center py-16 border border-dashed border-border rounded-lg">
-          <p className="text-sm text-muted-foreground">No games found</p>
+          <p className="text-body text-muted-foreground">No games found</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -104,7 +106,7 @@ export function GameSelector({
                 </div>
                 <span
                   className={cn(
-                    "font-medium text-sm truncate flex-1",
+                    "text-body font-medium truncate flex-1",
                     isSelected ? "text-primary" : "text-foreground"
                   )}
                 >
@@ -138,10 +140,7 @@ export function GameSelector({
             Clear selection
           </Button>
           {selectedGameIds.length > 0 && (
-            <Badge
-              variant="secondary"
-              className="ml-auto text-[10px] font-bold"
-            >
+            <Badge variant="secondary" className="ml-auto text-micro">
               {selectedGameIds.length} selected
             </Badge>
           )}

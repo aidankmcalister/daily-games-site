@@ -102,8 +102,8 @@ export default function RaceLobbyPage() {
   if (!race) {
     return (
       <div className="container py-20 text-center">
-        <h1 className="text-2xl font-bold">Race not found</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="text-heading-page">Race not found</h1>
+        <p className="mt-2 text-body text-muted-foreground">
           Make sure you have the correct link.
         </p>
       </div>

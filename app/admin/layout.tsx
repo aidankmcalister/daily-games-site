@@ -58,8 +58,8 @@ export default function AdminLayout({
     return (
       <main className="min-h-screen flex flex-col items-center justify-center gap-4">
         <Shield className="h-16 w-16 text-muted-foreground" />
-        <h1 className="text-2xl font-bold">Access Denied</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-heading-page">Access Denied</h1>
+        <p className="text-body text-muted-foreground">
           You don't have permission to view this page.
         </p>
         <DlesButton href="/">Go Home</DlesButton>

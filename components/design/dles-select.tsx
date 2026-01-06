@@ -138,16 +138,16 @@ export function DlesSelect({
             const option = options.find((o) => o.value === val);
             if (!option) return null;
 
-            if (topics || val === "all") {
-              return <DlesTopic key={val} topic={val} className="shrink-0" />;
-            }
-
             if (renderSelected) {
               return (
                 <div key={val} className="shrink-0">
                   {renderSelected(option)}
                 </div>
               );
+            }
+
+            if (topics || val === "all") {
+              return <DlesTopic key={val} topic={val} className="shrink-0" />;
             }
 
             return (
@@ -180,7 +180,7 @@ export function DlesSelect({
           {searchable && (
             <CommandInput className="h-9 text-xs" placeholder="Search..." />
           )}
-          <CommandList className="max-h-[300px]">
+          <CommandList className="max-h-[300px] overflow-y-auto">
             <CommandEmpty className="py-2 text-center text-xs text-muted-foreground">
               {emptyText}
             </CommandEmpty>
@@ -192,15 +192,15 @@ export function DlesSelect({
                     key={option.value}
                     value={option.value}
                     onSelect={() => handleSelect(option.value)}
-                    className="cursor-pointer"
+                    className="cursor-pointer [&>svg:last-child]:ml-0"
                     data-checked={isSelected}
                     disabled={option.disabled}
                   >
-                    <div className="flex-1">
-                      {topics || option.value === "all" ? (
-                        <DlesTopic topic={option.value} size="md" />
-                      ) : renderOption ? (
+                    <div className="flex-1 min-w-0">
+                      {renderOption ? (
                         renderOption(option)
+                      ) : topics || option.value === "all" ? (
+                        <DlesTopic topic={option.value} size="md" />
                       ) : (
                         <span className="text-sm">{option.label}</span>
                       )}

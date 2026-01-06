@@ -31,7 +31,7 @@ export function FeelingLuckyWinner({
         </div>
         {winner.description && (
           <div className="w-full max-w-[320px] text-center">
-            <p className="text-sm text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 delay-200 fill-mode-both">
+            <p className="text-body text-muted-foreground leading-relaxed animate-in fade-in slide-in-from-bottom-3 duration-700 delay-200 fill-mode-both">
               {winner.description}
             </p>
           </div>

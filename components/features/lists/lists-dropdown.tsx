@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { List, Plus, Loader2 } from "lucide-react";
+import { List, Plus, Loader2, Gamepad } from "lucide-react";
+import { ListChip } from "@/components/features/lists/list-chip";
 import { Button } from "@/components/ui/button"; // Note: Changed from Button to generic since DlesButton might not be used or standard button is needed. Reverting to project standard.
 // Actually project seems to use DlesButton or standard Button. The original file had Button import.
 // Checking imports: Input.
@@ -116,25 +117,14 @@ export function ListsDropdown({ gameId, className }: ListsDropdownProps) {
                 const color = list.color || "slate";
 
                 return (
-                  <div className="flex w-full items-center justify-between py-1">
-                    <Badge
-                      variant="secondary"
-                      className={cn(
-                        "rounded-full px-3 py-1 font-medium border w-full justify-between pointer-events-none hover:bg-transparent",
-                        LIST_CARD_STYLES[color]?.card
-                      )}
-                    >
-                      <span className="truncate">{list.name}</span>
-                      {list.games.length > 0 && (
-                        <span className="ml-2 text-[10px] opacity-70 font-mono tabular-nums">
-                          {list.games.length}
-                        </span>
-                      )}
-                    </Badge>
-                  </div>
+                  <ListChip
+                    label={option.label}
+                    count={list.games.length}
+                    color={color}
+                  />
                 );
               }}
-              contentClassName="w-[240px] p-0"
+              contentClassName="w-auto p-0"
               footer={
                 <div className="p-2 border-t border-border/40 bg-muted/20">
                   <div className="space-y-2">

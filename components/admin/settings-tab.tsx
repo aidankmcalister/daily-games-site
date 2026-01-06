@@ -4,15 +4,32 @@ import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, RotateCcw, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-
-import { SiteStatusCard } from "./settings/site-status-card";
-import { DisplaySettingsCard } from "./settings/display-settings-card";
-import { UserLimitsCard } from "./settings/user-limits-card";
-import { SystemUtilitiesCard } from "./settings/system-utilities-card";
-import { ResetDefaultsDialog } from "./settings/reset-defaults-dialog";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Field, FieldError } from "@/components/ui/field";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { DlesButton } from "@/components/design/dles-button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { cn } from "@/lib/utils";
 
 interface SiteConfig {
   id: string;
@@ -29,10 +46,7 @@ interface SiteConfig {
   updatedAt: string;
 }
 
-const DEFAULT_CONFIG: Omit<
-  SiteConfig,
-  "id" | "updatedAt" | "topicColors" | "featuredGameIds"
-> = {
+const DEFAULT_CONFIG = {
   newGameMinutes: 10080,
   maintenanceMode: false,
   welcomeMessage: null,
@@ -44,7 +58,7 @@ const DEFAULT_CONFIG: Omit<
 };
 
 const settingsSchema = z.object({
-  newGameMinutes: z.number().min(-1).max(525600), // Max 1 year
+  newGameMinutes: z.number().min(-1).max(525600),
   maintenanceMode: z.boolean(),
   welcomeMessage: z.string().nullable(),
   showWelcomeMessage: z.boolean(),
@@ -60,7 +74,6 @@ export function SettingsTab() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
 
   const methods = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
@@ -69,8 +82,17 @@ export function SettingsTab() {
   const {
     handleSubmit,
     reset,
-    formState: { isDirty },
+    register,
+    setValue,
+    watch,
+    formState: { isDirty, errors },
   } = methods;
+
+  const maintenanceMode = watch("maintenanceMode");
+  const showWelcomeMessage = watch("showWelcomeMessage");
+  const enableCommunitySubmissions = watch("enableCommunitySubmissions");
+  const newGameMinutes = watch("newGameMinutes");
+  const defaultSort = watch("defaultSort");
 
   useEffect(() => {
     fetchConfig();
@@ -113,7 +135,7 @@ export function SettingsTab() {
         const updated = await res.json();
         setConfig(updated);
         reset(data);
-        toast.success("Settings saved successfully");
+        toast.success("Settings saved");
         setTimeout(() => window.location.reload(), 1000);
       } else {
         throw new Error("Failed to save");
@@ -127,12 +149,7 @@ export function SettingsTab() {
   };
 
   const handleReset = async () => {
-    const resetValues = {
-      ...DEFAULT_CONFIG,
-    } as SettingsFormValues;
-    setIsResetDialogOpen(false);
-
-    // Save to server
+    const resetValues = { ...DEFAULT_CONFIG } as SettingsFormValues;
     setIsSaving(true);
     try {
       const res = await fetch("/api/settings", {
@@ -157,27 +174,9 @@ export function SettingsTab() {
     }
   };
 
-  const getDiff = () => {
-    if (!config) return [];
-    const diff = [];
-    for (const key in DEFAULT_CONFIG) {
-      const k = key as keyof typeof DEFAULT_CONFIG;
-      if (config[k] !== DEFAULT_CONFIG[k]) {
-        diff.push({
-          label: k
-            .replace(/([A-Z])/g, " $1")
-            .replace(/^./, (str) => str.toUpperCase()),
-          current: String(config[k]),
-          default: String(DEFAULT_CONFIG[k]),
-        });
-      }
-    }
-    return diff;
-  };
-
   if (isLoading) {
     return (
-      <div className="flex justify-center p-8">
+      <div className="flex justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
@@ -185,8 +184,10 @@ export function SettingsTab() {
 
   if (!config) {
     return (
-      <div className="p-8 text-center text-muted-foreground">
-        Failed to load settings.
+      <div className="rounded-xl border border-border/40 bg-card/50 py-16 text-center">
+        <p className="text-body text-muted-foreground">
+          Failed to load settings.
+        </p>
       </div>
     );
   }
@@ -194,56 +195,203 @@ export function SettingsTab() {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(handleSave)} className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <h2 className="text-lg font-semibold">Site Configuration</h2>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <ResetDefaultsDialog
-              isOpen={isResetDialogOpen}
-              onOpenChange={setIsResetDialogOpen}
-              onReset={handleReset}
-              diff={getDiff()}
-            />
-            <DlesButton
-              type="submit"
-              disabled={!isDirty || isSaving}
-              className="flex-1 sm:flex-none"
-            >
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-heading-section">Settings</h2>
+            {config.updatedAt && (
+              <p className="text-micro text-muted-foreground/60 mt-1">
+                Last updated {new Date(config.updatedAt).toLocaleDateString()}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <DlesButton variant="ghost" size="sm">
+                  <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                  Reset
+                </DlesButton>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset to Defaults?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will reset all settings to their default values.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleReset}>
+                    Reset
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+            <DlesButton type="submit" disabled={!isDirty || isSaving} size="sm">
               {isSaving ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
               ) : (
-                <Save className="h-3.5 w-3.5" />
+                <Save className="h-3.5 w-3.5 mr-1.5" />
               )}
               Save Changes
             </DlesButton>
           </div>
         </div>
 
-        {config.updatedAt && (
-          <p className="text-xs text-muted-foreground">
-            Last updated: {new Date(config.updatedAt).toLocaleString()}
-          </p>
+        {/* Maintenance Warning */}
+        {maintenanceMode && (
+          <div className="flex items-center gap-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+            <AlertCircle className="h-4 w-4 text-destructive shrink-0" />
+            <p className="text-body-small text-destructive">
+              Site is in maintenance mode. Only admins can access.
+            </p>
+          </div>
         )}
 
-        <div className="space-y-8">
-          {/* Hero Section: System Status */}
-          <section className="w-full">
-            <SiteStatusCard />
-          </section>
+        {/* Settings Grid */}
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* Site Status */}
+          <div className="rounded-xl border border-border/40 bg-card p-4 space-y-4">
+            <h3 className="text-heading-card">Site Status</h3>
 
-          {/* Main Control Deck */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-            <div className="lg:col-span-2 h-full">
-              <DisplaySettingsCard />
+            <div className="flex items-center justify-between">
+              <div>
+                <Label className="text-body">Maintenance Mode</Label>
+                <p className="text-micro text-muted-foreground/60 mt-0.5">
+                  Lock site for admin-only access
+                </p>
+              </div>
+              <Switch
+                checked={maintenanceMode}
+                onCheckedChange={(v) =>
+                  setValue("maintenanceMode", v, { shouldDirty: true })
+                }
+              />
             </div>
-            <div className="lg:col-span-1 h-full">
-              <UserLimitsCard />
-            </div>
-          </section>
 
-          {/* Footer: System Operations */}
-          <section className="w-full pt-4 border-t border-border/20">
-            <SystemUtilitiesCard />
-          </section>
+            <div className="border-t border-border/20 pt-4">
+              <div className="flex items-center justify-between mb-3">
+                <Label className="text-body">Site Announcement</Label>
+                <Switch
+                  checked={showWelcomeMessage}
+                  onCheckedChange={(v) =>
+                    setValue("showWelcomeMessage", v, { shouldDirty: true })
+                  }
+                />
+              </div>
+              <Input
+                disabled={!showWelcomeMessage}
+                placeholder="Enter announcement message..."
+                {...register("welcomeMessage")}
+                className="h-9 text-sm bg-muted/30 border-border/30"
+              />
+            </div>
+          </div>
+
+          {/* User Limits */}
+          <div className="rounded-xl border border-border/40 bg-card p-4 space-y-4">
+            <h3 className="text-heading-card">User Limits</h3>
+
+            <Field>
+              <div className="flex items-center justify-between">
+                <Label className="text-body">Max Lists Per User</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    {...register("maxCustomLists", { valueAsNumber: true })}
+                    className="w-20 h-9 text-sm bg-muted/30 border-border/30 text-center"
+                  />
+                </div>
+              </div>
+              {errors.maxCustomLists && (
+                <FieldError errors={[errors.maxCustomLists]} />
+              )}
+            </Field>
+
+            <div className="flex items-center justify-between border-t border-border/20 pt-4">
+              <div>
+                <Label className="text-body">Community Submissions</Label>
+                <p className="text-micro text-muted-foreground/60 mt-0.5">
+                  Allow users to suggest games
+                </p>
+              </div>
+              <Switch
+                checked={enableCommunitySubmissions}
+                onCheckedChange={(v) =>
+                  setValue("enableCommunitySubmissions", v, {
+                    shouldDirty: true,
+                  })
+                }
+              />
+            </div>
+          </div>
+
+          {/* Display Settings */}
+          <div className="rounded-xl border border-border/40 bg-card p-4 space-y-4 md:col-span-2">
+            <h3 className="text-heading-card">Display Settings</h3>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              <Field>
+                <Label className="text-body mb-2 block">
+                  NEW Badge Duration
+                </Label>
+                <Select
+                  value={newGameMinutes?.toString()}
+                  onValueChange={(v) =>
+                    setValue("newGameMinutes", parseInt(v), {
+                      shouldDirty: true,
+                    })
+                  }
+                >
+                  <SelectTrigger className="h-9 bg-muted/30 border-border/30 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="60">1 Hour</SelectItem>
+                    <SelectItem value="1440">1 Day</SelectItem>
+                    <SelectItem value="4320">3 Days</SelectItem>
+                    <SelectItem value="10080">1 Week</SelectItem>
+                    <SelectItem value="43200">1 Month</SelectItem>
+                    <SelectItem value="-1">Never</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+
+              <Field>
+                <Label className="text-body mb-2 block">
+                  Default Sort Order
+                </Label>
+                <Select
+                  value={defaultSort}
+                  onValueChange={(v) =>
+                    setValue("defaultSort", v, { shouldDirty: true })
+                  }
+                >
+                  <SelectTrigger className="h-9 bg-muted/30 border-border/30 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="title">A-Z</SelectItem>
+                    <SelectItem value="topic">By Category</SelectItem>
+                    <SelectItem value="played">Unplayed First</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
+
+              <Field>
+                <Label className="text-body mb-2 block">Streak Threshold</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    {...register("minPlayStreak", { valueAsNumber: true })}
+                    className="w-20 h-9 text-sm bg-muted/30 border-border/30 text-center"
+                  />
+                  <span className="text-micro text-muted-foreground">days</span>
+                </div>
+              </Field>
+            </div>
+          </div>
         </div>
       </form>
     </FormProvider>

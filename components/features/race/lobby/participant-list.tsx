@@ -13,9 +13,7 @@ interface ParticipantListProps {
 export function ParticipantList({ race }: ParticipantListProps) {
   return (
     <div className="space-y-3">
-      <Label className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest">
-        Players
-      </Label>
+      <Label className="text-micro text-muted-foreground/60">Players</Label>
 
       <div className="space-y-2">
         {/* Participant 1 */}
@@ -33,12 +31,12 @@ export function ParticipantList({ race }: ParticipantListProps) {
               </div>
             )}
             <div>
-              <p className="font-bold text-xs">
+              <p className="text-body-small font-bold">
                 {race.participants[0]?.user?.name ??
                   race.participants[0]?.guestName ??
                   "Unknown"}
               </p>
-              <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-black">
+              <p className="text-micro-xs text-muted-foreground">
                 {race.createdBy === race.participants[0]?.userId
                   ? "Host"
                   : "Opponent"}
@@ -47,7 +45,7 @@ export function ParticipantList({ race }: ParticipantListProps) {
           </div>
           <Badge
             variant="secondary"
-            className="bg-emerald-500/10 text-emerald-400 border-none text-[8px] font-black uppercase tracking-widest px-2 py-0.5"
+            className="bg-emerald-500/10 text-emerald-400 border-none text-micro-xs px-2 py-0.5"
           >
             <Check className="h-3 w-3 mr-1" /> Joined
           </Badge>
@@ -69,19 +67,17 @@ export function ParticipantList({ race }: ParticipantListProps) {
                 </div>
               )}
               <div>
-                <p className="font-bold text-xs">
+                <p className="text-body-small font-bold">
                   {race.participants[1]?.user?.name ??
                     race.participants[1]?.guestName ??
                     "Unknown"}
                 </p>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-widest font-black">
-                  Opponent
-                </p>
+                <p className="text-micro-xs text-muted-foreground">Opponent</p>
               </div>
             </div>
             <Badge
               variant="secondary"
-              className="bg-emerald-500/10 text-emerald-400 border-none text-[8px] font-black uppercase tracking-widest px-2 py-0.5"
+              className="bg-emerald-500/10 text-emerald-400 border-none text-micro-xs px-2 py-0.5"
             >
               <Check className="h-3 w-3 mr-1" /> Joined
             </Badge>
@@ -93,10 +89,10 @@ export function ParticipantList({ race }: ParticipantListProps) {
                 <Loader2 className="h-4 w-4 animate-spin opacity-40 text-muted-foreground" />
               </div>
               <div>
-                <p className="font-bold text-xs text-muted-foreground/60">
+                <p className="text-body-small font-bold text-muted-foreground/60">
                   Waiting for opponent...
                 </p>
-                <p className="text-[9px] uppercase tracking-widest font-black opacity-30">
+                <p className="text-micro-xs opacity-30">
                   Invite someone to race!
                 </p>
               </div>

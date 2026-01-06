@@ -34,7 +34,7 @@ export function HeaderStats({
 
   if (isCompact) {
     return (
-      <div className="flex items-center gap-3 text-xs font-medium text-muted-foreground whitespace-nowrap">
+      <div className="flex items-center gap-3 text-body-small text-muted-foreground whitespace-nowrap">
         {currentStreak > 0 && (
           <span className="flex items-center gap-1 text-orange-500">
             <Flame className="h-3.5 w-3.5 fill-current" />
@@ -49,7 +49,7 @@ export function HeaderStats({
   }
 
   return (
-    <div className="flex items-center gap-3 text-sm font-medium">
+    <div className="flex items-center gap-3 text-body font-medium">
       {currentStreak > 0 && (
         <span className="flex items-center gap-1.5 text-orange-500 bg-orange-500/5 px-2.5 py-0.5 rounded-full border border-orange-500/20">
           <Flame className="h-3.5 w-3.5 fill-current" />
@@ -67,7 +67,7 @@ export function HeaderStats({
             className="flex flex-col items-end sm:items-start group cursor-pointer hover:opacity-80 transition-opacity text-left"
             title="Reset Daily Progress"
           >
-            <span className="text-foreground text-sm font-medium group-hover:text-destructive transition-colors">
+            <span className="text-foreground text-body group-hover:text-destructive transition-colors">
               {playedCount}/{totalCount} played
             </span>
             <div className="h-1.5 w-24 bg-secondary rounded-full overflow-hidden mt-1">

@@ -14,28 +14,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn, formatTopic } from "@/lib/utils";
-import { TOPIC_COLORS, extractDomain } from "@/lib/constants";
+import { TOPIC_COLORS, TOPIC_SHADOWS, extractDomain } from "@/lib/constants";
 import { ExternalLink, EyeOff } from "lucide-react";
 import { ListsDropdown } from "../lists/lists-dropdown";
 import { DlesTopic } from "@/components/design/dles-topic";
-
-const TOPIC_SHADOWS: Record<string, string> = {
-  words: "hover:shadow-blue-500/25 dark:hover:shadow-blue-500/10",
-  geography: "hover:shadow-green-500/25 dark:hover:shadow-green-500/10",
-  trivia: "hover:shadow-yellow-500/25 dark:hover:shadow-yellow-500/10",
-  nature: "hover:shadow-emerald-500/25 dark:hover:shadow-emerald-500/10",
-  food: "hover:shadow-orange-500/25 dark:hover:shadow-orange-500/10",
-  sports: "hover:shadow-cyan-500/25 dark:hover:shadow-cyan-500/10",
-  colors: "hover:shadow-indigo-500/25 dark:hover:shadow-indigo-500/10",
-  estimation: "hover:shadow-teal-500/25 dark:hover:shadow-teal-500/10",
-  logic: "hover:shadow-slate-500/25 dark:hover:shadow-slate-500/10",
-  history: "hover:shadow-amber-500/25 dark:hover:shadow-amber-500/10",
-  movies_tv: "hover:shadow-violet-500/25 dark:hover:shadow-violet-500/10",
-  music: "hover:shadow-rose-500/25 dark:hover:shadow-rose-500/10",
-  shapes: "hover:shadow-lime-500/25 dark:hover:shadow-lime-500/10",
-  video_games: "hover:shadow-sky-500/25 dark:hover:shadow-sky-500/10",
-  board_games: "hover:shadow-fuchsia-500/25 dark:hover:shadow-fuchsia-500/10",
-};
 
 /**
  * Check if a date is within the last N minutes
@@ -121,7 +103,7 @@ export function GameCard({
       <CardHeader className="p-4 pb-3">
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-1.5 flex-1 min-w-0">
-            <CardTitle className="flex items-center gap-2 text-base font-bold tracking-tight leading-tight justify-between">
+            <CardTitle className="flex items-center gap-2 text-heading-card leading-tight justify-between">
               <div className="flex items-center gap-2">
                 <span className="truncate">{title}</span>
                 <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
