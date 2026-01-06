@@ -460,7 +460,7 @@ export function RaceStatsClient({
           <DlesButton
             href="/race/new"
             size="sm"
-            className="h-8 text-xs font-bold uppercase tracking-wider"
+            className="h-8 text-xs font-bold tracking-wider"
           >
             <Swords className="mr-2 h-3 w-3" />
             Start New Race
@@ -548,7 +548,7 @@ export function RaceStatsClient({
                     </div>
                     <div className="hidden sm:block sm:col-span-1 text-right">
                       <DlesButton
-                        href={`/race/${race.id}`}
+                        href={`/race/${race.id}/results`}
                         variant="ghost"
                         size="icon"
                         className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"

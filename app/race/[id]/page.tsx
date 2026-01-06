@@ -4,9 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 import { getPusherClient } from "@/lib/pusher";
-import { RaceLobby } from "@/components/race/race-lobby";
 import { RaceActive } from "@/components/race/race-active";
-import { RaceResults } from "@/components/race/race-results";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -69,6 +67,7 @@ export interface Race {
 
 export default function RacePage() {
   const { id } = useParams() as { id: string };
+  const router = useRouter();
   const { data: session, isPending: sessionLoading } = useSession();
   const [race, setRace] = useState<Race | null>(null);
   const [loading, setLoading] = useState(true);
@@ -186,6 +185,17 @@ export default function RacePage() {
     };
   }, [id]);
 
+  // Redirect based on race status - this hook must be before any conditional returns
+  useEffect(() => {
+    if (!race) return;
+
+    if (race.status === "completed") {
+      router.replace(`/race/${id}/results`);
+    } else if (race.status === "waiting" || race.status === "ready") {
+      router.replace(`/race/${id}/lobby`);
+    }
+  }, [race, id, router]);
+
   if (loading || sessionLoading) {
     return (
       <div className="flex h-[50vh] items-center justify-center">
@@ -205,21 +215,18 @@ export default function RacePage() {
     );
   }
 
-  // Create currentUser object for both authenticated and guest scenarios
-  const currentUser = session?.user ?? null;
-
-  // Determine which view to show
-  if (race.status === "completed") {
-    return <RaceResults race={race} currentUser={currentUser} />;
-  }
-
+  // For active races, render the active race view
   if (race.status === "active") {
+    const currentUser = session?.user ?? null;
     return (
       <RaceActive race={race} currentUser={currentUser} onRefresh={fetchRace} />
     );
   }
 
+  // Show loading while redirecting to the appropriate route
   return (
-    <RaceLobby race={race} currentUser={currentUser} onRefresh={fetchRace} />
+    <div className="flex h-[50vh] items-center justify-center">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+    </div>
   );
 }
