@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { RaceStatsClient } from "./race-stats-client";
+import { RaceStatsClient } from "@/app/race/stats/race-stats-client";
 
 export default async function RaceStatsPage() {
   const session = await getSession();
@@ -56,6 +56,42 @@ export default async function RaceStatsPage() {
     categoryCount[topic] = (categoryCount[topic] || 0) + 1;
   });
 
+  // Fetch completed races for stats
+  const races = await prisma.race.findMany({
+    where: {
+      participants: {
+        some: { userId: session.user.id },
+      },
+      status: "completed",
+    },
+    include: {
+      participants: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+          completions: true,
+        },
+      },
+      raceGames: {
+        include: {
+          game: {
+            select: {
+              id: true,
+              title: true,
+              topic: true,
+            },
+          },
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
   return (
     <RaceStatsClient
       playedCount={userGames.length}
@@ -70,6 +106,7 @@ export default async function RaceStatsPage() {
         title: ug.game.title,
         topic: ug.game.topic,
       }))}
+      races={JSON.parse(JSON.stringify(races))}
     />
   );
 }

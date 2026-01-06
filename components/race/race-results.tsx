@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
+import { DlesButton } from "@/components/design/dles-button";
 import { Race } from "@/app/race/[id]/page";
 import { Home, RotateCcw } from "lucide-react";
-import Link from "next/link";
 import { ResultsHeader } from "@/components/features/race/results/results-header";
 import { WinnerCard } from "@/components/features/race/results/winner-card";
 import {
@@ -90,6 +89,14 @@ export function RaceResults({ race, currentUser }: RaceResultsProps) {
     ((!!currentUser && winner.userId === currentUser.id) ||
       (!!guestId && winner.id === guestId));
 
+  const myParticipantId = useMemo(() => {
+    return sortedParticipants.find(
+      (p) =>
+        (currentUser && p.userId === currentUser.id) ||
+        (guestId && p.id === guestId)
+    )?.id;
+  }, [sortedParticipants, currentUser, guestId]);
+
   return (
     <div className="container max-w-xl mx-auto py-8 space-y-6 px-4">
       <ResultsHeader />
@@ -100,28 +107,17 @@ export function RaceResults({ race, currentUser }: RaceResultsProps) {
         sortedGames={sortedGames}
         participantsWithSplits={participantsWithSplits}
         sortedParticipants={sortedParticipants}
+        myParticipantId={myParticipantId}
       />
 
       {/* Actions */}
       <div className="grid grid-cols-2 gap-4">
-        <Button
-          variant="outline"
-          asChild
-          className="col-span-1 rounded-xl font-bold h-11"
-        >
-          <Link href="/race/new">
-            <RotateCcw className="h-4 w-4 mr-2" /> Create New Race
-          </Link>
-        </Button>
-        <Button
-          variant="outline"
-          asChild
-          className="col-span-1 rounded-xl font-bold h-11"
-        >
-          <Link href="/">
-            <Home className="h-4 w-4 mr-2" /> Home
-          </Link>
-        </Button>
+        <DlesButton href="/race/new">
+          <RotateCcw className="h-4 w-4 mr-2" /> New Race
+        </DlesButton>
+        <DlesButton href="/" variant="outline">
+          <Home className="h-4 w-4 mr-2" /> Home
+        </DlesButton>
       </div>
     </div>
   );

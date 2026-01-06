@@ -1,14 +1,10 @@
 "use client";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { List, Trophy, Clock } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Clock, Check, SkipForward, ExternalLink } from "lucide-react";
 import { DlesTopic } from "@/components/design/dles-topic";
 import { cn } from "@/lib/utils";
-import {
-  formatDuration,
-  getAvatarColor,
-  getInitials,
-} from "@/components/features/race/race-utils";
+import { formatDuration } from "@/components/features/race/race-utils";
 import { RaceGame, Participant } from "@/app/race/[id]/page";
 
 // Types
@@ -29,155 +25,130 @@ interface ResultsListProps {
   sortedGames: RaceGameWithGame[];
   participantsWithSplits: ParticipantWithSplits[];
   sortedParticipants: ParticipantWithSplits[];
+  myParticipantId?: string;
 }
 
 export function ResultsList({
   sortedGames,
   participantsWithSplits,
   sortedParticipants,
+  myParticipantId,
 }: ResultsListProps) {
+  // Identify "Me" and "Opponent(s)"
+  // If myParticipantId is missing (spectator), treat 1st as p1, 2nd as p2 etc.
+  // But usually we want to pivot around "Me".
+
   return (
-    <Card className="border-border/60 shadow-md gap-0">
-      <CardHeader className="px-4 py-3 border-b border-primary/10">
-        <CardTitle className="text-xs font-black uppercase tracking-[0.2em] flex items-center gap-2.5 text-primary/80">
-          <List className="h-4 w-4" />
-          Split Breakdown
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="divide-y divide-border/40">
-          {sortedGames.map((game) => {
-            // Calculate best valid duration for green highlight
-            const durations = participantsWithSplits
-              .map((p: ParticipantWithSplits) => {
-                const s = p.splits.find((x) => x.id === game.id);
-                return s && !s.skipped ? s.duration : null;
-              })
-              .filter((d): d is number => d !== null);
-            const minD = durations.length > 0 ? Math.min(...durations) : null;
+    <div className="space-y-4">
+      {/* Header Label */}
+      <div className="px-1 flex items-center justify-between mb-2">
+        <span className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground/60">
+          Breakdown
+        </span>
+      </div>
 
-            return (
-              <div
-                key={game.id}
-                className="px-3 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-muted/5 transition-colors"
-              >
-                <div className="flex items-center gap-2 min-w-[120px]">
-                  <DlesTopic topic={game.game.topic} />
-                  <span className="font-bold text-sm truncate max-w-[150px]">
-                    {game.game.title}
-                  </span>
-                </div>
+      <Card className="border-border/60 shadow-sm overflow-hidden">
+        <CardContent className="p-0">
+          <div className="divide-y divide-border/40">
+            {sortedGames.map((game) => {
+              const mySplitComp = myParticipantId
+                ? participantsWithSplits.find((p) => p.id === myParticipantId)
+                : participantsWithSplits[0];
 
-                <div className="flex items-center gap-4 text-sm flex-1 justify-end">
-                  {sortedParticipants.map((p) => {
-                    const split = p.splits.find((s) => s.id === game.id);
-                    const duration = split?.duration ?? null;
-                    const skipped = split?.skipped ?? false;
-                    const isFastest =
-                      duration !== null && duration === minD && !skipped;
+              const mySplit = mySplitComp?.splits.find((s) => s.id === game.id);
 
-                    return (
-                      <div
-                        key={p.id}
-                        className="flex items-center gap-2 min-w-[60px] justify-end"
-                      >
-                        {/* Small Avatar for Context */}
-                        <div className="h-5 w-5 rounded-full overflow-hidden shrink-0 bg-muted hidden sm:block">
-                          {p.user?.image ? (
-                            <img
-                              src={p.user.image}
-                              alt={p.user.name ?? ""}
-                              className="h-full w-full object-cover"
-                            />
-                          ) : (
-                            <div
-                              className={cn(
-                                "h-full w-full flex items-center justify-center text-[8px] font-black text-white",
-                                getAvatarColor(
-                                  p.user?.name ?? p.guestName ?? "G"
-                                )
-                              )}
-                            >
-                              {getInitials(p.user?.name ?? p.guestName ?? "G")}
-                            </div>
-                          )}
-                        </div>
+              const oppSplitComp = myParticipantId
+                ? participantsWithSplits.find((p) => p.id !== myParticipantId)
+                : participantsWithSplits[1];
 
+              const oppSplit = oppSplitComp?.splits.find(
+                (s) => s.id === game.id
+              );
+
+              const isMySuccess = mySplit && !mySplit.skipped;
+              const isMyFailure = mySplit && mySplit.skipped;
+
+              return (
+                <div
+                  key={game.id}
+                  className="flex items-center justify-between p-3 px-4 hover:bg-muted/5 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <a
+                      href={game.game.link}
+                      target="_blank"
+                      className="font-bold text-sm tracking-tight hover:underline underline-offset-4 decoration-muted-foreground/30"
+                    >
+                      {game.game.title}
+                    </a>
+                    <DlesTopic topic={game.game.topic} size="xs" />
+                  </div>
+
+                  <div className="flex items-center gap-3 font-mono text-sm tabular-nums">
+                    <span
+                      className={cn(
+                        "font-bold",
+                        isMyFailure
+                          ? "text-rose-600 dark:text-rose-400"
+                          : isMySuccess
+                          ? "text-green-600 dark:text-green-400"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {mySplit?.skipped
+                        ? "Lost"
+                        : formatDuration(mySplit?.duration || null)}
+                    </span>
+
+                    {oppSplitComp && (
+                      <>
+                        <span className="text-muted-foreground/20 text-xs">
+                          /
+                        </span>
                         <span
                           className={cn(
-                            "font-mono font-medium tabular-nums",
-                            skipped
-                              ? "text-rose-600 dark:text-rose-400"
-                              : isFastest
-                              ? "text-emerald-600 dark:text-emerald-400"
-                              : "text-muted-foreground"
+                            "text-muted-foreground",
+                            oppSplit?.skipped && "text-rose-500/70"
                           )}
                         >
-                          {skipped ? "Lost" : formatDuration(duration)}
+                          {oppSplit?.skipped
+                            ? "Lost"
+                            : formatDuration(oppSplit?.duration || null)}
                         </span>
-
-                        {/* Mini Trophy for Split Winner */}
-                        {isFastest && (
-                          <Trophy className="h-3 w-3 text-yellow-500 sm:hidden" />
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Total Row */}
-        <div className="px-4 pt-4 border-t border-primary/10 flex items-center justify-between bg-zinc-50/50 dark:bg-zinc-900/50">
-          <span className="text-xs font-black uppercase tracking-[0.2em] flex items-center gap-2.5 text-primary/80">
-            <Clock className="h-4 w-4" /> Total
-          </span>
-          <div className="flex items-center gap-6 justify-end">
-            {sortedParticipants.map((p, idx) => {
-              const isFirst = idx === 0;
-              return (
-                <div key={p.id} className="flex items-center gap-2 text-right">
-                  <div
-                    className={cn(
-                      "h-6 w-6 rounded-full overflow-hidden shrink-0 border bg-muted",
-                      isFirst && "ring-2 ring-yellow-500/50"
-                    )}
-                  >
-                    {p.user?.image ? (
-                      <img
-                        src={p.user.image}
-                        alt={p.user.name ?? ""}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div
-                        className={cn(
-                          "h-full w-full flex items-center justify-center text-[9px] font-black text-white",
-                          getAvatarColor(p.user?.name ?? p.guestName ?? "G")
-                        )}
-                      >
-                        {getInitials(p.user?.name ?? p.guestName ?? "G")}
-                      </div>
+                      </>
                     )}
                   </div>
-                  <span
-                    className={cn(
-                      "font-bold font-mono text-lg tabular-nums",
-                      isFirst
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {formatDuration(p.totalTime)}
-                  </span>
                 </div>
               );
             })}
+
+            {/* Total Row */}
+            <div className="p-3 px-4 bg-muted/10 border-t border-border/60 flex items-center justify-between">
+              <span className="text-[10px] font-black uppercase tracking-wider text-muted-foreground">
+                Total
+              </span>
+              <div className="flex items-center gap-4">
+                {sortedParticipants.map((p, idx) => {
+                  const isMe = myParticipantId
+                    ? p.id === myParticipantId
+                    : idx === 0;
+                  return (
+                    <span
+                      key={p.id}
+                      className={cn(
+                        "font-mono font-bold tabular-nums",
+                        isMe ? "text-foreground" : "text-muted-foreground"
+                      )}
+                    >
+                      {formatDuration(p.totalTime)}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

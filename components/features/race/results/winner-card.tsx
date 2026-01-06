@@ -31,10 +31,10 @@ export function WinnerCard({ winner, isWinner }: WinnerCardProps) {
   return (
     <div
       className={cn(
-        "rounded-2xl p-6 text-center shadow-lg transition-all dark:shadow-none border border-border/50",
+        "rounded-2xl p-6 text-center shadow-lg transition-all dark:shadow-none border",
         isWinner
-          ? "bg-linear-to-br from-yellow-500/10 to-transparent border-yellow-500/20"
-          : "bg-card"
+          ? "bg-yellow-500/5 border-yellow-500/20"
+          : "bg-rose-500/5 border-rose-500/20"
       )}
     >
       <div className="flex flex-col items-center gap-4">
@@ -43,7 +43,7 @@ export function WinnerCard({ winner, isWinner }: WinnerCardProps) {
             "h-16 w-16 rounded-full flex items-center justify-center shadow-sm",
             isWinner
               ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600"
-              : "bg-red-100 dark:bg-red-900/30 text-red-600"
+              : "bg-rose-100 dark:bg-rose-900/30 text-rose-600"
           )}
         >
           <Trophy className="h-8 w-8" />
