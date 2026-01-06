@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -9,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DlesSelect } from "@/components/design/dles-select";
 import { useImpersonation } from "@/components/impersonation-provider";
 import { Loader2 } from "lucide-react";
 import type { Role } from "@/app/generated/prisma/client";
@@ -28,19 +30,26 @@ const ROLES: Role[] = ["owner", "coowner", "admin", "member"];
 
 const ROLE_LABELS: Record<Role, string> = {
   owner: "Owner",
-  coowner: "Co-owner",
+  coowner: "Co-Owner",
   admin: "Admin",
   member: "Member",
 };
 
+const ROLE_COLORS: Record<Role, string> = {
+  owner: "bg-amber-500/20 text-amber-700 dark:text-amber-300",
+  coowner: "bg-violet-500/20 text-violet-700 dark:text-violet-300",
+  admin: "bg-blue-500/20 text-blue-700 dark:text-blue-300",
+  member: "bg-zinc-500/20 text-zinc-700 dark:text-zinc-300",
+};
+
 export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
-  const { effectiveRole } = useImpersonation();
+  const { effectiveRole, currentUser } = useImpersonation();
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Search and filter states
   const [userSearch, setUserSearch] = useState("");
-  const [userRoleFilter, setUserRoleFilter] = useState<Role | "all">("all");
+  const [userRoleFilter, setUserRoleFilter] = useState<string[]>(["all"]);
   const [userSortBy, setUserSortBy] = useState<
     "name" | "email" | "role" | "createdAt"
   >("name");
@@ -55,7 +64,12 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
     return [];
   };
 
-  const canChangeUserRole = (targetRole: Role): boolean => {
+  const canChangeUserRole = (
+    targetRole: Role,
+    targetUserId: string
+  ): boolean => {
+    if (currentUser?.id === targetUserId && targetRole === "owner")
+      return false;
     if (isOwner) return true;
     if (isCoowner) return ["member", "admin"].includes(targetRole);
     return false;
@@ -128,7 +142,7 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
           (user.name || "").toLowerCase().includes(q) ||
           user.email.toLowerCase().includes(q);
         const matchesRole =
-          userRoleFilter === "all" || user.role === userRoleFilter;
+          userRoleFilter.includes("all") || userRoleFilter.includes(user.role);
         return matchesSearch && matchesRole;
       })
       .sort((a, b) => {
@@ -174,25 +188,51 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
           className="h-10 text-base md:text-xs border-primary/20 hover:border-primary/50 focus:border-primary/50 w-full md:flex-1 md:w-auto"
         />
         <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center md:w-auto">
-          <Select
+          <DlesSelect
+            multi
             value={userRoleFilter}
-            onValueChange={(value) => setUserRoleFilter(value as Role | "all")}
-          >
-            <SelectTrigger
-              size="lg"
-              className="w-full sm:w-[140px] text-xs border-primary/20 hover:border-primary/50 hover:bg-primary/5"
-            >
-              <SelectValue placeholder="Role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Roles</SelectItem>
-              {ROLES.map((role) => (
-                <SelectItem key={role} value={role} className="capitalize">
-                  {ROLE_LABELS[role]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            onChange={(val) => {
+              // Enforce "All" exclusivity logic if DlesSelect doesn't catch it or for extra safety
+              // If "all" was just selected (not present before), clear others.
+              // If "all" was present and something else selected, remove "all".
+              // For now, trust the incoming value but ensure logical consistency if needed.
+              setUserRoleFilter(val);
+            }}
+            options={[
+              { value: "all", label: "All Roles" },
+              ...ROLES.map((role) => ({
+                value: role,
+                label: ROLE_LABELS[role],
+              })),
+            ]}
+            className="w-full sm:w-[140px]"
+            renderOption={(option) => {
+              if (option.value === "all") return <span>{option.label}</span>;
+              return (
+                <Badge
+                  variant="secondary"
+                  className={`capitalize rounded-full text-xs px-2.5 h-6 gap-1 shrink-0 ${
+                    ROLE_COLORS[option.value as Role]
+                  }`}
+                >
+                  {option.label}
+                </Badge>
+              );
+            }}
+            renderSelected={(option) => {
+              if (option.value === "all") return <span>{option.label}</span>;
+              return (
+                <Badge
+                  variant="secondary"
+                  className={`capitalize rounded-md px-2 h-6 font-medium border-primary/20 gap-1 shrink-0 ${
+                    ROLE_COLORS[option.value as Role]
+                  }`}
+                >
+                  {option.label}
+                </Badge>
+              );
+            }}
+          />
           <Select
             value={`${userSortBy}-${userSortOrder}`}
             onValueChange={(value) => {
@@ -240,7 +280,7 @@ export function UsersTab({ canManageUsers }: { canManageUsers: boolean }) {
                     user={user}
                     currentUserRole={effectiveRole as Role}
                     assignableRoles={getAssignableRoles()}
-                    canChangeRole={canChangeUserRole}
+                    canChangeRole={(role) => canChangeUserRole(role, user.id)}
                     canDelete={canDeleteUser}
                     onUpdateRole={handleUpdateRole}
                     onDelete={handleDeleteUser}

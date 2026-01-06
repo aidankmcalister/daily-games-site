@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { useSession, signIn, signOut } from "@/lib/auth-client";
 import { useTheme } from "next-themes";
 import { useImpersonation } from "@/components/impersonation-provider";
+import { useSettings } from "@/components/settings-provider";
 import { DlesButton } from "@/components/design/dles-button";
 import {
   DropdownMenu,
@@ -35,10 +36,6 @@ import {
 import type { Role } from "@/app/generated/prisma/client";
 import { GameSubmissionDialog } from "@/components/game-submission-dialog";
 
-interface SiteConfig {
-  enableCommunitySubmissions: boolean;
-}
-
 const ROLES: Role[] = ["owner", "coowner", "admin", "member"];
 const ROLE_LABELS: Record<Role, string> = {
   owner: "Owner",
@@ -52,17 +49,8 @@ export function UserButton() {
   const { theme, setTheme } = useTheme();
   const { isActualOwner, viewAsRole, setViewAsRole, currentUser } =
     useImpersonation();
+  const { settings } = useSettings();
   const [isSubmissionOpen, setIsSubmissionOpen] = useState(false);
-  const [config, setConfig] = useState<SiteConfig | null>(null);
-
-  useEffect(() => {
-    fetch("/api/settings")
-      .then((res) => res.json())
-      .then((data) => setConfig(data))
-      .catch((err) =>
-        console.error("Failed to fetch settings in UserButton:", err)
-      );
-  }, []);
 
   if (isPending) {
     return (
@@ -224,7 +212,7 @@ export function UserButton() {
           </a>
         </DropdownMenuItem>
 
-        {config?.enableCommunitySubmissions && (
+        {settings?.enableCommunitySubmissions && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setIsSubmissionOpen(true)}>

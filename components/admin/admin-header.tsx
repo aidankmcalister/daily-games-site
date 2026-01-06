@@ -38,7 +38,7 @@ export function AdminHeader({ canManageUsers }: { canManageUsers: boolean }) {
             viewAsRole && "ring-2 ring-amber-500/50"
           )}
         >
-          {viewAsRole && "👁 "}
+          {viewAsRole && "Viewing as "}
           {ROLE_LABELS[effectiveRole || "member"]}
         </Badge>
       </PageHeader>

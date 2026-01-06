@@ -7,8 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MultiSelect } from "@/components/ui/multi-select";
-import { DlesTopic } from "@/components/design/dles-topic";
+import { DlesSelect } from "@/components/design/dles-select";
 import { TOPICS } from "@/lib/constants";
 import { Tag, Library, ArrowDownAZ, LayoutGrid, Clock, X } from "lucide-react";
 import { GameList } from "@/lib/use-lists";
@@ -101,39 +100,17 @@ export function HeaderFilters({
         </div>
       )}
 
-      <MultiSelect
-        options={topicOptions}
+      <DlesSelect
+        multi
+        topics
         value={topicFilter.length === 0 ? ["all"] : topicFilter}
         onChange={handleTopicChange}
         placeholder="Category"
         className={cn(
-          "w-full md:w-[160px] lg:w-[220px]",
+          "w-full md:w-[160px] lg:w-[260px]",
           !isCompact && topicFilter.length > 0 && !topicFilter.includes("all")
             ? "bg-primary/5"
             : ""
-        )}
-        renderLabel={(option) => (
-          <DlesTopic
-            topic={option.value}
-            className="text-[10px] px-1.5 h-5 pointer-events-none"
-          />
-        )}
-        renderSelectedItem={(option, onUnselect) => (
-          <DlesTopic topic={option.value} className="gap-1 pointer-events-auto">
-            {option.value !== "all" && (
-              <button
-                type="button"
-                className="h-3 w-3 flex items-center justify-center opacity-60 hover:opacity-100 cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  onUnselect();
-                }}
-              >
-                <X className="size-2" />
-              </button>
-            )}
-          </DlesTopic>
         )}
       />
 

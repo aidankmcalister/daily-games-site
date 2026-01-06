@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { DlesSelect } from "@/components/design/dles-select";
 import { HeaderSearch } from "@/components/header/header-search";
 import { DlesTopic } from "@/components/design/dles-topic";
 import { Loader2, Check } from "lucide-react";
@@ -54,24 +54,14 @@ export function GameSelector({
           onChange={onSearchChange}
           className="flex-1"
         />
-        <MultiSelect
-          options={[
-            { value: "all", label: "All Topics" },
-            ...topics.map((t) => ({ value: t, label: formatTopic(t) })),
-          ]}
+        <DlesSelect // Changed from MultiSelect to DlesSelect
+          multi
+          topics // Added topics prop
           value={selectedTopics.length === 0 ? ["all"] : selectedTopics}
           onChange={onTopicChange}
           placeholder="Filter"
           className="w-full sm:w-[180px]"
-          renderLabel={(option) => (
-            <DlesTopic
-              topic={option.value}
-              className="text-[10px] px-1.5 h-5"
-            />
-          )}
-          renderSelectedItem={(option) => (
-            <DlesTopic topic={option.value} className="gap-1" />
-          )}
+          // Removed options, renderLabel, and renderSelectedItem props
         />
       </div>
 
@@ -94,7 +84,7 @@ export function GameSelector({
                 key={game.id}
                 onClick={() => onToggleGame(game.id)}
                 className={cn(
-                  "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all select-none",
+                  "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all select-none relative overflow-hidden",
                   isSelected
                     ? "border-primary bg-primary/5"
                     : "border-border hover:border-primary/30 hover:bg-muted/30"
@@ -120,10 +110,7 @@ export function GameSelector({
                 >
                   {game.title}
                 </span>
-                <DlesTopic
-                  topic={game.topic}
-                  className="text-[9px] px-1.5 h-5 shrink-0"
-                />
+                <DlesTopic topic={game.topic} className="ml-auto shrink-0" />
               </div>
             );
           })}

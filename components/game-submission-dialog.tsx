@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DlesTopic } from "@/components/design/dles-topic";
+import { DlesSelect } from "@/components/design/dles-select";
 import { Label } from "@/components/ui/label";
 import { Field, FieldError } from "@/components/ui/field";
 import { TOPICS } from "@/lib/constants";
@@ -108,7 +109,7 @@ export function GameSubmissionDialog({
           <Field>
             <Label
               htmlFor="title"
-              className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mb-1.5 block"
+              className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest mb-1.5 block"
             >
               Game Title
             </Label>
@@ -124,7 +125,7 @@ export function GameSubmissionDialog({
           <Field>
             <Label
               htmlFor="link"
-              className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mb-1.5 block"
+              className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest mb-1.5 block"
             >
               Game URL
             </Label>
@@ -141,33 +142,16 @@ export function GameSubmissionDialog({
           <Field>
             <Label
               htmlFor="topic"
-              className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest mb-1.5 block"
+              className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest mb-1.5 block"
             >
               Category
             </Label>
-            <Select
+            <DlesSelect
+              topics
               value={selectedTopic}
-              onValueChange={(v) =>
-                setValue("topic", v, { shouldValidate: true })
-              }
-            >
-              <SelectTrigger
-                id="topic"
-                className="h-11 bg-muted/50 border-border/50 focus:border-primary/50 focus:bg-muted transition-colors rounded-lg px-4"
-              >
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {TOPICS.map((topic) => (
-                  <SelectItem key={topic} value={topic}>
-                    <DlesTopic
-                      topic={topic}
-                      className="text-[10px] px-1.5 h-4"
-                    />
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              onChange={(v) => setValue("topic", v, { shouldValidate: true })}
+              placeholder="Select a category"
+            />
             {errors.topic && <FieldError errors={[errors.topic]} />}
           </Field>
 
@@ -175,11 +159,11 @@ export function GameSubmissionDialog({
             <div className="flex items-center justify-between mb-1.5">
               <Label
                 htmlFor="description"
-                className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-widest"
+                className="text-xs font-bold text-muted-foreground/60 uppercase tracking-widest"
               >
                 Description
               </Label>
-              <span className="text-[10px] text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 {watch("description")?.length || 0}/200
               </span>
             </div>

@@ -3,9 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { DlesTopic } from "@/components/design/dles-topic";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -18,18 +16,22 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { TOPIC_COLORS } from "@/lib/constants";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { LIST_CARD_STYLES, LIST_COLOR_OPTIONS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { DlesButton } from "@/components/design/dles-button";
+import { useLists } from "@/lib/use-lists";
 import {
   Plus,
   MoreHorizontal,
   Pencil,
   Trash2,
-  List,
-  ExternalLink,
+  Gamepad2,
+  Sparkles,
+  Loader2,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 interface Game {
   id: string;
@@ -37,19 +39,43 @@ interface Game {
   topic: string;
 }
 
-interface GameList {
+// Extended list with full game objects for display
+interface DisplayList {
   id: string;
   name: string;
+  color?: string;
   games: Game[];
 }
 
 interface ListsClientProps {
-  initialLists: GameList[];
+  initialLists: DisplayList[];
 }
 
 export function ListsClient({ initialLists }: ListsClientProps) {
-  const router = useRouter();
-  const [lists, setLists] = useState(initialLists);
+  // Use the shared lists context for syncing
+  const {
+    lists: sharedLists,
+    createList,
+    deleteList,
+    renameList,
+    updateListColor,
+    isLoading,
+  } = useLists();
+
+  // Merge shared list data (colors, names) with initial full game data
+  // Filter out deleted lists by only including lists that exist in sharedLists
+  const sharedListIds = new Set(sharedLists.map((s) => s.id));
+  const lists = initialLists
+    .filter((initial) => sharedListIds.has(initial.id))
+    .map((initial) => {
+      const shared = sharedLists.find((s) => s.id === initial.id);
+      return {
+        ...initial,
+        name: shared?.name || initial.name,
+        color: shared?.color || initial.color,
+      };
+    });
+
   const [newListName, setNewListName] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [editingListId, setEditingListId] = useState<string | null>(null);
@@ -57,81 +83,46 @@ export function ListsClient({ initialLists }: ListsClientProps) {
 
   const handleCreateList = async () => {
     if (!newListName.trim()) return;
-
-    try {
-      const res = await fetch("/api/lists", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: newListName }),
-      });
-
-      if (res.ok) {
-        const newList = await res.json();
-        setLists([newList, ...lists]);
-        setNewListName("");
-        setIsCreating(false);
-      }
-    } catch (error) {
-      console.error("Failed to create list:", error);
-    }
+    await createList(newListName);
+    setNewListName("");
+    setIsCreating(false);
   };
 
   const handleRenameList = async (listId: string) => {
     if (!editName.trim()) return;
+    await renameList(listId, editName);
+    setEditingListId(null);
+  };
 
-    try {
-      const res = await fetch(`/api/lists/${listId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: editName }),
-      });
-
-      if (res.ok) {
-        setLists(
-          lists.map((l) => (l.id === listId ? { ...l, name: editName } : l))
-        );
-        setEditingListId(null);
-      }
-    } catch (error) {
-      console.error("Failed to rename list:", error);
-    }
+  const handleChangeColor = async (listId: string, color: string) => {
+    await updateListColor(listId, color);
   };
 
   const handleDeleteList = async (listId: string) => {
-    try {
-      const res = await fetch(`/api/lists/${listId}`, {
-        method: "DELETE",
-      });
-
-      if (res.ok) {
-        setLists(lists.filter((l) => l.id !== listId));
-      }
-    } catch (error) {
-      console.error("Failed to delete list:", error);
-    }
+    await deleteList(listId);
   };
 
   const handleRemoveGame = async (listId: string, gameId: string) => {
     try {
-      const res = await fetch(`/api/lists/${listId}/games`, {
+      await fetch(`/api/lists/${listId}/games`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ gameId }),
       });
-
-      if (res.ok) {
-        setLists(
-          lists.map((l) =>
-            l.id === listId
-              ? { ...l, games: l.games.filter((g) => g.id !== gameId) }
-              : l
-          )
-        );
-      }
+      // Force page refresh to get updated game data
+      window.location.reload();
     } catch (error) {
       console.error("Failed to remove game:", error);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -139,27 +130,36 @@ export function ListsClient({ initialLists }: ListsClientProps) {
         <h2 className="text-lg font-semibold">Your Game Lists</h2>
         <Dialog open={isCreating} onOpenChange={setIsCreating}>
           <DialogTrigger asChild>
-            <Button size="sm" className="gap-2">
+            <DlesButton size="sm" className="gap-2">
               <Plus className="h-4 w-4" />
               New List
-            </Button>
+            </DlesButton>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[400px]">
             <DialogHeader>
               <DialogTitle>Create New List</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 pt-4">
-              <Input
-                placeholder="List name..."
-                value={newListName}
-                onChange={(e) => setNewListName(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleCreateList()}
-              />
+              <Field>
+                <FieldLabel>List Name</FieldLabel>
+                <Input
+                  placeholder="e.g. Favorites, Completed..."
+                  value={newListName}
+                  onChange={(e) => setNewListName(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleCreateList()}
+                  className="h-11"
+                />
+              </Field>
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={() => setIsCreating(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleCreateList}>Create</Button>
+                <Button
+                  onClick={handleCreateList}
+                  disabled={!newListName.trim()}
+                >
+                  Create
+                </Button>
               </div>
             </div>
           </DialogContent>
@@ -167,100 +167,147 @@ export function ListsClient({ initialLists }: ListsClientProps) {
       </div>
 
       {lists.length === 0 ? (
-        <Card>
-          <CardContent className="py-12 text-center">
-            <List className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <p className="text-muted-foreground">
-              You haven't created any lists yet.
-            </p>
-            <p className="text-xs text-muted-foreground mt-2">
-              Create a list to organize your favorite games!
-            </p>
-          </CardContent>
-        </Card>
+        <div className="rounded-xl border border-dashed border-border/60 bg-muted/20 py-16 text-center">
+          <Sparkles className="h-10 w-10 mx-auto text-muted-foreground/50 mb-4" />
+          <p className="text-muted-foreground font-medium">No lists yet</p>
+          <p className="text-xs text-muted-foreground/70 mt-1">
+            Create your first list to organize games
+          </p>
+        </div>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {lists.map((list) => (
-            <Card key={list.id}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                {editingListId === list.id ? (
-                  <Input
-                    value={editName}
-                    onChange={(e) => setEditName(e.target.value)}
-                    onBlur={() => handleRenameList(list.id)}
-                    onKeyDown={(e) =>
-                      e.key === "Enter" && handleRenameList(list.id)
-                    }
-                    autoFocus
-                    className="h-8 w-48 text-sm"
-                  />
-                ) : (
-                  <CardTitle className="text-base font-semibold">
-                    {list.name}
-                  </CardTitle>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {lists.map((list) => {
+            const style =
+              LIST_CARD_STYLES[list.color || "slate"] || LIST_CARD_STYLES.slate;
+            return (
+              <div
+                key={list.id}
+                className={cn(
+                  "group rounded-xl border p-4 flex flex-col",
+                  style.card
                 )}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon-sm">
-                      <MoreHorizontal className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setEditingListId(list.id);
-                        setEditName(list.name);
-                      }}
-                    >
-                      <Pencil className="h-4 w-4 mr-2" />
-                      Rename
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      className="text-destructive"
-                      onClick={() => handleDeleteList(list.id)}
-                    >
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </CardHeader>
-              <CardContent>
-                {list.games.length === 0 ? (
-                  <p className="text-sm text-muted-foreground py-4 text-center">
-                    No games in this list yet.
-                  </p>
-                ) : (
-                  <div className="space-y-2">
-                    {list.games.map((game) => (
-                      <div
-                        key={game.id}
-                        className="flex items-center justify-between p-2 rounded-md bg-muted/50 group hover:bg-muted/80 transition-colors"
-                      >
-                        <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-sm font-medium truncate">
-                            {game.title}
-                          </span>
-                          <DlesTopic topic={game.topic} className="text-xs" />
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          className="h-6 w-6 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive"
-                          onClick={() => handleRemoveGame(list.id, game.id)}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
+              >
+                {/* Header */}
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div className="flex-1 min-w-0">
+                    {editingListId === list.id ? (
+                      <Input
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        onBlur={() => handleRenameList(list.id)}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && handleRenameList(list.id)
+                        }
+                        autoFocus
+                        className="h-7 text-sm font-semibold -ml-2 px-2 bg-background/80"
+                      />
+                    ) : (
+                      <h3 className="font-semibold truncate">{list.name}</h3>
+                    )}
+                    <p className="text-xs opacity-70 mt-0.5">
+                      {list.games.length}{" "}
+                      {list.games.length === 1 ? "game" : "games"}
+                    </p>
                   </div>
-                )}
-                <p className="text-xs text-muted-foreground mt-3 font-medium">
-                  {list.games.length} game{list.games.length !== 1 && "s"}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        className="shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setEditingListId(list.id);
+                          setEditName(list.name);
+                        }}
+                      >
+                        <Pencil className="h-4 w-4 mr-2" />
+                        Rename
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <div className="px-2 py-2">
+                        <p className="text-xs text-muted-foreground mb-2 font-medium">
+                          Color
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {LIST_COLOR_OPTIONS.map((color) => {
+                            const colorStyle = LIST_CARD_STYLES[color];
+                            return (
+                              <button
+                                key={color}
+                                onClick={() =>
+                                  handleChangeColor(list.id, color)
+                                }
+                                className={cn(
+                                  "w-4 h-4 rounded-full transition-all",
+                                  colorStyle.dot,
+                                  list.color === color &&
+                                    "ring-2 ring-offset-1 ring-offset-background ring-foreground"
+                                )}
+                                title={color}
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-destructive focus:text-destructive"
+                        onClick={() => handleDeleteList(list.id)}
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                {/* Games list */}
+                <div className="bg-background/30 rounded-lg p-2 -mx-1 flex-1 flex flex-col">
+                  {list.games.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center py-4 opacity-60">
+                      <Gamepad2 className="h-5 w-5 mb-1.5" />
+                      <p className="text-xs">Add games from the homepage</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      {list.games.slice(0, 4).map((game) => (
+                        <div
+                          key={game.id}
+                          className="flex items-center justify-between py-1.5 px-2 rounded-md group/item hover:bg-background/50 transition-colors"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-sm truncate text-foreground">
+                              {game.title}
+                            </span>
+                            <DlesTopic topic={game.topic} />
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="icon-sm"
+                            className="h-5 w-5 opacity-0 group-hover/item:opacity-100 text-muted-foreground hover:text-destructive shrink-0"
+                            onClick={() => handleRemoveGame(list.id, game.id)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                      {list.games.length > 4 && (
+                        <p className="text-xs opacity-60 text-center pt-2">
+                          +{list.games.length - 4} more
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

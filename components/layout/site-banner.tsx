@@ -4,62 +4,33 @@ import { useEffect, useState } from "react";
 import { AlertCircle, Megaphone, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DlesButton } from "@/components/design/dles-button";
-
-interface SiteConfig {
-  maintenanceMode: boolean;
-  welcomeMessage: string | null;
-  showWelcomeMessage: boolean;
-}
+import { useSettings } from "@/components/settings-provider";
 
 export function SiteBanner() {
-  const [config, setConfig] = useState<SiteConfig | null>(null);
+  const { settings } = useSettings();
   const [isVisible, setIsVisible] = useState(true);
 
   // Check persisted visibility on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && settings?.welcomeMessage) {
       const dismissedMessage = localStorage.getItem("dismissedWelcomeMessage");
-      const currentConfig = config?.welcomeMessage;
-      if (
-        dismissedMessage &&
-        currentConfig &&
-        dismissedMessage === currentConfig
-      ) {
+      if (dismissedMessage === settings.welcomeMessage) {
         setIsVisible(false);
       }
     }
-  }, [config?.welcomeMessage]);
+  }, [settings?.welcomeMessage]);
 
-  useEffect(() => {
-    const fetchConfig = async () => {
-      try {
-        const res = await fetch("/api/settings");
-        if (res.ok) {
-          const data = await res.json();
-          setConfig(data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch site config for banner:", error);
-      }
-    };
+  if (!settings || !isVisible) return null;
 
-    fetchConfig();
-    // Poll for updates every 30 seconds for better responsiveness
-    const interval = setInterval(fetchConfig, 30 * 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (!config || !isVisible) return null;
-
-  const isMaintenance = config.maintenanceMode;
-  const showWelcome = config.showWelcomeMessage && config.welcomeMessage;
+  const isMaintenance = settings.maintenanceMode;
+  const showWelcome = settings.showWelcomeMessage && settings.welcomeMessage;
 
   if (!isMaintenance && !showWelcome) return null;
 
   const handleDismiss = () => {
     setIsVisible(false);
-    if (!isMaintenance && config.welcomeMessage) {
-      localStorage.setItem("dismissedWelcomeMessage", config.welcomeMessage);
+    if (!isMaintenance && settings.welcomeMessage) {
+      localStorage.setItem("dismissedWelcomeMessage", settings.welcomeMessage);
     }
   };
 
@@ -99,7 +70,7 @@ export function SiteBanner() {
               </span>
             </span>
           ) : (
-            config.welcomeMessage
+            settings.welcomeMessage
           )}
         </p>
       </div>

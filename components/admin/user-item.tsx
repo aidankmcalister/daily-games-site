@@ -1,10 +1,4 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { DlesSelect } from "@/components/design/dles-select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,7 +45,7 @@ const ROLE_COLORS: Record<Role, string> = {
 
 const ROLE_LABELS: Record<Role, string> = {
   owner: "Owner",
-  coowner: "Co-owner",
+  coowner: "Co-Owner",
   admin: "Admin",
   member: "Member",
 };
@@ -65,99 +59,117 @@ export function UserItem({
   onDelete,
 }: UserItemProps) {
   return (
-    <div className="flex items-center gap-4 w-full">
-      {/* Avatar */}
-      <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0 overflow-hidden">
-        {user.image ? (
-          <img
-            src={user.image}
-            alt={user.name}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <span className="text-xs font-medium text-muted-foreground">
-            {user.name
-              ?.split(" ")
-              .map((n) => n[0])
-              .join("")
-              .slice(0, 2)
-              .toUpperCase() || "?"}
-          </span>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-[180px_200px_minmax(0,1fr)] gap-4 items-center flex-1 min-w-0">
-        <span className="text-sm font-medium truncate" title={user.name}>
-          {user.name}
-        </span>
-
-        <div className="flex items-center">
-          <Badge
-            className={cn(
-              "capitalize text-xs shrink-0",
-              ROLE_COLORS[user.role]
-            )}
-            variant="secondary"
-          >
-            {ROLE_LABELS[user.role]}
-          </Badge>
+    <div className="flex flex-col sm:flex-row sm:items-center gap-4 w-full p-3 sm:p-0 border sm:border-0 rounded-lg sm:rounded-none bg-card sm:bg-transparent">
+      <div className="flex items-start sm:items-center gap-4 w-full">
+        {/* Avatar */}
+        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0 overflow-hidden">
+          {user.image ? (
+            <img
+              src={user.image}
+              alt={user.name}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="text-xs font-medium text-muted-foreground">
+              {user.name
+                ?.split(" ")
+                .map((n) => n[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase() || "?"}
+            </span>
+          )}
         </div>
 
-        <span
-          className="text-xs text-muted-foreground truncate font-mono"
-          title={user.email}
-        >
-          {user.email}
-        </span>
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-[180px_200px_minmax(0,1fr)] gap-4 items-center flex-1 min-w-0">
+          <span className="text-sm font-medium truncate" title={user.name}>
+            {user.name}
+          </span>
 
-      <div className="flex items-center gap-2 shrink-0 ml-auto">
-        {canChangeRole(user.role) && (
-          <Select
-            value={user.role}
-            onValueChange={(val) => onUpdateRole(user.id, val as Role)}
-          >
-            <SelectTrigger className="h-8 w-[110px] sm:w-[130px] text-xs sm:text-sm capitalize">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {assignableRoles.map((role) => (
-                <SelectItem key={role} value={role} className="capitalize">
-                  {ROLE_LABELS[role]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
-
-        {canDelete(user.role) && (
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <DlesButton
-                size="icon-sm"
-                variant="ghost"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+          <div className="flex items-center">
+            {canChangeRole(user.role) ? (
+              <DlesSelect
+                value={user.role}
+                onChange={(val) => onUpdateRole(user.id, val as Role)}
+                options={assignableRoles.map((role) => ({
+                  value: role,
+                  label: ROLE_LABELS[role],
+                }))}
+                className="w-full sm:w-[140px]"
+                renderOption={(option) => (
+                  <Badge
+                    variant="secondary"
+                    className={cn(
+                      "capitalize rounded-full text-xs px-2.5 h-6 gap-1 shrink-0",
+                      ROLE_COLORS[option.value as Role]
+                    )}
+                  >
+                    {option.label}
+                  </Badge>
+                )}
+                renderSelected={(option) => (
+                  <Badge
+                    variant="secondary"
+                    className={cn(
+                      "capitalize rounded-full text-xs px-2.5 h-6 gap-1 shrink-0",
+                      ROLE_COLORS[option.value as Role]
+                    )}
+                  >
+                    {option.label}
+                  </Badge>
+                )}
+              />
+            ) : (
+              <Badge
+                className={cn(
+                  "capitalize text-xs shrink-0",
+                  ROLE_COLORS[user.role]
+                )}
+                variant="secondary"
               >
-                <Trash2 className="h-3.5 w-3.5" />
-              </DlesButton>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete User?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to delete {user.name}? This action
-                  cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={() => onDelete(user.id)}>
-                  Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
+                {ROLE_LABELS[user.role]}
+              </Badge>
+            )}
+          </div>
+
+          <span
+            className="text-xs text-muted-foreground truncate font-mono"
+            title={user.email}
+          >
+            {user.email}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0 ml-auto self-start sm:self-auto">
+          {canDelete(user.role) && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <DlesButton
+                  size="icon-sm"
+                  variant="ghost"
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </DlesButton>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete User?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete {user.name}? This action
+                    cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => onDelete(user.id)}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          )}
+        </div>
       </div>
     </div>
   );

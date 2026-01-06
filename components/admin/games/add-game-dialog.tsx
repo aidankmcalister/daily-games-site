@@ -124,7 +124,7 @@ export function AddGameDialog({ onAdd }: AddGameDialogProps) {
               <SelectContent>
                 {TOPICS.map((t) => (
                   <SelectItem key={t} value={t}>
-                    <DlesTopic topic={t} className="text-[12px] px-1.5 h-5" />
+                    <DlesTopic topic={t} size="lg" className="font-bold" />
                   </SelectItem>
                 ))}
               </SelectContent>

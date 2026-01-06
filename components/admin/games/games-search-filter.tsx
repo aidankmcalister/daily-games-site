@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { DlesSelect } from "@/components/design/dles-select";
 import { DlesTopic } from "@/components/design/dles-topic";
 import { TOPICS } from "@/lib/constants";
 import { cn, formatTopic } from "@/lib/utils";
@@ -51,50 +51,13 @@ export function GamesSearchFilter({
 
       {/* Filters Grid */}
       <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center md:w-auto">
-        <MultiSelect
-          options={[
-            { value: "all", label: "All Topics" },
-            ...TOPICS.map((t) => ({ value: t, label: formatTopic(t) })),
-          ]}
+        <DlesSelect
+          multi
+          topics
           value={topicFilter.length === 0 ? ["all"] : topicFilter}
-          onChange={(newTopics) => {
-            const effectiveCurrentTopics =
-              topicFilter.length === 0 ? ["all"] : topicFilter;
-
-            if (
-              newTopics.includes("all") &&
-              !effectiveCurrentTopics.includes("all")
-            ) {
-              onTopicFilterChange([]);
-              return;
-            }
-
-            if (
-              effectiveCurrentTopics.includes("all") &&
-              newTopics.length > 1
-            ) {
-              onTopicFilterChange(newTopics.filter((t) => t !== "all"));
-              return;
-            }
-
-            if (newTopics.length === 0) {
-              onTopicFilterChange([]);
-              return;
-            }
-
-            onTopicFilterChange(newTopics);
-          }}
+          onChange={onTopicFilterChange}
           placeholder="Topic"
           className="w-full sm:w-[160px] h-10"
-          renderLabel={(option) => (
-            <DlesTopic
-              topic={option.value}
-              className="text-[10px] px-1.5 h-5 pointer-events-none"
-            />
-          )}
-          renderSelectedItem={(option) => (
-            <DlesTopic topic={option.value} className="text-[9px] px-1 h-4" />
-          )}
         />
         <Select
           value={sortBy}

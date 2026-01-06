@@ -48,7 +48,7 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const { name } = await request.json();
+    const { name, color } = await request.json();
 
     // Verify ownership
     const list = await prisma.gameList.findFirst({
@@ -61,7 +61,10 @@ export async function PATCH(
 
     const updated = await prisma.gameList.update({
       where: { id },
-      data: { name: name.trim() },
+      data: {
+        ...(name && { name: name.trim() }),
+        ...(color && { color }),
+      },
     });
 
     return NextResponse.json(updated);

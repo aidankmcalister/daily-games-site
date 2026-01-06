@@ -108,7 +108,7 @@ export function GameCard({
       {isNew && !isPlayed && (
         <div
           className={cn(
-            "absolute top-2 -right-11 w-32 h-5 text-white text-[9px] font-bold flex items-center justify-center rotate-45",
+            "absolute top-2 -right-11 w-32 h-6 text-white text-xs font-bold flex items-center justify-center rotate-45",
             TOPIC_COLORS[topic]
           )}
         >
@@ -170,7 +170,7 @@ export function GameCard({
         </div>
 
         <div className="pt-3 flex items-center justify-between gap-2">
-          <DlesTopic topic={topic} />
+          <DlesTopic topic={topic} size="sm" />
         </div>
       </CardHeader>
     </Card>

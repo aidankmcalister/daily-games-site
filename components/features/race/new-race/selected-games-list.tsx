@@ -80,10 +80,7 @@ export function SelectedGamesList({
                           <span className="text-xs font-medium truncate flex-1">
                             {game.title}
                           </span>
-                          <DlesTopic
-                            topic={game.topic}
-                            className="text-[9px] px-1.5 h-4 border-none"
-                          />
+                          <DlesTopic topic={game.topic} />
                           <DlesButton
                             variant="ghost"
                             size="icon-sm"

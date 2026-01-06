@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name } = await request.json();
+    const { name, color } = await request.json();
     if (!name || typeof name !== "string" || name.trim().length === 0) {
       return NextResponse.json(
         { error: "List name is required" },
@@ -56,10 +56,11 @@ export async function POST(request: Request) {
       data: {
         userId: session.user.id,
         name: name.trim(),
+        ...(color && { color }),
       },
     });
 
-    return NextResponse.json(list);
+    return NextResponse.json({ ...list, games: [] });
   } catch (error) {
     console.error("Failed to create list:", error);
     return NextResponse.json(

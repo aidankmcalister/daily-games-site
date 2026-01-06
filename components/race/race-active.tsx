@@ -202,10 +202,7 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
                       <h3 className="text-xl font-black tracking-tight">
                         {rg.game.title}
                       </h3>
-                      <DlesTopic
-                        topic={rg.game.topic}
-                        className="text-[10px] px-2 py-0.5"
-                      />
+                      <DlesTopic topic={rg.game.topic} size="sm" />
                     </div>
                     <a
                       href={rg.game.link}

@@ -93,10 +93,7 @@ export function RaceConfig({
                                 <span className="font-bold text-xs truncate text-foreground/90">
                                   {rg.game.title}
                                 </span>
-                                <DlesTopic
-                                  topic={rg.game.topic}
-                                  className="text-[8px] px-1.5 h-4 shrink-0 font-black opacity-80"
-                                />
+                                <DlesTopic topic={rg.game.topic} />
                               </div>
                             </TooltipTrigger>
                             {rg.game.description && (

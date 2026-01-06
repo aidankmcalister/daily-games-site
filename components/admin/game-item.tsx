@@ -99,7 +99,7 @@ export function GameItem({
             <SelectContent>
               {TOPICS.map((t) => (
                 <SelectItem key={t} value={t}>
-                  <DlesTopic topic={t} className="text-[10px] px-1.5 h-4" />
+                  <DlesTopic topic={t} />
                 </SelectItem>
               ))}
             </SelectContent>
@@ -147,7 +147,7 @@ export function GameItem({
         </div>
 
         <div className="flex items-center">
-          <DlesTopic topic={game.topic} className="text-xs shrink-0" />
+          <DlesTopic topic={game.topic} />
         </div>
 
         <span

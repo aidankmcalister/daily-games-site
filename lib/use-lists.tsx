@@ -12,6 +12,7 @@ import { useSession } from "@/lib/auth-client";
 export interface GameList {
   id: string;
   name: string;
+  color: string;
   gameCount: number;
   games: string[]; // Game IDs
 }
@@ -19,9 +20,10 @@ export interface GameList {
 interface UseListsResult {
   lists: GameList[];
   isLoading: boolean;
-  createList: (name: string) => Promise<GameList | null>;
+  createList: (name: string, color?: string) => Promise<GameList | null>;
   deleteList: (id: string) => Promise<void>;
   renameList: (id: string, name: string) => Promise<void>;
+  updateListColor: (id: string, color: string) => Promise<void>;
   addGameToList: (listId: string, gameId: string) => Promise<void>;
   removeGameFromList: (listId: string, gameId: string) => Promise<void>;
   getListsForGame: (gameId: string) => string[]; // Returns list IDs containing the game
@@ -62,19 +64,24 @@ export function ListsProvider({ children }: { children: React.ReactNode }) {
   }, [fetchLists]);
 
   const createList = useCallback(
-    async (name: string): Promise<GameList | null> => {
+    async (name: string, color?: string): Promise<GameList | null> => {
       if (!isAuthenticated) return null;
 
       try {
         const res = await fetch("/api/lists", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name }),
+          body: JSON.stringify({ name, color }),
         });
 
         if (res.ok) {
           const newList = await res.json();
-          const listWithMeta = { ...newList, gameCount: 0, games: [] };
+          const listWithMeta = {
+            ...newList,
+            gameCount: 0,
+            games: [],
+            color: newList.color || "slate",
+          };
           setLists((prev) => [listWithMeta, ...prev]);
           return listWithMeta;
         }
@@ -116,6 +123,26 @@ export function ListsProvider({ children }: { children: React.ReactNode }) {
         });
       } catch (error) {
         console.error("Failed to rename list:", error);
+        fetchLists();
+      }
+    },
+    [isAuthenticated, fetchLists]
+  );
+
+  const updateListColor = useCallback(
+    async (id: string, color: string) => {
+      if (!isAuthenticated) return;
+
+      setLists((prev) => prev.map((l) => (l.id === id ? { ...l, color } : l)));
+
+      try {
+        await fetch(`/api/lists/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ color }),
+        });
+      } catch (error) {
+        console.error("Failed to update list color:", error);
         fetchLists();
       }
     },
@@ -193,6 +220,7 @@ export function ListsProvider({ children }: { children: React.ReactNode }) {
     createList,
     deleteList,
     renameList,
+    updateListColor,
     addGameToList,
     removeGameFromList,
     getListsForGame,

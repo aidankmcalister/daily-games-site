@@ -48,6 +48,7 @@ model GameList {
   id        String   @id @default(cuid())
   userId    String
   name      String
+  color     String   @default("slate")
   createdAt DateTime @default(now())
 
   user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)

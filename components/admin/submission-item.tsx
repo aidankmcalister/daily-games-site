@@ -52,10 +52,7 @@ export function SubmissionItem({
         </div>
 
         <div className="flex items-center">
-          <DlesTopic
-            topic={submission.topic}
-            className="text-[10px] shrink-0"
-          />
+          <DlesTopic topic={submission.topic} size="sm" />
         </div>
 
         <div className="flex items-center gap-2 min-w-0">
