@@ -126,7 +126,7 @@ export function ListsDropdown({ gameId, className }: ListsDropdownProps) {
               }}
               contentClassName="w-auto p-0"
               footer={
-                <div className="p-2 border-t border-border/40 bg-muted/20">
+                <div className="p-2 border-t border-border/40">
                   <div className="space-y-2">
                     <div className="text-[10px] uppercase font-bold text-muted-foreground/60 tracking-wider px-1">
                       New List

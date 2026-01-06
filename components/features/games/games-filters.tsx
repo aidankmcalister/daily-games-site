@@ -85,7 +85,7 @@ export function HeaderFilters({
             ]}
             placeholder="All Games"
             className={cn(
-              "w-full md:w-[180px] h-10 text-sm border-primary/20",
+              "w-full md:w-[200px] h-10 text-sm border-primary/20",
               !isCompact && listFilter !== "all" && "bg-primary/5"
             )}
             renderSelected={(option) => {
