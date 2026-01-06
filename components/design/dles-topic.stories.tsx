@@ -15,6 +15,9 @@ const meta = {
     },
   },
   tags: ["autodocs"],
+  args: {
+    topic: "sports", // Default arg to satisfy TypeScript
+  },
   argTypes: {
     topic: {
       control: "select",
@@ -47,6 +50,7 @@ type Story = StoryObj<typeof meta>;
 // All topics at once - the main showcase
 export const AllTopics: Story = {
   name: "All Topics",
+  args: { topic: "sports" },
   render: () => (
     <div className="flex flex-wrap gap-2 max-w-md">
       <DlesTopic topic="all" />
@@ -67,6 +71,7 @@ export const AllTopics: Story = {
 // All sizes
 export const AllSizes: Story = {
   name: "All Sizes",
+  args: { topic: "sports" },
   render: () => (
     <div className="flex items-center gap-3">
       <DlesTopic topic="sports" size="xs" />
@@ -80,6 +85,7 @@ export const AllSizes: Story = {
 // With icons
 export const WithIcons: Story = {
   name: "With Icons",
+  args: { topic: "sports" },
   render: () => (
     <div className="flex flex-wrap gap-2">
       <DlesTopic topic="sports" icon={<Trophy className="h-3 w-3" />} />

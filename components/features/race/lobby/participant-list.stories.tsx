@@ -92,6 +92,7 @@ const mockRaceWithImages: Race = {
 
 export const AllStates: Story = {
   name: "All States",
+  args: { race: mockRaceOnePlayer },
   render: () => (
     <div className="space-y-8 max-w-md">
       <div>

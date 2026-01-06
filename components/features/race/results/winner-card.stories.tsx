@@ -52,6 +52,7 @@ const mockOpponent = {
 // Both states side by side
 export const BothStates: Story = {
   name: "Victory vs Defeat",
+  args: { winner: mockWinner, isWinner: true },
   render: () => (
     <div className="flex flex-col gap-4 w-[400px]">
       <WinnerCard winner={mockWinner} isWinner={true} />

@@ -23,12 +23,16 @@ const meta = {
     },
   },
   tags: ["autodocs"],
+  args: {
+    children: null,
+  },
 } satisfies Meta<typeof Card>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
+  args: { children: null },
   render: () => (
     <Card className="w-80">
       <CardHeader>
@@ -47,6 +51,7 @@ export const Default: Story = {
 
 export const WithAction: Story = {
   name: "With Action",
+  args: { children: null },
   render: () => (
     <Card className="w-80">
       <CardHeader>
@@ -65,6 +70,7 @@ export const WithAction: Story = {
 
 export const Sizes: Story = {
   name: "All Sizes",
+  args: { children: null },
   render: () => (
     <div className="flex gap-4">
       <Card size="sm" className="w-64">
@@ -89,6 +95,7 @@ export const Sizes: Story = {
 
 export const StatCard: Story = {
   name: "Stat Card Example",
+  args: { children: null },
   render: () => (
     <Card className="w-48">
       <CardContent className="p-4">

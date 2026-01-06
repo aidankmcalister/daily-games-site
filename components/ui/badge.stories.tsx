@@ -14,6 +14,9 @@ const meta = {
     },
   },
   tags: ["autodocs"],
+  args: {
+    children: "Badge",
+  },
 } satisfies Meta<typeof Badge>;
 
 export default meta;
@@ -21,6 +24,7 @@ type Story = StoryObj<typeof meta>;
 
 export const AllVariants: Story = {
   name: "All Variants",
+  args: { children: "Badge" },
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Badge variant="default">Default</Badge>
@@ -35,6 +39,7 @@ export const AllVariants: Story = {
 
 export const AllSizes: Story = {
   name: "All Sizes",
+  args: { children: "Badge" },
   render: () => (
     <div className="flex items-center gap-2">
       <Badge size="sm">Small</Badge>
@@ -46,6 +51,7 @@ export const AllSizes: Story = {
 
 export const WithIcons: Story = {
   name: "With Icons",
+  args: { children: "Badge" },
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Badge>

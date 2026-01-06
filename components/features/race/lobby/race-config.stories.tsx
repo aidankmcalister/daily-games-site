@@ -100,6 +100,12 @@ const mockRace: Race = {
 
 export const AllStates: Story = {
   name: "All States",
+  args: {
+    race: mockRace,
+    orderedGames: mockGames,
+    isCreator: true,
+    onReorder: (result) => console.log("Reorder:", result),
+  },
   render: () => (
     <div className="space-y-8 max-w-md">
       <div>

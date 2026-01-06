@@ -62,6 +62,7 @@ const mockRaceReady: Race = {
 
 export const AllStates: Story = {
   name: "All States",
+  args: { race: mockRaceWaiting },
   render: () => (
     <div className="space-y-6 max-w-md">
       <div>

@@ -36,6 +36,7 @@ const baseGame: GameCardProps = {
 // All card states
 export const AllStates: Story = {
   name: "All States",
+  args: baseGame,
   render: () => (
     <div className="grid grid-cols-2 gap-4 max-w-2xl">
       <div>
@@ -61,6 +62,7 @@ export const AllStates: Story = {
 // Different topics
 export const AllTopics: Story = {
   name: "All Topics",
+  args: baseGame,
   render: () => (
     <div className="grid grid-cols-3 gap-3 max-w-3xl">
       <GameCard {...baseGame} topic="words" title="Wordle" />

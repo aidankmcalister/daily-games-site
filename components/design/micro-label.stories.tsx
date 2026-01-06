@@ -22,6 +22,7 @@ type Story = StoryObj<typeof meta>;
 // Usage examples
 export const Examples: Story = {
   name: "Examples",
+  args: { children: "Label" },
   render: () => (
     <div className="space-y-4">
       <MicroLabel>You</MicroLabel>

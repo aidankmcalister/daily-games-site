@@ -1,6 +1,7 @@
 import type { Preview } from "@storybook/nextjs-vite";
 import { ImpersonationProvider } from "../components/impersonation-provider";
 import { SettingsProvider } from "../components/settings-provider";
+import { ListsProvider } from "../lib/use-lists";
 import { Toaster } from "../components/ui/sonner";
 import "../app/globals.css";
 
@@ -43,13 +44,15 @@ const preview: Preview = {
     (Story) => (
       <ImpersonationProvider>
         <SettingsProvider>
-          <div
-            className="dark min-h-screen bg-background text-foreground p-6"
-            style={{ fontFamily: "'JetBrains Mono', monospace" }}
-          >
-            <Story />
-            <Toaster />
-          </div>
+          <ListsProvider>
+            <div
+              className="dark min-h-screen bg-background text-foreground p-6"
+              style={{ fontFamily: "'JetBrains Mono', monospace" }}
+            >
+              <Story />
+              <Toaster />
+            </div>
+          </ListsProvider>
         </SettingsProvider>
       </ImpersonationProvider>
     ),
