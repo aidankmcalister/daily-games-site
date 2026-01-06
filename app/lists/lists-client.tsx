@@ -29,6 +29,11 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { LIST_CARD_STYLES, LIST_COLOR_OPTIONS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -74,28 +79,30 @@ export function ListsClient({ initialLists }: ListsClientProps) {
   } = useLists();
 
   // Merge shared list data (colors, names) with initial full game data
-  // Filter out deleted lists by only including lists that exist in sharedLists
-  const sharedListIds = new Set(sharedLists.map((s) => s.id));
-  const lists = initialLists
-    .filter((initial) => sharedListIds.has(initial.id))
-    .map((initial) => {
-      const shared = sharedLists.find((s) => s.id === initial.id);
-      return {
-        ...initial,
-        name: shared?.name || initial.name,
-        color: shared?.color || initial.color,
-      };
-    });
+  // Merge shared list data (colors, names) with initial full game data
+  // Drive from sharedLists so newly created lists appear immediately
+  const lists = sharedLists.map((shared) => {
+    const initial = initialLists.find((i) => i.id === shared.id);
+    return {
+      id: shared.id,
+      name: shared.name,
+      color: shared.color,
+      games: initial?.games || [],
+    };
+  });
 
   const [newListName, setNewListName] = useState("");
+  const [newListColor, setNewListColor] = useState("slate");
+  const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [editingListId, setEditingListId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
 
   const handleCreateList = async () => {
     if (!newListName.trim()) return;
-    await createList(newListName);
+    await createList(newListName, newListColor);
     setNewListName("");
+    setNewListColor("slate");
     setIsCreating(false);
   };
 
@@ -153,13 +160,55 @@ export function ListsClient({ initialLists }: ListsClientProps) {
             <div className="space-y-4 pt-4">
               <Field>
                 <FieldLabel>List Name</FieldLabel>
-                <Input
-                  placeholder="e.g. Favorites, Completed..."
-                  value={newListName}
-                  onChange={(e) => setNewListName(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleCreateList()}
-                  className="h-11"
-                />
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="e.g. Favorites, Completed..."
+                    value={newListName}
+                    onChange={(e) => setNewListName(e.target.value)}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" &&
+                      newListName.trim() &&
+                      handleCreateList()
+                    }
+                    className="h-11 flex-1"
+                  />
+                  <Popover
+                    open={isColorPickerOpen}
+                    onOpenChange={setIsColorPickerOpen}
+                  >
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        className={cn(
+                          "w-11 h-11 rounded-lg shrink-0 border border-border/50",
+                          LIST_CARD_STYLES[newListColor]?.dot || "bg-slate-500"
+                        )}
+                        title="Pick color"
+                      />
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-3" align="end">
+                      <div className="grid grid-cols-6 gap-1.5">
+                        {LIST_COLOR_OPTIONS.map((color) => (
+                          <button
+                            key={color}
+                            type="button"
+                            onClick={() => {
+                              setNewListColor(color);
+                              setIsColorPickerOpen(false);
+                            }}
+                            className={cn(
+                              "w-5 h-5 rounded-full",
+                              LIST_CARD_STYLES[color]?.dot,
+                              newListColor === color &&
+                                "ring-2 ring-offset-1 ring-offset-background ring-foreground"
+                            )}
+                            title={color}
+                          />
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </Field>
               <div className="flex justify-end gap-2">
                 <Button variant="outline" onClick={() => setIsCreating(false)}>
