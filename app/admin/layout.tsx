@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useImpersonation } from "@/components/impersonation-provider";
-import { AdminHeader } from "@/components/admin/admin-header";
 import { cn } from "@/lib/utils";
 import {
   Gamepad2,
@@ -12,6 +11,7 @@ import {
   Shield,
   Settings,
   TrendingUp,
+  ListChecks,
 } from "lucide-react";
 import { DlesButton } from "@/components/design/dles-button";
 
@@ -74,8 +74,6 @@ export default function AdminLayout({
   return (
     <main className="min-h-screen px-4 py-8 md:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
-        <AdminHeader canManageUsers={canManageUsers} />
-
         {/* Tabs */}
         {/* Tabs */}
         <div className="grid grid-cols-2 md:flex md:flex-row gap-2 mb-6">
@@ -104,6 +102,14 @@ export default function AdminLayout({
           >
             <TrendingUp className="h-3.5 w-3.5" />
             Submissions
+          </DlesButton>
+          <DlesButton
+            isActive={pathname === "/admin/preset-lists"}
+            href="/admin/preset-lists"
+            className="w-full md:w-auto"
+          >
+            <ListChecks className="h-3.5 w-3.5" />
+            Lists
           </DlesButton>
           {canManageSettings && (
             <DlesButton

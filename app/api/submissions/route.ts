@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth-helpers";
 import { Topic } from "@/app/generated/prisma/client";
+import { cleanText } from "@/lib/filter";
 
 export async function POST(request: Request) {
   try {
@@ -31,10 +32,10 @@ export async function POST(request: Request) {
 
     const submission = await prisma.gameSubmission.create({
       data: {
-        title,
+        title: cleanText(title),
         link,
         topic: topic as Topic,
-        description,
+        description: description ? cleanText(description) : "",
         submittedBy: session.user.id,
       },
     });

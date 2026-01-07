@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth-helpers";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
+import { cleanText } from "@/lib/filter";
 
 const createRaceSchema = z.object({
   name: z.string().min(1).max(50),
@@ -25,13 +26,13 @@ export async function POST(req: Request) {
 
     const race = await prisma.race.create({
       data: {
-        name,
+        name: cleanText(name),
         createdBy: user?.id || null,
         status: "waiting",
         participants: {
           create: {
             userId: user?.id ?? null,
-            guestName: user ? null : guestName,
+            guestName: user ? null : guestName ? cleanText(guestName) : null,
           },
         },
         raceGames: {

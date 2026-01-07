@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth-helpers";
+import { cleanText } from "@/lib/filter";
 
 // DELETE /api/lists/[id] - Delete a list
 export async function DELETE(
@@ -62,7 +63,7 @@ export async function PATCH(
     const updated = await prisma.gameList.update({
       where: { id },
       data: {
-        ...(name && { name: name.trim() }),
+        ...(name && { name: cleanText(name.trim()) }),
         ...(color && { color }),
       },
     });

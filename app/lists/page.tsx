@@ -25,13 +25,20 @@ export default async function ListsPage() {
     orderBy: { createdAt: "desc" },
   });
 
+  const config = await prisma.siteConfig.findUnique({
+    where: { id: "default" },
+  });
+
   return (
     <main className="min-h-screen px-4 py-8 md:px-8 lg:px-12">
       <div className="mx-auto max-w-7xl">
         <p className="text-muted-foreground text-sm font-medium mb-8">
           Organize your games into custom collections.
         </p>
-        <ListsClient initialLists={lists} />
+        <ListsClient
+          initialLists={lists}
+          showPresetLists={config?.showPresetLists ?? true}
+        />
       </div>
     </main>
   );

@@ -1,7 +1,7 @@
 "use client";
 // forcing refresh
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { DlesBadge } from "@/components/design/dles-badge";
@@ -51,13 +51,50 @@ import {
   Sparkles,
   Loader2,
   ExternalLink,
+  Tag,
+  Trophy,
+  Flame,
+  Globe,
+  Brain,
+  Clapperboard,
+  Music,
+  BookOpen,
+  Dices,
+  Star,
+  Heart,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+// Icon mapping for preset lists
+const PRESET_ICON_MAP: Record<string, LucideIcon> = {
+  Tag,
+  Trophy,
+  Flame,
+  Globe,
+  Brain,
+  Clapperboard,
+  Sparkles,
+  Music,
+  Gamepad2,
+  BookOpen,
+  Dices,
+  Star,
+  Heart,
+};
 
 interface Game {
   id: string;
   title: string;
   topic: string;
   link?: string;
+}
+
+interface PresetList {
+  id: string;
+  name: string;
+  color: string;
+  icon: string;
+  games: Game[];
 }
 
 // Extended list with full game objects for display
@@ -70,9 +107,13 @@ interface DisplayList {
 
 interface ListsClientProps {
   initialLists: DisplayList[];
+  showPresetLists: boolean;
 }
 
-export function ListsClient({ initialLists }: ListsClientProps) {
+export function ListsClient({
+  initialLists,
+  showPresetLists,
+}: ListsClientProps) {
   // Use the shared lists context for syncing
   const {
     lists: sharedLists,
@@ -82,6 +123,30 @@ export function ListsClient({ initialLists }: ListsClientProps) {
     updateListColor,
     isLoading,
   } = useLists();
+
+  // Preset lists state
+  const [presetLists, setPresetLists] = useState<PresetList[]>([]);
+  const [presetsLoading, setPresetsLoading] = useState(true);
+
+  // Fetch preset lists on mount
+  useEffect(() => {
+    if (showPresetLists) {
+      const fetchPresetLists = async () => {
+        try {
+          const res = await fetch("/api/preset-lists");
+          if (res.ok) {
+            const data = await res.json();
+            setPresetLists(data);
+          }
+        } catch (error) {
+          console.error("Failed to fetch preset lists:", error);
+        } finally {
+          setPresetsLoading(false);
+        }
+      };
+      fetchPresetLists();
+    }
+  }, [showPresetLists]);
 
   // Merge shared list data (colors, names) with initial full game data
   // Merge shared list data (colors, names) with initial full game data
@@ -169,6 +234,40 @@ export function ListsClient({ initialLists }: ListsClientProps) {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+      {/* Preset Lists Section */}
+      {showPresetLists && presetLists.length > 0 && (
+        <div className="space-y-3">
+          <h2 className="text-micro text-muted-foreground/60">
+            Featured Collections
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+            {presetLists.map((preset) => {
+              const style =
+                LIST_CARD_STYLES[preset.color] || LIST_CARD_STYLES.slate;
+              const IconComponent = PRESET_ICON_MAP[preset.icon] || Sparkles;
+              return (
+                <Link
+                  key={preset.id}
+                  href={`/?list=${preset.id}`}
+                  className={cn(
+                    "group flex items-center justify-center gap-2 p-2.5 h-10 rounded-lg transition-all hover:scale-[1.02] active:scale-[0.98] border",
+                    style.card
+                  )}
+                >
+                  <IconComponent className="h-3.5 w-3.5 shrink-0 opacity-70 group-hover:opacity-100" />
+                  <span className="text-micro font-bold uppercase tracking-wider opacity-80 group-hover:opacity-100">
+                    {preset.name}
+                  </span>
+                  <span className="text-micro opacity-50">
+                    ({preset.games.length})
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         <h2 className="text-micro text-muted-foreground/60">Your Game Lists</h2>
         <Dialog open={isCreating} onOpenChange={setIsCreating}>

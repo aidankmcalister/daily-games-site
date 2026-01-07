@@ -53,6 +53,9 @@ export async function PATCH(request: Request) {
       "enableCommunitySubmissions",
       "defaultSort",
       "maxCustomLists",
+      "showPresetLists",
+      "maxSubmissionsPerDay",
+      "enableLeaderboards",
     ];
 
     const sanitizedUpdates: Record<string, unknown> = {};

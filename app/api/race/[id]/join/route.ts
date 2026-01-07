@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth-helpers";
 import prisma from "@/lib/prisma";
 import { pusherServer } from "@/lib/pusher";
+import { cleanText } from "@/lib/filter";
 
 export async function POST(
   req: Request,
@@ -60,7 +61,7 @@ export async function POST(
         participants: {
           create: {
             userId: user?.id ?? null,
-            guestName: user ? null : guestName,
+            guestName: user ? null : guestName ? cleanText(guestName) : null,
           },
         },
         status: "ready", // Both joined, now ready

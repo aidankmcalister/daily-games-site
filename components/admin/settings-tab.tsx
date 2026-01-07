@@ -42,7 +42,9 @@ interface SiteConfig {
   minPlayStreak: number;
   enableCommunitySubmissions: boolean;
   defaultSort: string;
-  maxCustomLists: number;
+  showPresetLists: boolean;
+  maxSubmissionsPerDay: number;
+  enableLeaderboards: boolean;
   updatedAt: string;
 }
 
@@ -55,6 +57,9 @@ const DEFAULT_CONFIG = {
   enableCommunitySubmissions: false,
   defaultSort: "title",
   maxCustomLists: 10,
+  showPresetLists: true,
+  maxSubmissionsPerDay: 5,
+  enableLeaderboards: false,
 };
 
 const settingsSchema = z.object({
@@ -66,6 +71,9 @@ const settingsSchema = z.object({
   enableCommunitySubmissions: z.boolean(),
   defaultSort: z.string(),
   maxCustomLists: z.number().min(1).max(100),
+  showPresetLists: z.boolean(),
+  maxSubmissionsPerDay: z.number().min(0).max(100),
+  enableLeaderboards: z.boolean(),
 });
 
 type SettingsFormValues = z.infer<typeof settingsSchema>;
@@ -91,6 +99,8 @@ export function SettingsTab() {
   const maintenanceMode = watch("maintenanceMode");
   const showWelcomeMessage = watch("showWelcomeMessage");
   const enableCommunitySubmissions = watch("enableCommunitySubmissions");
+  const showPresetLists = watch("showPresetLists");
+  const enableLeaderboards = watch("enableLeaderboards");
   const newGameMinutes = watch("newGameMinutes");
   const defaultSort = watch("defaultSort");
 
@@ -113,6 +123,9 @@ export function SettingsTab() {
           enableCommunitySubmissions: data.enableCommunitySubmissions,
           defaultSort: data.defaultSort,
           maxCustomLists: data.maxCustomLists,
+          showPresetLists: data.showPresetLists ?? true,
+          maxSubmissionsPerDay: data.maxSubmissionsPerDay ?? 5,
+          enableLeaderboards: data.enableLeaderboards ?? false,
         });
       }
     } catch (error) {
@@ -287,11 +300,28 @@ export function SettingsTab() {
                 className="h-9 text-sm bg-muted/30 border-border/30"
               />
             </div>
+
+            <div className="border-t border-border/20 pt-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label className="text-body">Enable Leaderboards</Label>
+                  <p className="text-micro text-muted-foreground/60 mt-0.5">
+                    Show global player rankings
+                  </p>
+                </div>
+                <Switch
+                  checked={enableLeaderboards}
+                  onCheckedChange={(v) =>
+                    setValue("enableLeaderboards", v, { shouldDirty: true })
+                  }
+                />
+              </div>
+            </div>
           </div>
 
           {/* User Limits */}
           <div className="rounded-xl border border-border/40 bg-card p-4 space-y-4">
-            <h3 className="text-heading-card">User Limits</h3>
+            <h3 className="text-heading-card">Feature & Limits</h3>
 
             <Field>
               <div className="flex items-center justify-between">
@@ -308,6 +338,41 @@ export function SettingsTab() {
                 <FieldError errors={[errors.maxCustomLists]} />
               )}
             </Field>
+
+            <Field>
+              <div className="flex items-center justify-between">
+                <Label className="text-body">Max Submissions / Day</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    {...register("maxSubmissionsPerDay", {
+                      valueAsNumber: true,
+                    })}
+                    className="w-20 h-9 text-sm bg-muted/30 border-border/30 text-center"
+                  />
+                </div>
+              </div>
+              {errors.maxSubmissionsPerDay && (
+                <FieldError errors={[errors.maxSubmissionsPerDay]} />
+              )}
+            </Field>
+
+            <div className="flex items-center justify-between border-t border-border/20 pt-4">
+              <div>
+                <Label className="text-body">Show Preset Lists</Label>
+                <p className="text-micro text-muted-foreground/60 mt-0.5">
+                  Display curated collections on lists page
+                </p>
+              </div>
+              <Switch
+                checked={showPresetLists}
+                onCheckedChange={(v) =>
+                  setValue("showPresetLists", v, {
+                    shouldDirty: true,
+                  })
+                }
+              />
+            </div>
 
             <div className="flex items-center justify-between border-t border-border/20 pt-4">
               <div>

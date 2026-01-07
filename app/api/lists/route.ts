@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth-helpers";
+import { cleanText } from "@/lib/filter";
 
 // GET /api/lists - Get user's lists
 export async function GET() {
@@ -52,10 +53,12 @@ export async function POST(request: Request) {
       );
     }
 
+    const cleanName = cleanText(name.trim());
+
     const list = await prisma.gameList.create({
       data: {
         userId: session.user.id,
-        name: name.trim(),
+        name: cleanName,
         ...(color && { color }),
       },
     });
