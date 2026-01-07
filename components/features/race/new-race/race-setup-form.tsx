@@ -196,41 +196,38 @@ export function RaceSetupForm({
             <DlesSelect
               value={selectedListId || ""}
               onChange={(val) => onTemplateSelect(val as string)}
-              options={lists.map((l) => ({
-                value: l.id,
-                label: l.name,
-                color: l.color || "slate",
-              }))}
+              options={lists
+                .filter((l) => l.games.length > 0)
+                .map((l) => ({
+                  value: l.id,
+                  label: l.name,
+                  color: l.color || "slate",
+                }))}
               placeholder="Select games from a list..."
               contentClassName="p-2"
               renderOption={(option) => {
-                const list = lists.find((l) => l.id === option.value);
-                const color = list?.color || "slate";
-
                 return (
                   <DlesBadge
                     text={option.label}
                     color={option.color || "brand"}
                     count={
-                      option.value !== "all" ? list?.games.length : undefined
+                      option.value !== "all"
+                        ? lists.find((l) => l.id === option.value)?.games.length
+                        : undefined
                     }
                     size="sm"
                   />
                 );
               }}
               renderSelected={(option) => {
-                const list = lists.find((l) => l.id === option.value);
-                if (!list) return <span>{option.label}</span>;
-
-                const color = list.color || "slate";
-                const styles = LIST_CARD_STYLES[color];
-
                 return (
                   <DlesBadge
                     text={option.label}
                     color={option.color || "brand"}
                     count={
-                      option.value !== "all" ? list?.games.length : undefined
+                      option.value !== "all"
+                        ? lists.find((l) => l.id === option.value)?.games.length
+                        : undefined
                     }
                     size="sm"
                   />
