@@ -32,7 +32,7 @@ const NAV_ITEMS: NavItem[] = [
     matchPaths: ["/race"],
   },
   {
-    label: "Leaderboard",
+    label: "Stats",
     href: "/race/stats",
     icon: Trophy,
     matchPaths: ["/race/stats"],

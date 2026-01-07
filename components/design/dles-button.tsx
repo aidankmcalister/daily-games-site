@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 export type DlesButtonProps = React.ComponentProps<typeof Button> & {
   isActive?: boolean;
   href?: string;
+  target?: React.HTMLAttributeAnchorTarget;
+  rel?: string;
 };
 
 export const DlesButton = React.forwardRef<HTMLButtonElement, DlesButtonProps>(

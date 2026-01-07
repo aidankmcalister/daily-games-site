@@ -140,20 +140,27 @@ export function RaceLobby({ race, currentUser, onRefresh }: RaceLobbyProps) {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 pb-32 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <LobbyHeader race={race} />
+    <div className="min-h-screen px-4 md:px-8 lg:px-12">
+      <div className="mx-auto max-w-7xl py-8 pb-32 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <LobbyHeader race={race} />
 
-      <div className="space-y-10">
-        <InviteLink race={race} />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Left Column: Invite + Participants */}
+          <div className="lg:col-span-4 space-y-8">
+            <InviteLink race={race} />
+            <ParticipantList race={race} />
+          </div>
 
-        <ParticipantList race={race} />
-
-        <RaceConfig
-          race={race}
-          orderedGames={orderedGames}
-          isCreator={isCreator ?? false}
-          onReorder={handleReorder}
-        />
+          {/* Right Column: Game Config */}
+          <div className="lg:col-span-8">
+            <RaceConfig
+              race={race}
+              orderedGames={orderedGames}
+              isCreator={isCreator ?? false}
+              onReorder={handleReorder}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Sticky Footer Action Bar */}

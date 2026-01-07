@@ -45,7 +45,7 @@ export function ParticipantList({ race }: ParticipantListProps) {
           </div>
           <Badge
             variant="secondary"
-            className="bg-emerald-500/10 text-emerald-400 border-none text-micro-xs px-2 py-0.5"
+            className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-micro-xs px-2 py-0.5"
           >
             <Check className="h-3 w-3 mr-1" /> Joined
           </Badge>
@@ -77,7 +77,7 @@ export function ParticipantList({ race }: ParticipantListProps) {
             </div>
             <Badge
               variant="secondary"
-              className="bg-emerald-500/10 text-emerald-400 border-none text-micro-xs px-2 py-0.5"
+              className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-micro-xs px-2 py-0.5"
             >
               <Check className="h-3 w-3 mr-1" /> Joined
             </Badge>

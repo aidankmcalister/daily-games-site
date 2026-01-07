@@ -1,31 +1,21 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { DlesBadge } from "@/components/design/dles-badge";
 import { formatTopic } from "@/lib/utils";
-import { MicroLabel } from "@/components/design/micro-label";
-import { Race, Participant, RaceGame } from "@/app/race/[id]/page";
+import { Race } from "@/app/race/[id]/page";
 import {
   Check,
   ExternalLink,
   Timer,
-  Trophy,
-  User,
   Loader2,
   SkipForward,
+  ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { TOPIC_COLORS } from "@/lib/constants";
 
 interface RaceActiveProps {
   race: Race;
@@ -36,6 +26,7 @@ interface RaceActiveProps {
 export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
   const [time, setTime] = useState(0);
   const [guestId, setGuestId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -46,12 +37,10 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
 
   useEffect(() => {
     if (!race.startedAt) return;
-
     const start = new Date(race.startedAt).getTime();
     const interval = setInterval(() => {
       setTime(Math.floor((Date.now() - start) / 1000));
     }, 1000);
-
     return () => clearInterval(interval);
   }, [race.startedAt]);
 
@@ -66,8 +55,21 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
       (currentUser && p.userId === currentUser.id) ||
       (guestId && p.id === guestId)
   );
-
   const opponent = race.participants.find((p) => p.id !== myParticipant?.id);
+
+  const getCompletionForUser = (
+    raceGameId: string,
+    participantId: string | undefined
+  ) => {
+    if (!participantId) return null;
+    const participant = race.participants.find((p) => p.id === participantId);
+    return participant?.completions?.find((c) => c.raceGameId === raceGameId);
+  };
+
+  // Find first incomplete game for auto-expand
+  const firstIncompleteId = race.raceGames.find(
+    (rg) => !getCompletionForUser(rg.id, myParticipant?.id)
+  )?.id;
 
   const handleCompleteGame = async (
     raceGameId: string,
@@ -83,7 +85,6 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
           participantId: myParticipant?.id,
         }),
       });
-
       if (res.ok) {
         toast.success(skipped ? "Game skipped!" : "Game marked as done!");
         onRefresh();
@@ -96,245 +97,231 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
     }
   };
 
-  const getCompletionForUser = (
-    raceGameId: string,
-    participantId: string | undefined
-  ) => {
-    if (!participantId) return null;
-    const participant = race.participants.find((p) => p.id === participantId);
-    return participant?.completions?.find((c) => c.raceGameId === raceGameId);
+  const isExpanded = (gameId: string) => {
+    // Auto-expand first incomplete, or manually expanded
+    if (expandedId === gameId) return true;
+    if (expandedId === null && gameId === firstIncompleteId) return true;
+    return false;
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 md:px-8 space-y-8">
-      {/* Header - 3 Equal Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
-        {/* Your Progress */}
-        <Card className="border-border/50 bg-card/50 shadow-sm flex">
-          <CardContent className="flex-1 flex flex-col items-center justify-center text-center gap-2 p-6">
-            <MicroLabel>You</MicroLabel>
+    <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+      {/* Compact Header Bar */}
+      <div className="flex items-center justify-between gap-4 px-4 py-3 rounded-xl bg-card/60 border border-border/40 backdrop-blur-sm">
+        {/* You */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground/60">
+            You
+          </span>
+          <span className="text-lg font-black tabular-nums tracking-tight">
+            <span className="text-primary">
+              {myParticipant?.completions?.length || 0}
+            </span>
+            <span className="text-muted-foreground/30">/</span>
+            <span className="text-muted-foreground/60">
+              {race.raceGames.length}
+            </span>
+          </span>
+        </div>
 
-            <div className="text-3xl font-black tracking-tight tabular-nums leading-none">
-              <span className="text-primary">
-                {myParticipant?.completions.length}
-              </span>
-              <span className="text-muted-foreground/30 mx-1">/</span>
-              <span className="text-muted-foreground/50">
-                {race.raceGames.length}
-              </span>
-            </div>
+        {/* Timer */}
+        <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+          <Timer className="h-3.5 w-3.5 text-primary" />
+          <span className="text-sm font-black tabular-nums tracking-tight text-primary">
+            {formatTime(time)}
+          </span>
+        </div>
 
-            <MicroLabel className="font-bold text-muted-foreground/50">
-              Completed
-            </MicroLabel>
-          </CardContent>
-        </Card>
-
-        {/* Opponent Progress */}
-        <Card className="border-border/50 bg-card/50 shadow-sm flex">
-          <CardContent className="flex-1 flex flex-col items-center justify-center text-center gap-2 p-6">
-            <MicroLabel>Opponent</MicroLabel>
-
-            <div className="text-3xl font-black tracking-tight tabular-nums leading-none">
-              <span className="text-primary">
-                {opponent?.completions?.length || 0}
-              </span>
-              <span className="text-muted-foreground/30 mx-1">/</span>
-              <span className="text-muted-foreground/50">
-                {race.raceGames.length}
-              </span>
-            </div>
-
-            <MicroLabel className="font-bold text-muted-foreground/50">
-              Completed
-            </MicroLabel>
-          </CardContent>
-        </Card>
-
-        {/* Timer Card */}
-        <Card className="border-primary/20 bg-primary/5 shadow-sm flex">
-          <CardContent className="flex-1 flex flex-col items-center justify-center text-center gap-2 p-6">
-            <div className="flex items-center justify-center gap-2 text-primary leading-none">
-              <Timer className="h-4 w-4 shrink-0" />
-              <span className="text-3xl font-black tracking-tight tabular-nums">
-                {formatTime(time)}
-              </span>
-            </div>
-
-            <MicroLabel className="font-bold text-primary/60">
-              Race Time
-            </MicroLabel>
-          </CardContent>
-        </Card>
+        {/* Opponent */}
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-black tabular-nums tracking-tight">
+            <span className="text-primary">
+              {opponent?.completions?.length || 0}
+            </span>
+            <span className="text-muted-foreground/30">/</span>
+            <span className="text-muted-foreground/60">
+              {race.raceGames.length}
+            </span>
+          </span>
+          <span className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground/60">
+            Opp
+          </span>
+        </div>
       </div>
 
-      {/* Games List - Vertical Stack */}
-      <div className="space-y-4">
+      {/* Games List - Progressive Disclosure */}
+      <div className="space-y-2">
         {race.raceGames.map((rg, index) => {
           const myCompletion = getCompletionForUser(rg.id, myParticipant?.id);
           const opponentCompletion = getCompletionForUser(rg.id, opponent?.id);
-
-          // Check if previous game is completed by current user
           const isLocked =
             index > 0 &&
             !getCompletionForUser(
               race.raceGames[index - 1].id,
               myParticipant?.id
             );
+          const expanded = isExpanded(rg.id) && !myCompletion;
 
           return (
             <Card
               key={rg.id}
               className={cn(
-                "overflow-hidden transition-all duration-300 border bg-card/50",
+                "overflow-hidden transition-all duration-200 ease-out border",
                 myCompletion
                   ? myCompletion.skipped
                     ? "border-rose-500/20 bg-rose-500/5"
-                    : "border-green-500/20 bg-green-500/5"
-                  : "border-border/40 hover:border-primary/20 hover:bg-card",
-                isLocked && "opacity-50 pointer-events-none grayscale"
+                    : "border-emerald-500/20 bg-emerald-500/5"
+                  : expanded
+                  ? "border-primary/30 bg-card shadow-lg shadow-primary/5"
+                  : "border-border/30 bg-card/50 hover:border-border/50 hover:bg-card/80",
+                isLocked && "opacity-40 pointer-events-none grayscale"
               )}
+              onMouseEnter={() =>
+                !myCompletion && !isLocked && setExpandedId(rg.id)
+              }
             >
-              <CardContent className={cn("p-6", myCompletion && "py-3 px-4")}>
-                {myCompletion ? (
-                  // COMPACT VIEW (Shrunk)
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      {myCompletion.skipped ? (
-                        <div className="h-8 w-8 rounded-full bg-rose-500/10 flex items-center justify-center shrink-0">
-                          <SkipForward className="h-4 w-4 text-rose-500" />
+              <CardContent className="p-0">
+                {/* Collapsed Row (always visible) */}
+                <button
+                  onClick={() =>
+                    !myCompletion &&
+                    !isLocked &&
+                    setExpandedId(expanded ? null : rg.id)
+                  }
+                  className={cn(
+                    "w-full flex items-center justify-between gap-3 px-4 py-3 text-left transition-colors",
+                    !myCompletion && "hover:bg-muted/30 cursor-pointer"
+                  )}
+                >
+                  {/* Left: Status Icon + Title */}
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    {myCompletion ? (
+                      myCompletion.skipped ? (
+                        <div className="h-7 w-7 rounded-full bg-rose-500/10 flex items-center justify-center shrink-0">
+                          <SkipForward className="h-3.5 w-3.5 text-rose-500" />
                         </div>
                       ) : (
-                        <div className="h-8 w-8 rounded-full bg-green-500/10 flex items-center justify-center shrink-0">
-                          <Check className="h-4 w-4 text-green-500" />
+                        <div className="h-7 w-7 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+                          <Check className="h-3.5 w-3.5 text-emerald-500" />
                         </div>
-                      )}
-
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-2">
-                          <h3
-                            className={cn(
-                              "font-bold text-sm leading-none",
-                              myCompletion.skipped
-                                ? "text-rose-600 dark:text-rose-400"
-                                : "text-green-600 dark:text-green-400"
-                            )}
-                          >
-                            {rg.game.title}
-                          </h3>
-                          <a
-                            href={rg.game.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-muted-foreground/40 hover:text-primary transition-colors"
-                          >
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
-                        </div>
-                        <div className="text-[10px] text-muted-foreground mt-1 flex items-center gap-2 tabular-nums font-medium">
-                          <span>
-                            {myCompletion.skipped
-                              ? "Lost"
-                              : formatTime(myCompletion.timeToComplete)}
-                          </span>
-                          <span className="text-muted-foreground/30">•</span>
-                          <span
-                            className={cn(
-                              opponentCompletion
-                                ? "text-foreground"
-                                : "text-muted-foreground/50"
-                            )}
-                          >
-                            Opp:{" "}
-                            {opponentCompletion
-                              ? opponentCompletion.skipped
-                                ? "Lost"
-                                : formatTime(opponentCompletion.timeToComplete)
-                              : "Racing..."}
-                          </span>
-                        </div>
+                      )
+                    ) : expanded ? (
+                      <div className="h-7 w-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <Loader2 className="h-3.5 w-3.5 text-primary animate-spin" />
                       </div>
+                    ) : (
+                      <div className="h-7 w-7 rounded-full bg-muted/50 flex items-center justify-center shrink-0">
+                        <span className="text-[10px] font-bold text-muted-foreground/50">
+                          {index + 1}
+                        </span>
+                      </div>
+                    )}
+
+                    <span
+                      className={cn(
+                        "font-bold text-sm truncate",
+                        myCompletion?.skipped && "text-rose-500/80",
+                        myCompletion &&
+                          !myCompletion.skipped &&
+                          "text-emerald-600 dark:text-emerald-400",
+                        !myCompletion && "text-foreground"
+                      )}
+                    >
+                      {rg.game.title}
+                    </span>
+                  </div>
+
+                  {/* Right: Times + Badge + Chevron */}
+                  <div className="flex items-center gap-3 shrink-0">
+                    {/* Times (compact) */}
+                    <div className="hidden sm:flex items-center gap-2 text-[10px] font-mono tabular-nums text-muted-foreground/60">
+                      <span
+                        className={cn(
+                          myCompletion &&
+                            (myCompletion.skipped
+                              ? "text-rose-400"
+                              : "text-emerald-400")
+                        )}
+                      >
+                        {myCompletion
+                          ? myCompletion.skipped
+                            ? "SKIP"
+                            : formatTime(myCompletion.timeToComplete)
+                          : "—:——"}
+                      </span>
+                      <span className="text-muted-foreground/20">|</span>
+                      <span
+                        className={cn(
+                          opponentCompletion &&
+                            (opponentCompletion.skipped
+                              ? "text-rose-400"
+                              : "text-primary")
+                        )}
+                      >
+                        {opponentCompletion
+                          ? opponentCompletion.skipped
+                            ? "SKIP"
+                            : formatTime(opponentCompletion.timeToComplete)
+                          : "—:——"}
+                      </span>
                     </div>
 
                     <DlesBadge
                       text={formatTopic(rg.game.topic)}
                       color={rg.game.topic}
-                      size="sm"
+                      size="xs"
                     />
+
+                    {!myCompletion && (
+                      <ChevronDown
+                        className={cn(
+                          "h-4 w-4 text-muted-foreground/40 transition-transform duration-200",
+                          expanded && "rotate-180"
+                        )}
+                      />
+                    )}
                   </div>
-                ) : (
-                  <div className="space-y-3">
-                    {/* Header Row: Title & Link */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-start">
-                        <h3 className="text-xl font-black tracking-tight">
-                          {rg.game.title}
-                        </h3>
-                        <DlesBadge
-                          text={formatTopic(rg.game.topic)}
-                          color={rg.game.topic}
-                          size="sm"
-                        />
+                </button>
+
+                {/* Expanded Content (actions) */}
+                <div
+                  className={cn(
+                    "overflow-hidden transition-all duration-200 ease-out",
+                    expanded ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                  )}
+                >
+                  <div className="px-4 pb-4 pt-1 border-t border-border/30">
+                    {/* Status Row */}
+                    <div className="flex items-center gap-4 mb-3 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1.5">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        <span>You: Racing...</span>
                       </div>
-                      <a
-                        href={rg.game.link}
-                        target="_blank"
-                        rel="noopener noreferrer text-muted-foreground hover:underline decoration-muted-foreground/30 underline-offset-4 text-sm"
-                        className="text-xs text-muted-foreground flex items-center gap-1 hover:text-primary transition-colors w-fit"
-                      >
-                        {rg.game.link.replace(/^https?:\/\//, "")}
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </div>
-
-                    <div className="h-px bg-border/40" />
-
-                    {/* Status Section - Side by Side */}
-                    <div className="grid grid-cols-2 gap-2">
-                      {/* You Status */}
-                      <div className="space-y-1.5">
-                        <MicroLabel>You</MicroLabel>
-                        <div className="flex items-center gap-2 text-muted-foreground/60">
-                          <Loader2 className="h-3 w-3 animate-spin" />
-                          <span className="text-xs font-medium">Racing...</span>
-                        </div>
-                      </div>
-
-                      {/* Opponent Status */}
-                      <div className="space-y-1.5 border-l pl-4 border-border/40">
-                        <MicroLabel>Opponent</MicroLabel>
+                      <span className="text-muted-foreground/30">•</span>
+                      <div className="flex items-center gap-1.5">
                         {opponentCompletion ? (
                           opponentCompletion.skipped ? (
-                            <div className="flex items-center gap-2 text-rose-500">
-                              <SkipForward className="h-4 w-4" />
-                              <span className="font-bold text-sm">Lost</span>
-                            </div>
+                            <span className="text-rose-500 font-medium">
+                              Opp: Lost
+                            </span>
                           ) : (
-                            <div className="flex items-center gap-2 text-primary">
-                              <Check className="h-4 w-4" />
-                              <span className="font-bold tabular-nums text-sm">
-                                {formatTime(opponentCompletion.timeToComplete)}
-                              </span>
-                            </div>
+                            <span className="text-primary font-medium">
+                              Opp:{" "}
+                              {formatTime(opponentCompletion.timeToComplete)}
+                            </span>
                           )
                         ) : (
-                          <div className="flex items-center gap-2 text-muted-foreground/60">
-                            <Loader2 className="h-3 w-3 animate-spin" />
-                            <span className="text-xs font-medium">
-                              Racing...
-                            </span>
-                          </div>
+                          <span>Opp: Racing...</span>
                         )}
                       </div>
                     </div>
 
-                    <div className="h-px bg-border/40" />
-
-                    {/* Actions Row */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                    {/* Actions */}
+                    <div className="grid grid-cols-3 gap-2">
                       <Button
                         variant="outline"
-                        className="h-10 rounded-xl text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                        size="sm"
+                        className="h-9 text-[10px] font-bold uppercase tracking-wider"
                         asChild
                       >
                         <a
@@ -342,29 +329,32 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          <ExternalLink className="h-3.5 w-3.5 mr-2" />
-                          Play Game
+                          <ExternalLink className="h-3 w-3 mr-1.5" />
+                          Play
                         </a>
                       </Button>
 
                       <Button
-                        className="h-10 rounded-xl text-xs font-black uppercase tracking-widest bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-900/10 order-first sm:order-0"
+                        size="sm"
+                        className="h-9 text-[10px] font-black uppercase tracking-wider bg-emerald-600 hover:bg-emerald-500 text-white"
                         onClick={() => handleCompleteGame(rg.id, false)}
                       >
-                        <Check className="h-3.5 w-3.5 mr-2" />
+                        <Check className="h-3 w-3 mr-1.5" />
                         Done
                       </Button>
+
                       <Button
                         variant="outline"
-                        className="h-10 rounded-xl text-xs font-black uppercase tracking-widest border-rose-500/30 text-rose-600 hover:bg-rose-500/10 hover:border-rose-500/50"
+                        size="sm"
+                        className="h-9 text-[10px] font-black uppercase tracking-wider border-rose-500/30 text-rose-500 hover:bg-rose-500/10"
                         onClick={() => handleCompleteGame(rg.id, true)}
                       >
-                        <SkipForward className="h-3.5 w-3.5 mr-2" />
+                        <SkipForward className="h-3 w-3 mr-1.5" />
                         Lost
                       </Button>
                     </div>
                   </div>
-                )}
+                </div>
               </CardContent>
             </Card>
           );
