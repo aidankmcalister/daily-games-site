@@ -13,7 +13,7 @@ import {
 import { DlesButton } from "@/components/design/dles-button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Trash2 } from "lucide-react";
+import { Trash } from "lucide-react";
 import type { Role } from "@/app/generated/prisma/client";
 
 interface User {
@@ -170,7 +170,7 @@ export function UserItem({
                   variant="ghost"
                   className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 h-8 w-8"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash className="h-3.5 w-3.5" />
                 </DlesButton>
               </AlertDialogTrigger>
               <AlertDialogContent>

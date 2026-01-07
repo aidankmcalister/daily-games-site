@@ -46,7 +46,7 @@ import {
   Plus,
   MoreHorizontal,
   Pencil,
-  Trash2,
+  Trash,
   Gamepad2,
   Sparkles,
   Loader2,
@@ -450,10 +450,10 @@ export function ListsClient({
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
+                            className="text-destructive"
                             onSelect={(e) => e.preventDefault()}
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
+                            <Trash className="h-4 w-4 mr-2" />
                             Delete
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
@@ -531,7 +531,7 @@ export function ListsClient({
                                   handleRemoveGame(list.id, game.id)
                                 }
                               >
-                                <Trash2 className="h-3 w-3" />
+                                <Trash className="h-3 w-3" />
                               </DlesButton>
                             </div>
                           </div>

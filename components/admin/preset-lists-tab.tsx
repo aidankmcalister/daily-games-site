@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import {
   Loader2,
   Plus,
-  Trash2,
+  Trash,
   Pencil,
   Tag,
   Trophy,
@@ -633,7 +633,7 @@ export function PresetListsTab() {
                           size="icon-sm"
                           className="text-destructive h-7 w-7"
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash className="h-3.5 w-3.5" />
                         </DlesButton>
                       </AlertDialogTrigger>
                       <AlertDialogContent>

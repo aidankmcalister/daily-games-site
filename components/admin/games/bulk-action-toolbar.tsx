@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { DlesButton } from "@/components/design/dles-button";
-import { Archive, Trash2, Upload } from "lucide-react";
+import { Archive, Trash, Upload } from "lucide-react";
 
 interface BulkActionToolbarProps {
   selectedCount: number;
@@ -40,7 +40,7 @@ export function BulkActionToolbar({
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <DlesButton size="sm" variant="destructive">
-              <Trash2 className="h-4 w-4 mr-2" />
+              <Trash className="h-4 w-4 mr-2" />
               Delete
             </DlesButton>
           </AlertDialogTrigger>

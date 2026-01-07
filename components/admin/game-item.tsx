@@ -23,7 +23,7 @@ import { DlesBadge } from "@/components/design/dles-badge";
 import { formatTopic } from "@/lib/utils";
 import { TOPICS, TOPIC_COLORS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { Pencil, Trash2, Archive } from "lucide-react";
+import { Pencil, Trash, Archive } from "lucide-react";
 import type { Topic } from "@/app/generated/prisma/client";
 import { useState } from "react";
 
@@ -199,7 +199,7 @@ export function GameItem({
                   variant="ghost"
                   className="text-destructive hover:text-destructive hover:bg-destructive/10"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <Trash className="h-3.5 w-3.5" />
                 </DlesButton>
               </AlertDialogTrigger>
               <AlertDialogContent>
