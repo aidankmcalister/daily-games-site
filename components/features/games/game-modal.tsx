@@ -16,6 +16,8 @@ import {
   AlertTriangle,
   ZoomIn,
   ZoomOut,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   Tooltip,
@@ -25,13 +27,16 @@ import {
 } from "@/components/ui/tooltip";
 import { ReactNode } from "react";
 
+interface Game {
+  id: string;
+  title: string;
+  link: string;
+  topic: string;
+}
+
 interface GameModalProps {
-  game: {
-    id: string;
-    title: string;
-    link: string;
-    topic: string;
-  } | null;
+  game: Game | null;
+  playlist?: Game[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onMarkPlayed: (id: string) => void;
@@ -44,7 +49,8 @@ const ZOOM_LEVELS = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
 const DEFAULT_ZOOM_INDEX = 3; // 0.8
 
 export function GameModal({
-  game,
+  game: initialGame,
+  playlist = [],
   open,
   onOpenChange,
   onMarkPlayed,
@@ -52,6 +58,7 @@ export function GameModal({
   locked = false,
   footer,
 }: GameModalProps) {
+  const [activeGame, setActiveGame] = useState<Game | null>(initialGame);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [zoomIndex, setZoomIndex] = useState(DEFAULT_ZOOM_INDEX);
@@ -59,32 +66,39 @@ export function GameModal({
 
   const zoom = ZOOM_LEVELS[zoomIndex];
 
+  // Sync activeGame when initialGame changes (e.g. opening a new game directly)
+  useEffect(() => {
+    setActiveGame(initialGame);
+  }, [initialGame]);
+
   // Reset state when game changes
   useEffect(() => {
-    if (game) {
+    if (activeGame) {
       setIsLoading(true);
       setHasError(false);
       setZoomIndex(DEFAULT_ZOOM_INDEX);
     }
-  }, [game?.id]);
+  }, [activeGame?.id]);
 
-  // Mark as played when modal opens
+  // Mark as played when modal opens or game changes
   useEffect(() => {
-    if (open && game) {
-      onMarkPlayed(game.id);
+    if (open && activeGame) {
+      onMarkPlayed(activeGame.id);
     }
-  }, [open, game?.id]);
+  }, [open, activeGame?.id, onMarkPlayed]);
 
   const handleIframeLoad = useCallback(() => {
     setIsLoading(false);
   }, []);
 
   const handleOpenInNewTab = useCallback(() => {
-    if (!game) return;
-    onMarkUnsupported(game.id);
-    window.open(game.link, "_blank", "noopener,noreferrer");
-    onOpenChange(false);
-  }, [game, onMarkUnsupported, onOpenChange]);
+    if (!activeGame) return;
+    onMarkUnsupported(activeGame.id);
+    window.open(activeGame.link, "_blank", "noopener,noreferrer");
+    if (!playlist || playlist.length === 0) {
+      onOpenChange(false);
+    }
+  }, [activeGame, onMarkUnsupported, onOpenChange, playlist]);
 
   const handleZoomIn = () => {
     if (zoomIndex < ZOOM_LEVELS.length - 1) {
@@ -102,7 +116,27 @@ export function GameModal({
     setZoomIndex(DEFAULT_ZOOM_INDEX);
   };
 
-  if (!game) return null;
+  // Playlist Navigation
+  const currentIndex =
+    activeGame && playlist
+      ? playlist.findIndex((g) => g.id === activeGame.id)
+      : -1;
+  const hasNext = currentIndex !== -1 && currentIndex < playlist!.length - 1;
+  const hasPrev = currentIndex > 0;
+
+  const playNext = () => {
+    if (hasNext && playlist) {
+      setActiveGame(playlist[currentIndex + 1]);
+    }
+  };
+
+  const playPrev = () => {
+    if (hasPrev && playlist) {
+      setActiveGame(playlist[currentIndex - 1]);
+    }
+  };
+
+  if (!activeGame) return null;
 
   // Calculate inverse scale for container sizing
   const containerScale = 1 / zoom;
@@ -119,12 +153,38 @@ export function GameModal({
         <DialogHeader className="p-3 pb-2 border-b border-border shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 min-w-0">
+              {/* Playlist Controls */}
+              {playlist && playlist.length > 0 && (
+                <div className="flex items-center gap-1 mr-2 border-r border-border/50 pr-2">
+                  <DlesButton
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={playPrev}
+                    disabled={!hasPrev}
+                    className="h-6 w-6"
+                    title="Previous Game"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </DlesButton>
+                  <DlesButton
+                    variant="ghost"
+                    size="icon-sm"
+                    onClick={playNext}
+                    disabled={!hasNext}
+                    className="h-6 w-6"
+                    title="Next Game"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </DlesButton>
+                </div>
+              )}
+
               <DialogTitle className="text-sm font-semibold truncate">
-                {game.title}
+                {activeGame.title}
               </DialogTitle>
               <DlesBadge
-                text={formatTopic(game.topic)}
-                color={game.topic}
+                text={formatTopic(activeGame.topic)}
+                color={activeGame.topic}
                 size="sm"
               />
             </div>
@@ -225,8 +285,8 @@ export function GameModal({
           >
             <iframe
               ref={iframeRef}
-              src={game.link}
-              title={game.title}
+              src={activeGame.link}
+              title={activeGame.title}
               className={cn(
                 "w-full h-full border-0",
                 (isLoading || hasError) && "invisible"

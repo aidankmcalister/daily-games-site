@@ -98,7 +98,7 @@ export function usePlayedGames(gameIds: string[]): UsePlayedGamesResult {
     };
 
     fetchData();
-  }, [isAuthenticated, isPending, gameIds]);
+  }, [isAuthenticated, isPending, JSON.stringify([...gameIds].sort())]);
 
   const markAsPlayed = useCallback(
     async (gameId: string) => {
