@@ -269,11 +269,14 @@ export function GamesClient({
   }, []);
 
   const handleHide = async (id: string) => {
-    await toggleHidden(id, true);
+    const isCurrentlyHidden = hiddenIds.has(id);
+    await toggleHidden(id, !isCurrentlyHidden);
     const game = games.find((g) => g.id === id);
     if (game) {
-      toast.success("Game hidden", {
-        description: `${game.title} is now hidden.`,
+      toast.success(isCurrentlyHidden ? "Game unhidden" : "Game hidden", {
+        description: `${game.title} is now ${
+          isCurrentlyHidden ? "visible" : "hidden"
+        }.`,
       });
     }
   };

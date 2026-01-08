@@ -10,7 +10,19 @@ import {
 import { DlesBadge } from "@/components/design/dles-badge";
 import { DlesButton } from "@/components/design/dles-button";
 import { formatTopic, cn } from "@/lib/utils";
-import { Loader2, ExternalLink, AlertTriangle } from "lucide-react";
+import {
+  Loader2,
+  ExternalLink,
+  AlertTriangle,
+  ZoomIn,
+  ZoomOut,
+} from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface GameModalProps {
   game: {
@@ -25,6 +37,9 @@ interface GameModalProps {
   onMarkUnsupported: (id: string) => void;
 }
 
+const ZOOM_LEVELS = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+const DEFAULT_ZOOM_INDEX = 3; // 0.8
+
 export function GameModal({
   game,
   open,
@@ -34,13 +49,17 @@ export function GameModal({
 }: GameModalProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [zoomIndex, setZoomIndex] = useState(DEFAULT_ZOOM_INDEX);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const zoom = ZOOM_LEVELS[zoomIndex];
 
   // Reset state when game changes
   useEffect(() => {
     if (game) {
       setIsLoading(true);
       setHasError(false);
+      setZoomIndex(DEFAULT_ZOOM_INDEX);
     }
   }, [game?.id]);
 
@@ -53,41 +72,35 @@ export function GameModal({
 
   const handleIframeLoad = useCallback(() => {
     setIsLoading(false);
-
-    // Try to detect X-Frame-Options/CSP blocks
-    // When blocked, trying to access iframe's contentWindow properties throws
-    // or returns null/inaccessible content
-    try {
-      const iframe = iframeRef.current;
-      if (iframe) {
-        // This will throw for cross-origin blocked iframes
-        // but we can at least check if something loaded
-        const contentWindow = iframe.contentWindow;
-
-        // If we get here but the iframe is blocked by X-Frame-Options,
-        // the browser shows its own error page. We can't detect this directly,
-        // so we give users the fallback button in the footer.
-      }
-    } catch {
-      // Cross-origin access denied is expected for most sites
-      // This doesn't mean it's blocked, just that we can't inspect it
-    }
   }, []);
 
   const handleOpenInNewTab = useCallback(() => {
     if (!game) return;
-
-    // Mark as unsupported in the database
     onMarkUnsupported(game.id);
-
-    // Open in new tab
     window.open(game.link, "_blank", "noopener,noreferrer");
-
-    // Close the modal
     onOpenChange(false);
   }, [game, onMarkUnsupported, onOpenChange]);
 
+  const handleZoomIn = () => {
+    if (zoomIndex < ZOOM_LEVELS.length - 1) {
+      setZoomIndex(zoomIndex + 1);
+    }
+  };
+
+  const handleZoomOut = () => {
+    if (zoomIndex > 0) {
+      setZoomIndex(zoomIndex - 1);
+    }
+  };
+
+  const handleResetZoom = () => {
+    setZoomIndex(DEFAULT_ZOOM_INDEX);
+  };
+
   if (!game) return null;
+
+  // Calculate inverse scale for container sizing
+  const containerScale = 1 / zoom;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -97,15 +110,66 @@ export function GameModal({
       >
         {/* Header */}
         <DialogHeader className="p-3 pb-2 border-b border-border shrink-0">
-          <div className="flex items-center gap-2">
-            <DlesBadge
-              text={formatTopic(game.topic)}
-              color={game.topic}
-              size="sm"
-            />
-            <DialogTitle className="text-sm font-semibold truncate">
-              {game.title}
-            </DialogTitle>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 min-w-0">
+              <DialogTitle className="text-sm font-semibold truncate">
+                {game.title}
+              </DialogTitle>
+              <DlesBadge
+                text={formatTopic(game.topic)}
+                color={game.topic}
+                size="sm"
+              />
+            </div>
+
+            {/* Zoom Controls */}
+            <TooltipProvider delayDuration={200}>
+              <div className="flex items-center gap-1 shrink-0 mr-8">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DlesButton
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={handleZoomOut}
+                      disabled={zoomIndex === 0}
+                      className="h-8 w-8"
+                    >
+                      <ZoomOut className="h-4 w-4" />
+                    </DlesButton>
+                  </TooltipTrigger>
+                  <TooltipContent>Zoom Out</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DlesButton
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleResetZoom}
+                      className="h-8 px-2 text-xs font-mono min-w-12"
+                    >
+                      {Math.round(zoom * 100)}%
+                    </DlesButton>
+                  </TooltipTrigger>
+                  <TooltipContent>Reset to 80%</TooltipContent>
+                </Tooltip>
+
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DlesButton
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={handleZoomIn}
+                      disabled={zoomIndex === ZOOM_LEVELS.length - 1}
+                      className="h-8 w-8"
+                    >
+                      <ZoomIn className="h-4 w-4" />
+                    </DlesButton>
+                  </TooltipTrigger>
+                  <TooltipContent>Zoom In</TooltipContent>
+                </Tooltip>
+              </div>
+            </TooltipProvider>
           </div>
         </DialogHeader>
 
@@ -143,16 +207,17 @@ export function GameModal({
             </div>
           )}
 
-          {/* Iframe - scaled down for zoomed-out appearance */}
+          {/* Iframe - scaled for zoom */}
           <div
             className="absolute inset-0 origin-top-left"
             style={{
-              width: "125%",
-              height: "125%",
-              transform: "scale(0.8)",
+              width: `${containerScale * 100}%`,
+              height: `${containerScale * 100}%`,
+              transform: `scale(${zoom})`,
             }}
           >
             <iframe
+              ref={iframeRef}
               src={game.link}
               title={game.title}
               className={cn(
@@ -167,7 +232,7 @@ export function GameModal({
           </div>
         </div>
 
-        {/* Footer with fallback button - more prominent for blocked sites */}
+        {/* Footer with fallback button */}
         <div className="p-2 px-3 border-t border-border shrink-0 flex items-center justify-between">
           <span className="text-xs text-muted-foreground">
             Not loading? Some sites don't allow embedding.
