@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn, formatTopic } from "@/lib/utils";
 import { TOPIC_COLORS, TOPIC_SHADOWS, extractDomain } from "@/lib/constants";
-import { ExternalLink, EyeOff } from "lucide-react";
+import { ExternalLink, EyeOff, Check } from "lucide-react";
 import { ListsDropdown } from "../lists/lists-dropdown";
 import { DlesBadge } from "@/components/design/dles-badge";
 
@@ -100,66 +100,65 @@ export function GameCard({
         </div>
       )}
 
-      <CardHeader className="p-4 pb-3">
+      <CardHeader className="p-3 pb-2">
         <div className="flex items-start justify-between gap-2">
-          <div className="space-y-1.5 flex-1 min-w-0">
-            <CardTitle className="flex items-center gap-2 text-heading-card leading-tight justify-between">
-              <div className="flex items-start gap-2">
-                <span className="line-clamp-2 leading-tight text-wrap break-words">
-                  {title}
-                </span>
-                <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-all mt-1" />
+          <div className="space-y-0.5 flex-1 min-w-0">
+            <CardTitle className="flex items-center gap-2 pr-2 text-heading-card leading-tight justify-between">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="truncate">{title}</span>
+                <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-all" />
               </div>
-              {/* Hide button inline with title */}
-              {!minimal && (
-                <div
-                  className="flex items-center gap-1"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ListsDropdown
-                    gameId={id}
-                    className="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
-                  />
-                  {onHide && (
-                    <TooltipProvider delayDuration={200}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            onClick={handleHide}
-                            className={cn(
-                              "p-1 rounded-md text-muted-foreground shrink-0",
-                              "opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity",
-                              "hover:bg-muted hover:text-foreground"
-                            )}
-                          >
-                            <EyeOff className="h-3.5 w-3.5" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="top" className="text-xs">
-                          Hide game
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                </div>
-              )}
             </CardTitle>
             <CardDescription className="truncate font-mono text-xs">
               {extractDomain(link)}
             </CardDescription>
           </div>
-          {isPlayed && (
-            <Badge
-              variant="outline"
-              className="shrink-0 border-green-500/30 text-green-600 bg-green-500/10 dark:text-green-400 dark:bg-green-500/20"
-            >
-              Played
-            </Badge>
-          )}
         </div>
 
-        <div className="pt-3 flex items-center justify-between gap-2">
-          <DlesBadge text={formatTopic(topic)} color={topic} size="sm" />
+        <div className="pt-1.5 flex items-center justify-between gap-2 min-h-[26px]">
+          <div className="flex items-center gap-2">
+            <DlesBadge text={formatTopic(topic)} color={topic} size="sm" />
+            {isPlayed && (
+              <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-green-600 dark:text-green-400">
+                <Check className="h-3 w-3" />
+                Played Today
+              </div>
+            )}
+          </div>
+
+          {/* Actions moved to bottom right */}
+          {!minimal && (
+            <div
+              className="flex items-center gap-1"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ListsDropdown
+                gameId={id}
+                className="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity"
+              />
+              {onHide && (
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={handleHide}
+                        className={cn(
+                          "p-1 rounded-md text-muted-foreground shrink-0",
+                          "opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity",
+                          "hover:bg-muted hover:text-foreground"
+                        )}
+                      >
+                        <EyeOff className="h-3.5 w-3.5" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="top" className="text-xs">
+                      Hide game
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
+          )}
         </div>
       </CardHeader>
     </Card>

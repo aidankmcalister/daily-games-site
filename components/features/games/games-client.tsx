@@ -348,7 +348,9 @@ export function GamesClient({
         onPlay={handlePlay}
       />
 
-      {displayedGames.length > 0 ? (
+      {isStatsLoading ? (
+        <GameGridSkeleton />
+      ) : displayedGames.length > 0 ? (
         <>
           <GameGrid
             key={topicFilter.join(",")}
