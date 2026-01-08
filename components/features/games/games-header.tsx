@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { Dices, Eye, EyeOff, MonitorPlay } from "lucide-react";
 import { DlesButton } from "@/components/design/dles-button";
 import { cn } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
 
 import { GameList } from "@/lib/use-lists";
 import { HeaderSearch } from "../../header/header-search";
@@ -118,23 +119,28 @@ export function GamesHeader(props: GamesHeaderProps) {
                 {onEmbedOnlyChange && (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <DlesButton
-                        variant={embedOnly ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => onEmbedOnlyChange(!embedOnly)}
+                      <div
                         className={cn(
-                          "gap-1.5 text-xs",
-                          embedOnly && "bg-primary text-primary-foreground"
+                          "flex items-center gap-2 px-3 h-10 rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer select-none",
+                          embedOnly && "border-primary/50 bg-primary/5"
                         )}
+                        onClick={() => onEmbedOnlyChange(!embedOnly)}
                       >
                         <MonitorPlay className="h-3.5 w-3.5" />
-                        <span className="hidden sm:inline">In-Modal</span>
-                      </DlesButton>
+                        <span className="text-xs font-medium hidden sm:inline">
+                          In-Modal
+                        </span>
+                        <Switch
+                          checked={embedOnly}
+                          className="scale-75 ml-1 origin-center pointer-events-none"
+                          aria-label="Toggle in-modal games"
+                        />
+                      </div>
                     </TooltipTrigger>
                     <TooltipContent>
                       {embedOnly
-                        ? "Showing games that play in modal"
-                        : "Filter to games that play in modal"}
+                        ? "Showing games that only play in modal"
+                        : "Filter to games that only play in modal"}
                     </TooltipContent>
                   </Tooltip>
                 )}
