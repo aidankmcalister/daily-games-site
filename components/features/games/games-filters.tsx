@@ -9,10 +9,9 @@ import {
 } from "@/components/ui/select";
 import { DlesSelect } from "@/components/design/dles-select";
 import { DlesBadge } from "@/components/design/dles-badge";
-import { TOPICS } from "@/lib/constants";
 import { ArrowDownAZ, LayoutGrid, Clock, TrendingUp } from "lucide-react";
 import { GameList } from "@/lib/use-lists";
-import { cn, formatTopic } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 type SortOption = "title" | "topic" | "played" | "playCount";
 
@@ -40,23 +39,19 @@ export function HeaderFilters({
   isCompact = false,
 }: HeaderFiltersProps) {
   const handleTopicChange = (newTopics: string[]) => {
-    // Normalize: treat empty topicFilter as ["all"] for comparison purposes
     const effectiveCurrentTopics =
       topicFilter.length === 0 ? ["all"] : topicFilter;
 
-    // If "all" is newly selected (it wasn't in previous filter), clear others
     if (newTopics.includes("all") && !effectiveCurrentTopics.includes("all")) {
       onTopicFilterChange(["all"]);
       return;
     }
 
-    // If "all" was present and we selected something else, remove "all"
     if (effectiveCurrentTopics.includes("all") && newTopics.length > 1) {
       onTopicFilterChange(newTopics.filter((t) => t !== "all"));
       return;
     }
 
-    // If we deselected everything, revert to empty (which displays as "all")
     if (newTopics.length === 0) {
       onTopicFilterChange([]);
       return;
@@ -65,70 +60,75 @@ export function HeaderFilters({
     onTopicFilterChange(newTopics);
   };
 
+  // Standard width for all filters
+  const filterWidth = "w-full md:w-50";
+
   return (
-    <div className="grid grid-cols-2 gap-2 w-full md:flex md:w-auto md:gap-2">
+    <div className="flex flex-wrap gap-2 flex-1 md:flex-initial">
+      {/* Lists (authenticated only) */}
       {isAuthenticated && lists.length > 0 && (
-        <div className="col-span-2 md:col-span-1 md:w-auto">
-          <DlesSelect
-            value={listFilter}
-            onChange={(val) => onListFilterChange(val)}
-            options={[
-              { value: "all", label: "All Lists", color: "brand" },
-              ...lists.map((l) => ({
-                value: l.id,
-                label: l.name,
-                color: l.color || "slate",
-              })),
-            ]}
-            placeholder="All Games"
-            className={cn(
-              "w-full md:w-[200px] h-10 text-sm border-primary/20",
-              !isCompact && listFilter !== "all" && "bg-primary/5"
-            )}
-            renderSelected={(option) => {
-              const list = lists.find((l) => l.id === option.value);
-              return (
-                <DlesBadge
-                  text={option.label}
-                  color={option.color || "brand"}
-                  count={
-                    option.value !== "all" ? list?.games.length : undefined
-                  }
-                  size="sm"
-                />
-              );
-            }}
-            renderOption={(option) => {
-              const list = lists.find((l) => l.id === option.value);
-              return (
-                <DlesBadge
-                  text={option.label}
-                  color={option.color || "brand"}
-                  count={
-                    option.value !== "all" ? list?.games.length : undefined
-                  }
-                  size="sm"
-                />
-              );
-            }}
-          />
-        </div>
+        <DlesSelect
+          value={listFilter}
+          onChange={(val) => onListFilterChange(val)}
+          options={[
+            { value: "all", label: "All Lists", color: "brand" },
+            ...lists.map((l) => ({
+              value: l.id,
+              label: l.name,
+              color: l.color || "slate",
+            })),
+          ]}
+          placeholder="All Lists"
+          className={cn(
+            filterWidth,
+            "h-10 text-sm",
+            !isCompact &&
+              listFilter !== "all" &&
+              "border-primary/50 bg-primary/5"
+          )}
+          renderSelected={(option) => {
+            const list = lists.find((l) => l.id === option.value);
+            return (
+              <DlesBadge
+                text={option.label}
+                color={option.color || "brand"}
+                count={option.value !== "all" ? list?.games.length : undefined}
+                size="sm"
+              />
+            );
+          }}
+          renderOption={(option) => {
+            const list = lists.find((l) => l.id === option.value);
+            return (
+              <DlesBadge
+                text={option.label}
+                color={option.color || "brand"}
+                count={option.value !== "all" ? list?.games.length : undefined}
+                size="sm"
+              />
+            );
+          }}
+        />
       )}
 
+      {/* Topics */}
       <DlesSelect
         multi
         topics
         value={topicFilter.length === 0 ? ["all"] : topicFilter}
         onChange={handleTopicChange}
-        placeholder="Category"
+        placeholder="All Topics"
         className={cn(
-          "w-full md:w-[160px] lg:w-[260px]",
-          !isCompact && topicFilter.length > 0 && !topicFilter.includes("all")
-            ? "bg-primary/5"
-            : ""
+          filterWidth,
+          "h-10",
+          !isCompact &&
+            topicFilter.length > 0 &&
+            !topicFilter.includes("all") &&
+            "border-primary/50 bg-primary/5"
         )}
       />
 
+      {/* Sort */}
       <Select
         value={sortBy}
         onValueChange={(v) => onSortChange(v as SortOption)}
@@ -136,9 +136,10 @@ export function HeaderFilters({
         <SelectTrigger
           size="lg"
           className={cn(
-            "w-full md:w-[140px] text-xs h-10 bg-muted/40 border-border/40 hover:border-border hover:bg-muted/60",
+            filterWidth,
+            "text-xs h-10 bg-muted/40 border-border/40 hover:border-border hover:bg-muted/60",
             !isCompact &&
-              sortBy !== "title" &&
+              sortBy !== "playCount" &&
               "border-primary/50 bg-primary/5 text-primary"
           )}
         >

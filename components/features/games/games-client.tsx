@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import {
   GameGrid,
   GameGridSkeleton,
 } from "@/components/features/games/game-grid";
 import { GamesHeader } from "@/components/features/games/games-header";
+import { GameModal } from "@/components/features/games/game-modal";
 import type { Game } from "@/app/generated/prisma/client";
 import { usePlayedGames } from "@/lib/use-played-games";
 import { useLists } from "@/lib/use-lists";
@@ -57,7 +58,9 @@ export function GamesClient({
   const [topicFilter, setTopicFilter] = useState<string[]>([]);
   const [listFilter, setListFilter] = useState("all");
   const [showHidden, setShowHidden] = useState(false);
+  const [embedOnly, setEmbedOnly] = useState(false);
   const [isLuckyModalOpen, setIsLuckyModalOpen] = useState(false);
+  const [openGame, setOpenGame] = useState<Game | null>(null);
 
   const { lists } = useLists();
   const { setStats } = useStats();
@@ -203,6 +206,35 @@ export function GamesClient({
   ]);
 
   const handlePlay = async (id: string) => {
+    const gameIndex = games.findIndex((g) => g.id === id);
+    if (gameIndex === -1) return;
+
+    const game = games[gameIndex];
+
+    // Check if game supports embedding
+    if (game.embedSupported === false) {
+      // Open directly in new tab for unsupported games
+      await markAsPlayed(id);
+      window.open(game.link, "_blank", "noopener,noreferrer");
+
+      // Optimistic update for play count
+      const updatedGames = [...games];
+      updatedGames[gameIndex] = {
+        ...game,
+        playCount: (game.playCount || 0) + 1,
+      };
+      setGames(updatedGames);
+
+      toast.success("Game played", {
+        description: `Marked ${game.title} as played.`,
+      });
+    } else {
+      // Open in modal for supported games
+      setOpenGame(game);
+    }
+  };
+
+  const handleModalPlay = async (id: string) => {
     await markAsPlayed(id);
 
     const gameIndex = games.findIndex((g) => g.id === id);
@@ -216,12 +248,25 @@ export function GamesClient({
         playCount: (game.playCount || 0) + 1,
       };
       setGames(updatedGames);
-
-      toast.success("Game played", {
-        description: `Marked ${game.title} as played.`,
-      });
     }
   };
+
+  const handleMarkUnsupported = useCallback(async (id: string) => {
+    try {
+      await fetch(`/api/games/${id}/embed`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ embedSupported: false }),
+      });
+
+      // Update local state
+      setGames((prev) =>
+        prev.map((g) => (g.id === id ? { ...g, embedSupported: false } : g))
+      );
+    } catch (error) {
+      console.error("Failed to mark game as unsupported:", error);
+    }
+  }, []);
 
   const handleHide = async (id: string) => {
     await toggleHidden(id, true);
@@ -245,6 +290,7 @@ export function GamesClient({
     setTopicFilter([]);
     setListFilter("all");
     setSortBy("playCount");
+    setEmbedOnly(false);
   };
 
   const handleRandomGame = () => {
@@ -274,6 +320,11 @@ export function GamesClient({
 
         // Filter by topic
         if (activeTopics.length > 0 && !activeTopics.includes(g.topic)) {
+          return false;
+        }
+
+        // Filter by embed support
+        if (embedOnly && g.embedSupported === false) {
           return false;
         }
 
@@ -311,6 +362,7 @@ export function GamesClient({
     playedIds,
     hiddenIds,
     showHidden,
+    embedOnly,
   ]);
 
   const displayedGames = filteredGames.slice(0, visibleCount);
@@ -339,6 +391,8 @@ export function GamesClient({
         onShowHiddenChange={setShowHidden}
         hiddenCount={hiddenIds.size}
         isAuthenticated={isAuthenticated}
+        embedOnly={embedOnly}
+        onEmbedOnlyChange={setEmbedOnly}
       />
 
       <FeelingLuckyModal
@@ -347,6 +401,14 @@ export function GamesClient({
         games={games}
         playedIds={playedIds}
         onPlay={handlePlay}
+      />
+
+      <GameModal
+        game={openGame}
+        open={openGame !== null}
+        onOpenChange={(open) => !open && setOpenGame(null)}
+        onMarkPlayed={handleModalPlay}
+        onMarkUnsupported={handleMarkUnsupported}
       />
 
       {isStatsLoading ? (
@@ -363,6 +425,7 @@ export function GamesClient({
               playCount: g.playCount || 0,
               createdAt: g.createdAt,
               newGameMinutes,
+              embedSupported: g.embedSupported,
             }))}
             playedIds={playedIds}
             onPlay={handlePlay}

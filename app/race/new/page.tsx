@@ -24,6 +24,7 @@ interface Game {
   description: string;
   topic: Topic;
   archived?: boolean;
+  embedSupported?: boolean;
 }
 
 export default function NewRacePage() {
@@ -91,8 +92,9 @@ export default function NewRacePage() {
     if (id.startsWith("sys-")) {
       const template = SYSTEM_TEMPLATES.find((t) => t.id === id);
       if (template && template.topic) {
+        // Filter by topic and embed support
         const categoryGames = allGames.filter(
-          (g) => g.topic === template.topic
+          (g) => g.topic === template.topic && g.embedSupported !== false
         );
         const games = [...categoryGames]
           .sort(() => 0.5 - Math.random())
@@ -237,12 +239,16 @@ export default function NewRacePage() {
               selectedListId={selectedListId}
               onTemplateSelect={selectList}
               onRandomSelect={(count) => {
-                const randomGames = [...allGames]
+                // Only select games that support embedding
+                const embeddableGames = allGames.filter(
+                  (g) => g.embedSupported !== false
+                );
+                const randomGames = [...embeddableGames]
                   .sort(() => 0.5 - Math.random())
                   .slice(0, count);
                 setSelectedGameIds(randomGames.map((g) => g.id));
                 setSelectedListId(""); // Clear list selection for random
-                toast.info(`Selected ${count} random games!`);
+                toast.info(`Selected ${randomGames.length} random games!`);
               }}
               onManualSelect={() => {
                 setSelectedGameIds([]);

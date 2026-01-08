@@ -42,6 +42,7 @@ export interface GameCardProps {
   index?: number;
   minimal?: boolean;
   newGameMinutes?: number;
+  embedSupported?: boolean;
 }
 
 export function GameCard({
@@ -57,11 +58,11 @@ export function GameCard({
   index = 0,
   minimal = false,
   newGameMinutes = 10080, // Default 7 days
+  embedSupported = true,
 }: GameCardProps) {
   const handleClick = () => {
     if (minimal) return;
     onPlay(id);
-    window.open(link, "_blank", "noopener,noreferrer");
   };
 
   const handleHide = (e: React.MouseEvent) => {
@@ -110,7 +111,9 @@ export function GameCard({
             >
               {title}
             </CardTitle>
-            <ExternalLink className="h-2.5 w-2.5 shrink-0 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-all" />
+            {embedSupported === false && (
+              <ExternalLink className="h-2.5 w-2.5 shrink-0 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-all" />
+            )}
           </span>
           {isPlayed && (
             <span className="flex items-center text-muted-foreground shrink-0">

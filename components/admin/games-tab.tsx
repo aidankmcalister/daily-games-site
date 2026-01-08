@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { AddGameDialog } from "./games/add-game-dialog";
 import { ImportJsonDialog } from "./games/import-json-dialog";
+import { ScanEmbedDialog } from "./games/scan-embed-dialog";
 import { BulkActionToolbar } from "./games/bulk-action-toolbar";
 import { GamesSearchFilter } from "./games/games-search-filter";
 import { DlesButton } from "@/components/design/dles-button";
@@ -194,6 +195,7 @@ export function GamesTab({ canManageGames }: { canManageGames: boolean }) {
         <h2 className="text-heading-section">All Games ({totalGames})</h2>
         {canManageGames && (
           <div className="flex items-center gap-2 w-full sm:w-auto">
+            <ScanEmbedDialog onScanComplete={fetchGames} />
             <ImportJsonDialog onImportComplete={fetchGames} />
             <AddGameDialog onAdd={handleAddGame} />
           </div>

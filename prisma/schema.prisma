@@ -17,6 +17,7 @@ model Game {
   updatedAt   DateTime @updatedAt
   playCount   Int      @default(0)
   archived    Boolean  @default(false)
+  embedSupported Boolean @default(true)
 
   userGames   UserGame[]
   gameLogs    GamePlayLog[]
