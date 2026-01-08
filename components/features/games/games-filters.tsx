@@ -10,11 +10,11 @@ import {
 import { DlesSelect } from "@/components/design/dles-select";
 import { DlesBadge } from "@/components/design/dles-badge";
 import { TOPICS } from "@/lib/constants";
-import { ArrowDownAZ, LayoutGrid, Clock } from "lucide-react";
+import { ArrowDownAZ, LayoutGrid, Clock, TrendingUp } from "lucide-react";
 import { GameList } from "@/lib/use-lists";
 import { cn, formatTopic } from "@/lib/utils";
 
-type SortOption = "title" | "topic" | "played";
+type SortOption = "title" | "topic" | "played" | "playCount";
 
 interface HeaderFiltersProps {
   topicFilter: string[];
@@ -145,6 +145,12 @@ export function HeaderFilters({
           <SelectValue placeholder="Sort" />
         </SelectTrigger>
         <SelectContent>
+          <SelectItem value="playCount">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              <span>Popularity</span>
+            </div>
+          </SelectItem>
           <SelectItem value="title">
             <div className="flex items-center gap-2">
               <ArrowDownAZ className="h-4 w-4" />

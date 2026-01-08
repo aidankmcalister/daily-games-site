@@ -104,9 +104,11 @@ export function GameCard({
         <div className="flex items-start justify-between gap-2">
           <div className="space-y-1.5 flex-1 min-w-0">
             <CardTitle className="flex items-center gap-2 text-heading-card leading-tight justify-between">
-              <div className="flex items-center gap-2">
-                <span className="truncate">{title}</span>
-                <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+              <div className="flex items-start gap-2">
+                <span className="line-clamp-2 leading-tight text-wrap break-words">
+                  {title}
+                </span>
+                <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 opacity-0 group-hover:opacity-100 transition-all mt-1" />
               </div>
               {/* Hide button inline with title */}
               {!minimal && (

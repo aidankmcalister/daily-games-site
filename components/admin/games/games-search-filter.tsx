@@ -12,7 +12,13 @@ import { DlesSelect } from "@/components/design/dles-select";
 import { TOPICS } from "@/lib/constants";
 import { cn, formatTopic } from "@/lib/utils";
 import type { Topic } from "@/app/generated/prisma/client";
-import { ArrowDownAZ, Clock, LayoutGrid, Archive } from "lucide-react";
+import {
+  ArrowDownAZ,
+  Clock,
+  LayoutGrid,
+  Archive,
+  TrendingUp,
+} from "lucide-react";
 import { DlesButton } from "@/components/design/dles-button";
 
 interface GamesSearchFilterProps {
@@ -72,6 +78,12 @@ export function GamesSearchFilter({
             <SelectValue placeholder="Sort" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="playCount">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4" />
+                <span>Popularity</span>
+              </div>
+            </SelectItem>
             <SelectItem value="title">
               <div className="flex items-center gap-2">
                 <ArrowDownAZ className="h-4 w-4" />

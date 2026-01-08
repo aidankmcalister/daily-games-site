@@ -1,5 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DlesSelect } from "@/components/design/dles-select";
@@ -47,6 +50,25 @@ export function GameSelector({
   topics,
   hideFilters = false,
 }: GameSelectorProps) {
+  // Lazy Rendering
+  const [visibleCount, setVisibleCount] = useState(24);
+  const { ref: loadMoreRef, inView } = useInView({
+    rootMargin: "500px",
+  });
+
+  useEffect(() => {
+    if (inView) {
+      setVisibleCount((prev) => prev + 24);
+    }
+  }, [inView]);
+
+  // Reset visible count when filters change
+  useEffect(() => {
+    setVisibleCount(24);
+  }, [searchQuery, selectedTopics]);
+
+  const displayedGames = filteredGames.slice(0, visibleCount);
+
   return (
     <section className="space-y-4">
       {/* Search & Filter Row - hidden when rendered elsewhere */}
@@ -81,50 +103,59 @@ export function GameSelector({
           <p className="text-body text-muted-foreground">No games found</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {filteredGames.map((game) => {
-            const isSelected = selectedGameIds.includes(game.id);
-            return (
-              <div
-                key={game.id}
-                onClick={() => onToggleGame(game.id)}
-                className={cn(
-                  "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all select-none relative overflow-hidden",
-                  isSelected
-                    ? "border-primary bg-primary/5"
-                    : "border-border hover:border-primary/30 hover:bg-muted/30"
-                )}
-              >
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {displayedGames.map((game) => {
+              const isSelected = selectedGameIds.includes(game.id);
+              return (
                 <div
+                  key={game.id}
+                  onClick={() => onToggleGame(game.id)}
                   className={cn(
-                    "flex items-center justify-center h-5 w-5 rounded border shrink-0 transition-colors",
+                    "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all select-none relative overflow-hidden",
                     isSelected
-                      ? "bg-primary border-primary"
-                      : "bg-muted/50 border-border"
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/30 hover:bg-muted/30"
                   )}
                 >
-                  {isSelected && (
-                    <Check className="h-3 w-3 text-primary-foreground" />
-                  )}
+                  <div
+                    className={cn(
+                      "flex items-center justify-center h-5 w-5 rounded border shrink-0 transition-colors",
+                      isSelected
+                        ? "bg-primary border-primary"
+                        : "bg-muted/50 border-border"
+                    )}
+                  >
+                    {isSelected && (
+                      <Check className="h-3 w-3 text-primary-foreground" />
+                    )}
+                  </div>
+                  <span
+                    className={cn(
+                      "text-body font-medium truncate flex-1",
+                      isSelected ? "text-primary" : "text-foreground"
+                    )}
+                  >
+                    {game.title}
+                  </span>
+                  <DlesBadge
+                    text={formatTopic(game.topic)}
+                    color={game.topic}
+                    size="sm"
+                    className="ml-auto shrink-0"
+                  />
                 </div>
-                <span
-                  className={cn(
-                    "text-body font-medium truncate flex-1",
-                    isSelected ? "text-primary" : "text-foreground"
-                  )}
-                >
-                  {game.title}
-                </span>
-                <DlesBadge
-                  text={formatTopic(game.topic)}
-                  color={game.topic}
-                  size="sm"
-                  className="ml-auto shrink-0"
-                />
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+
+          {/* Lazy Loader Trigger */}
+          {visibleCount < filteredGames.length && (
+            <div ref={loadMoreRef} className="py-4 flex justify-center w-full">
+              <div className="h-4" />
+            </div>
+          )}
+        </>
       )}
 
       {/* Bulk actions */}

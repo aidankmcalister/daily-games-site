@@ -45,11 +45,12 @@ export default function NewRacePage() {
     const fetchGames = async () => {
       try {
         setGamesLoading(true);
-        const res = await fetch("/api/games");
+        const res = await fetch("/api/games?limit=2000");
         if (res.ok) {
           const data = await res.json();
-          const activeGames = data.filter((g: Game) => !g.archived);
-          setAllGames(activeGames);
+          // API returns { items: Game[], meta: ... }
+          // API already filters out archived games by default
+          setAllGames(data.items || []);
         }
       } catch (error) {
         console.error("Fetch games error:", error);

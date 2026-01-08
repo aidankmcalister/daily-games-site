@@ -1,6 +1,28 @@
 import prisma from "@/lib/prisma";
-import { GamesClient } from "@/components/features/games/games-client";
 import type { Game } from "@/app/generated/prisma/client";
+import dynamic from "next/dynamic";
+import { GameGridSkeleton } from "@/components/features/games/game-grid";
+
+const GamesClient = dynamic(
+  () =>
+    import("@/components/features/games/games-client").then(
+      (mod) => mod.GamesClient
+    ),
+  {
+    loading: () => (
+      <div className="space-y-6 animate-in fade-in duration-300">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-4">
+            <div className="h-10 w-64 bg-muted rounded-md animate-pulse" />
+            <div className="h-10 w-32 bg-muted rounded-md animate-pulse" />
+            <div className="h-10 w-32 bg-muted rounded-md animate-pulse" />
+          </div>
+        </div>
+        <GameGridSkeleton count={20} />
+      </div>
+    ),
+  }
+);
 
 export const revalidate = 60;
 
@@ -10,7 +32,7 @@ export default async function Page() {
   try {
     games = await prisma.game.findMany({
       where: { archived: false },
-      orderBy: { title: "asc" },
+      orderBy: [{ playCount: "desc" }, { title: "asc" }],
     });
   } catch {
     // Table may not exist yet

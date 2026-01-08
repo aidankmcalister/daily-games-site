@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { DlesButton } from "@/components/design/dles-button";
 import { Search } from "lucide-react";
+import { useInView } from "react-intersection-observer";
 
 import dynamic from "next/dynamic";
 
@@ -36,7 +37,7 @@ const GuestSyncBanner = dynamic(
   }
 );
 
-type SortOption = "title" | "topic" | "played";
+type SortOption = "title" | "topic" | "played" | "playCount";
 
 export function GamesClient({
   games: initialGames,
@@ -46,8 +47,16 @@ export function GamesClient({
   newGameMinutes?: number;
 }) {
   const [games, setGames] = useState<Game[]>(initialGames);
+
+  // Lazy Rendering State
+  const [visibleCount, setVisibleCount] = useState(24);
+  const { ref: loadMoreRef, inView } = useInView({
+    rootMargin: "500px",
+  });
+
+  // Filters
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("title");
+  const [sortBy, setSortBy] = useState<SortOption>("playCount");
   const [topicFilter, setTopicFilter] = useState<string[]>([]);
   const [listFilter, setListFilter] = useState("all");
   const [showHidden, setShowHidden] = useState(false);
@@ -62,13 +71,25 @@ export function GamesClient({
     playedIds,
     hiddenIds,
     currentStreak,
-    isLoading,
+    isLoading: isStatsLoading,
     isAuthenticated,
     markAsPlayed,
     toggleHidden,
     syncFromLocalStorage,
     clearLocalPlayed,
   } = usePlayedGames(gameIds);
+
+  // Load more when scrolling to bottom
+  useEffect(() => {
+    if (inView) {
+      setVisibleCount((prev) => prev + 24);
+    }
+  }, [inView]);
+
+  // Reset filtered/visible count when filters change
+  useEffect(() => {
+    setVisibleCount(24);
+  }, [searchQuery, topicFilter, listFilter, sortBy, showHidden]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -153,14 +174,14 @@ export function GamesClient({
 
   // Sync localStorage to server on sign-in
   useEffect(() => {
-    if (isAuthenticated && !isLoading) {
+    if (isAuthenticated && !isStatsLoading) {
       syncFromLocalStorage();
     }
-  }, [isAuthenticated, isLoading, syncFromLocalStorage]);
+  }, [isAuthenticated, isStatsLoading, syncFromLocalStorage]);
 
   // Populate global header stats
   useEffect(() => {
-    if (!isLoading) {
+    if (!isStatsLoading) {
       setStats({
         playedCount: playedIds.size,
         totalCount: Math.max(0, games.length - hiddenIds.size),
@@ -169,14 +190,14 @@ export function GamesClient({
         isAuthenticated,
       });
     }
-    return () => setStats(null); // Clear on unmount
+    return () => setStats(null);
   }, [
     playedIds.size,
     games.length,
     hiddenIds.size,
     currentStreak,
     isAuthenticated,
-    isLoading,
+    isStatsLoading,
     setStats,
   ]);
 
@@ -222,13 +243,14 @@ export function GamesClient({
     setSearchQuery("");
     setTopicFilter([]);
     setListFilter("all");
-    setSortBy("title");
+    setSortBy("playCount");
   };
 
   const handleRandomGame = () => {
     setIsLuckyModalOpen(true);
   };
 
+  // Client-side filtering
   const filteredGames = useMemo(() => {
     const query = searchQuery.toLowerCase();
     const activeTopics =
@@ -261,6 +283,12 @@ export function GamesClient({
         );
       })
       .sort((a, b) => {
+        if (sortBy === "playCount") {
+          return (
+            (b.playCount || 0) - (a.playCount || 0) ||
+            a.title.localeCompare(b.title)
+          );
+        }
         if (sortBy === "topic")
           return (
             a.topic.localeCompare(b.topic) || a.title.localeCompare(b.title)
@@ -284,21 +312,7 @@ export function GamesClient({
     showHidden,
   ]);
 
-  if (isLoading) {
-    return (
-      <div className="space-y-6 animate-in fade-in duration-300">
-        {/* Header skeleton */}
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-4">
-            <Skeleton className="h-10 w-64" />
-            <Skeleton className="h-10 w-32" />
-            <Skeleton className="h-10 w-32" />
-          </div>
-        </div>
-        <GameGridSkeleton count={games.length} />
-      </div>
-    );
-  }
+  const displayedGames = filteredGames.slice(0, visibleCount);
 
   return (
     <div className="space-y-6">
@@ -334,22 +348,31 @@ export function GamesClient({
         onPlay={handlePlay}
       />
 
-      {filteredGames.length > 0 ? (
-        <GameGrid
-          key={topicFilter.join(",")}
-          games={filteredGames.map((g) => ({
-            id: g.id,
-            title: g.title,
-            link: g.link,
-            topic: g.topic,
-            playCount: g.playCount || 0,
-            createdAt: g.createdAt,
-            newGameMinutes,
-          }))}
-          playedIds={playedIds}
-          onPlay={handlePlay}
-          onHide={isAuthenticated ? handleHide : undefined}
-        />
+      {displayedGames.length > 0 ? (
+        <>
+          <GameGrid
+            key={topicFilter.join(",")}
+            games={displayedGames.map((g) => ({
+              id: g.id,
+              title: g.title,
+              link: g.link,
+              topic: g.topic,
+              playCount: g.playCount || 0,
+              createdAt: g.createdAt,
+              newGameMinutes,
+            }))}
+            playedIds={playedIds}
+            onPlay={handlePlay}
+            onHide={isAuthenticated ? handleHide : undefined}
+          />
+
+          {/* Lazy Loader Trigger */}
+          {visibleCount < filteredGames.length && (
+            <div ref={loadMoreRef} className="py-4 flex justify-center w-full">
+              <div className="h-4" />
+            </div>
+          )}
+        </>
       ) : (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="bg-muted/50 rounded-full p-4 mb-4">

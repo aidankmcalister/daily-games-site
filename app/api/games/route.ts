@@ -10,23 +10,76 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const includeArchived = searchParams.get("includeArchived") === "true";
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "50");
+    const search = searchParams.get("search") || "";
+    const topic = searchParams.get("topic") || "";
+    const sortBy = searchParams.get("sortBy") || "title";
+    const sortOrder =
+      (searchParams.get("sortOrder") as "asc" | "desc") || "asc";
 
-    let where = { archived: false };
+    let where: any = {};
 
-    // Allow admins to fetch archived games
-    if (includeArchived) {
+    // Archival check
+    if (!includeArchived) {
+      where.archived = false;
+    } else {
       const currentUser = await getCurrentUser();
-      if (currentUser && canManageGames(currentUser.role)) {
-        // @ts-ignore - filtering is optional when admin
-        where = {};
+      if (!currentUser || !canManageGames(currentUser.role)) {
+        where.archived = false;
       }
     }
 
+    // Search filter
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+        { topic: { contains: search, mode: "insensitive" } },
+      ];
+    }
+
+    // Topic filter
+    if (topic && topic !== "all") {
+      // Handle multiple topics if needed, but simple string for now or comma separated
+      const topics = topic.split(",").filter(Boolean);
+      if (topics.length > 0) {
+        where.topic = { in: topics };
+      }
+    }
+
+    // Determine sort
+    let orderBy: any = {};
+    if (sortBy === "topic") {
+      orderBy = { topic: sortOrder };
+    } else if (sortBy === "playCount") {
+      orderBy = { playCount: sortOrder };
+    } else if (sortBy === "createdAt") {
+      orderBy = { createdAt: sortOrder };
+    } else {
+      orderBy = { title: sortOrder };
+    }
+
+    // Get total count for pagination meta
+    const total = await prisma.game.count({ where });
+
+    // Fetch games
     const games = await prisma.game.findMany({
       where,
-      orderBy: { title: "asc" },
+      orderBy,
+      skip: (page - 1) * limit,
+      take: limit,
     });
-    return NextResponse.json(games);
+
+    return NextResponse.json({
+      items: games,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
     console.error("Failed to fetch games:", error);
     return NextResponse.json(

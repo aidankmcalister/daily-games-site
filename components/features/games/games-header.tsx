@@ -9,7 +9,7 @@ import { GameList } from "@/lib/use-lists";
 import { HeaderSearch } from "../../header/header-search";
 import { HeaderFilters } from "./games-filters";
 
-type SortOption = "title" | "topic" | "played";
+type SortOption = "title" | "topic" | "played" | "playCount";
 
 interface GamesHeaderProps {
   playedCount: number;
