@@ -18,7 +18,7 @@ const GamesClient = dynamic(
             <div className="h-10 w-32 bg-muted rounded-md animate-pulse" />
           </div>
         </div>
-        <GameGridSkeleton count={20} />
+        <GameGridSkeleton count={48} />
       </div>
     ),
   }

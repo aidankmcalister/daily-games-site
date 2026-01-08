@@ -1,5 +1,7 @@
 "use client";
 
+import React from "react";
+
 import {
   Card,
   CardHeader,
@@ -45,7 +47,7 @@ export interface GameCardProps {
   embedSupported?: boolean;
 }
 
-export function GameCard({
+export const GameCard = React.memo(function GameCard({
   id,
   title,
   description,
@@ -161,4 +163,4 @@ export function GameCard({
   );
 
   return cardContent;
-}
+});

@@ -41,9 +41,6 @@ export function GamesClient({
 }) {
   const [games, setGames] = useState<Game[]>(initialGames);
 
-  // Lazy Rendering State
-  const [visibleCount, setVisibleCount] = useState(24);
-
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("playCount");
@@ -70,22 +67,6 @@ export function GamesClient({
     syncFromLocalStorage,
     clearLocalPlayed,
   } = usePlayedGames(gameIds);
-
-  // Load more when scrolling to bottom - using onChange for repeated triggers
-  const { ref: loadMoreRef } = useInView({
-    rootMargin: "200px",
-    threshold: 0,
-    onChange: (inView) => {
-      if (inView) {
-        setVisibleCount((prev) => prev + 24);
-      }
-    },
-  });
-
-  // Reset filtered/visible count when filters change
-  useEffect(() => {
-    setVisibleCount(24);
-  }, [searchQuery, topicFilter, listFilter, sortBy, showHidden]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -360,7 +341,20 @@ export function GamesClient({
     embedOnly,
   ]);
 
-  const displayedGames = filteredGames.slice(0, visibleCount);
+  const mappedGames = useMemo(
+    () =>
+      filteredGames.map((g) => ({
+        id: g.id,
+        title: g.title,
+        link: g.link,
+        topic: g.topic,
+        playCount: g.playCount || 0,
+        createdAt: g.createdAt,
+        newGameMinutes,
+        embedSupported: g.embedSupported,
+      })),
+    [filteredGames, newGameMinutes]
+  );
 
   return (
     <div className="space-y-6">
@@ -404,34 +398,14 @@ export function GamesClient({
         onMarkUnsupported={handleMarkUnsupported}
       />
 
-      {isStatsLoading ? (
-        <GameGridSkeleton />
-      ) : displayedGames.length > 0 ? (
-        <>
-          <GameGrid
-            key={topicFilter.join(",")}
-            games={displayedGames.map((g) => ({
-              id: g.id,
-              title: g.title,
-              link: g.link,
-              topic: g.topic,
-              playCount: g.playCount || 0,
-              createdAt: g.createdAt,
-              newGameMinutes,
-              embedSupported: g.embedSupported,
-            }))}
-            playedIds={playedIds}
-            onPlay={handlePlay}
-            onHide={isAuthenticated ? handleHide : undefined}
-          />
-
-          {/* Lazy Loader Trigger */}
-          {visibleCount < filteredGames.length && (
-            <div ref={loadMoreRef} className="py-4 flex justify-center w-full">
-              <div className="h-4" />
-            </div>
-          )}
-        </>
+      {filteredGames.length > 0 ? (
+        <GameGrid
+          key={topicFilter.join(",")}
+          games={mappedGames}
+          playedIds={playedIds}
+          onPlay={handlePlay}
+          onHide={isAuthenticated ? handleHide : undefined}
+        />
       ) : (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="bg-muted/50 rounded-full p-4 mb-4">
