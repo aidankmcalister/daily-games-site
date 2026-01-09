@@ -31,9 +31,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   // Check if we should hide the header entirely
-  const hideHeader = EXCLUDED_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + "/")
-  );
+  const hideHeader =
+    EXCLUDED_ROUTES.some(
+      (route) => pathname === route || pathname.startsWith(route + "/")
+    ) || !!pathname.match(/^\/race\/[^/]+$/);
 
   // Determine page title based on route
   const getPageTitle = () => {
@@ -67,9 +68,21 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     return undefined;
   };
 
+  // Determine if we should show navigation
+  const shouldShowNav = () => {
+    // Hide nav on active race page (split screen)
+    // Matches /race/[id] but not /race/[id]/lobby or /race/[id]/results
+    if (pathname.match(/^\/race\/[^/]+$/)) {
+      return false;
+    }
+    return true;
+  };
+
   return (
     <>
-      {!hideHeader && <SiteHeader pageTitle={getPageTitle()} />}
+      {!hideHeader && (
+        <SiteHeader pageTitle={getPageTitle()} showNav={shouldShowNav()} />
+      )}
       <main id="main-content">{children}</main>
     </>
   );
