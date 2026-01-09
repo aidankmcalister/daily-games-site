@@ -70,7 +70,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       {!hideHeader && <SiteHeader pageTitle={getPageTitle()} />}
-      {children}
+      <main id="main-content">{children}</main>
     </>
   );
 }

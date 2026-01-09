@@ -15,21 +15,50 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "dles.fun",
+  metadataBase: new URL("https://dles.fun"),
+  title: {
+    default: "dles.fun - Daily Games Dashboard",
+    template: "%s | dles.fun",
+  },
   description:
     "A curated collection of daily puzzles and games. Play word games, trivia, geography challenges, and more.",
+  keywords: [
+    "daily games",
+    "wordle",
+    "puzzles",
+    "trivia",
+    "brain games",
+    "word games",
+  ],
+  authors: [{ name: "dles.fun" }],
+  creator: "dles.fun",
   openGraph: {
-    title: "dles.fun",
+    type: "website",
+    locale: "en_US",
+    url: "https://dles.fun",
+    siteName: "dles.fun",
+    title: "dles.fun - Daily Games Dashboard",
     description:
       "A curated collection of daily puzzles and games. Play word games, trivia, geography challenges, and more.",
-    images: ["/og-image.png"],
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "dles.fun - Your daily game dashboard",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "dles.fun",
+    title: "dles.fun - Daily Games Dashboard",
     description:
       "A curated collection of daily puzzles and games. Play word games, trivia, geography challenges, and more.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
@@ -46,6 +75,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
       <body className={`${jetbrainsMono.className} antialiased`}>
+        {/* Skip to content link for accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-foreground focus:rounded-md"
+        >
+          Skip to content
+        </a>
         <ThemeProvider>
           <ImpersonationProvider>
             <Analytics />
