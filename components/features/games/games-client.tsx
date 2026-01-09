@@ -516,7 +516,9 @@ export function GamesClient({
 
       {filteredGames.length > 0 ? (
         <GameGrid
-          key={topicFilter.join(",")}
+          key={`${topicFilter.join(
+            ","
+          )}-${listFilter}-${sortBy}-${showHidden}-${hidePlayedToday}-${embedOnly}-${searchQuery}`}
           games={mappedGames}
           playedIds={playedIds}
           onPlay={handlePlay}
