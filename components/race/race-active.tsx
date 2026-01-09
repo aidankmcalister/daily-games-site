@@ -200,11 +200,22 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   />
                   {/* Overlay Action Bar */}
-                  <div className="absolute bottom-6 right-6 flex items-center gap-3">
+                  <div className="absolute bottom-6 right-6 flex items-center gap-3 p-2 rounded-2xl bg-black/80 backdrop-blur-md border border-white/10 shadow-2xl">
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-10 w-10 text-white/50 hover:text-white hover:bg-white/10 rounded-xl"
+                      onClick={() =>
+                        window.open(activeGame.game.link, "_blank")
+                      }
+                      title="Open in new tab"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-10 px-5 text-xs font-bold border-white/5 text-rose-400 bg-black/80 backdrop-blur-md hover:bg-rose-500/10 hover:text-rose-300 hover:border-rose-500/30 transition-all uppercase tracking-wider rounded-xl shadow-lg"
+                      className="h-10 px-5 text-xs font-bold bg-red-500/10 border border-red-500/30 text-red-500 hover:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 transition-all uppercase tracking-wider rounded-xl"
                       onClick={() => handleCompleteGame(activeGame.id, true)}
                     >
                       <SkipForward className="h-3.5 w-3.5 mr-2" />
@@ -212,11 +223,12 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
                     </Button>
                     <Button
                       size="sm"
-                      className="h-10 px-6 text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white backdrop-blur-md shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition-all uppercase tracking-wider border-0 rounded-xl"
+                      variant="outline"
+                      className="h-10 px-6 text-xs font-bold bg-green-500/10 border border-green-500/30 text-green-500 hover:text-green-400 hover:bg-green-500/20 hover:border-green-500/50 transition-all uppercase tracking-wider rounded-xl"
                       onClick={() => handleCompleteGame(activeGame.id, false)}
                     >
                       <Check className="h-4 w-4 mr-2" />
-                      Done
+                      Finish
                     </Button>
                   </div>
                 </>
@@ -303,18 +315,37 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
                   const isActive = activeGameId === rg.id;
                   const canPlay = !myCompletion && !isLocked;
 
+                  // Calculate per-stage duration
+                  let stageDuration = 0;
+                  if (myCompletion) {
+                    const prevCompletion =
+                      index > 0
+                        ? getCompletionForUser(
+                            race.raceGames[index - 1].id,
+                            myParticipant?.id
+                          )
+                        : null;
+                    const prevTime = prevCompletion?.timeToComplete || 0;
+                    stageDuration = myCompletion.timeToComplete - prevTime;
+                  }
+
                   return (
                     <button
                       key={rg.id}
                       onClick={() => canPlay && setActiveGameId(rg.id)}
                       disabled={!canPlay}
                       className={cn(
-                        "w-full text-left relative p-4 rounded-2xl transition-all duration-300 group border select-none",
+                        "w-full text-left relative p-4 rounded-2xl group border select-none",
                         isActive
                           ? "bg-primary/10 border-primary/30 shadow-[0_0_25px_-10px_rgba(var(--primary),0.3)] z-10"
                           : myCompletion
-                          ? "bg-transparent border-transparent hover:bg-white/5 opacity-40 hover:opacity-100 grayscale hover:grayscale-0 scale-[0.98] hover:scale-100"
-                          : "bg-transparent border-transparent opacity-20 cursor-not-allowed grayscale scale-[0.98]"
+                          ? cn(
+                              "opacity-40 grayscale-[0.3]",
+                              myCompletion.skipped
+                                ? "bg-rose-500/10 border-rose-500/30"
+                                : "bg-emerald-500/10 border-emerald-500/30"
+                            )
+                          : "bg-transparent border-transparent opacity-20 grayscale scale-[0.98]"
                       )}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -322,11 +353,21 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
                           <div className="flex items-center gap-2">
                             <DlesBadge
                               text={formatTopic(rg.game.topic)}
-                              color={rg.game.topic}
+                              color={
+                                isActive
+                                  ? rg.game.topic
+                                  : myCompletion?.skipped
+                                  ? "red"
+                                  : myCompletion
+                                  ? "green"
+                                  : "slate"
+                              }
                               size="xs"
                               className={cn(
                                 "transition-opacity font-mono tracking-wider text-[10px] px-1.5 py-0.5 min-w-0",
-                                isActive ? "opacity-100" : "opacity-60"
+                                isActive || myCompletion
+                                  ? "opacity-100"
+                                  : "opacity-60"
                               )}
                             />
                             {isActive && (
@@ -338,7 +379,11 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
                               "font-bold text-sm leading-snug truncate pr-2 transition-colors font-mono",
                               isActive
                                 ? "text-white"
-                                : "text-muted-foreground group-hover:text-white"
+                                : myCompletion?.skipped
+                                ? "text-rose-200"
+                                : myCompletion
+                                ? "text-emerald-200"
+                                : "text-muted-foreground"
                             )}
                           >
                             {rg.game.title}
@@ -346,15 +391,38 @@ export function RaceActive({ race, currentUser, onRefresh }: RaceActiveProps) {
                         </div>
 
                         <div className="shrink-0 flex flex-col items-end gap-1.5 pt-0.5">
-                          <span className="text-[10px] font-bold text-white/20 tabular-nums font-mono">
+                          <span
+                            className={cn(
+                              "text-[10px] font-bold tabular-nums font-mono",
+                              isActive
+                                ? "text-white/40"
+                                : myCompletion?.skipped
+                                ? "text-rose-500/50"
+                                : myCompletion
+                                ? "text-emerald-500/50"
+                                : "text-white/10"
+                            )}
+                          >
                             #{String(index + 1).padStart(2, "0")}
                           </span>
                           {myCompletion ? (
-                            myCompletion.skipped ? (
-                              <SkipForward className="h-3.5 w-3.5 text-rose-500" />
-                            ) : (
-                              <Check className="h-3.5 w-3.5 text-emerald-500" />
-                            )
+                            <div className="flex items-center gap-1.5">
+                              <span
+                                className={cn(
+                                  "text-[10px] font-bold font-mono",
+                                  myCompletion.skipped
+                                    ? "text-rose-400"
+                                    : "text-emerald-400"
+                                )}
+                              >
+                                {formatTime(stageDuration)}
+                              </span>
+                              {myCompletion.skipped ? (
+                                <SkipForward className="h-3.5 w-3.5 text-rose-500" />
+                              ) : (
+                                <Check className="h-3.5 w-3.5 text-emerald-500" />
+                              )}
+                            </div>
                           ) : null}
                         </div>
                       </div>
