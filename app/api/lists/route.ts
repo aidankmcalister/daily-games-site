@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth-helpers";
 import { cleanText } from "@/lib/filter";
+import { listSchema } from "@/lib/validation";
 
 // GET /api/lists - Get user's lists
 export async function GET() {
@@ -45,15 +46,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, color } = await request.json();
-    if (!name || typeof name !== "string" || name.trim().length === 0) {
-      return NextResponse.json(
-        { error: "List name is required" },
-        { status: 400 }
-      );
+    const body = await request.json();
+    const result = listSchema.safeParse(body);
+
+    if (!result.success) {
+      const errorMessage = result.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
 
-    const cleanName = cleanText(name.trim());
+    const { name, color } = result.data;
+    const cleanName = cleanText(name);
 
     const list = await prisma.gameList.create({
       data: {

@@ -1,6 +1,8 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { getCurrentUser, canManageGames } from "@/lib/auth-helpers";
+import { bulkActionSchema } from "@/lib/validation";
+import type { Topic } from "@/app/generated/prisma/client";
 
 export async function POST(request: Request) {
   try {
@@ -9,11 +11,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { action, gameIds, data } = await request.json();
+    const body = await request.json();
+    const result = bulkActionSchema.safeParse(body);
 
-    if (!gameIds || !Array.isArray(gameIds) || gameIds.length === 0) {
-      return NextResponse.json({ error: "No games selected" }, { status: 400 });
+    if (!result.success) {
+      const errorMessage = result.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
+
+    const { action, gameIds, data } = result.data;
 
     if (action === "archive") {
       await prisma.game.updateMany({
@@ -32,8 +40,6 @@ export async function POST(request: Request) {
     }
 
     if (action === "delete") {
-      // Owner only for bulk delete? Or same as manage games?
-      // Let's stick to manage games permission for now.
       await prisma.game.deleteMany({
         where: { id: { in: gameIds } },
       });
@@ -47,9 +53,21 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
+      // Build update object with proper types
+      // Only include fields that are defined
+      const updateData: {
+        topic?: Topic;
+        archived?: boolean;
+        embedSupported?: boolean;
+      } = {};
+      if (data.topic !== undefined) updateData.topic = data.topic as Topic;
+      if (data.archived !== undefined) updateData.archived = data.archived;
+      if (data.embedSupported !== undefined)
+        updateData.embedSupported = data.embedSupported;
+
       await prisma.game.updateMany({
         where: { id: { in: gameIds } },
-        data: data,
+        data: updateData,
       });
       return NextResponse.json({ success: true, count: gameIds.length });
     }

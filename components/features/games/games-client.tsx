@@ -16,7 +16,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { DlesButton } from "@/components/design/dles-button";
 import { Search } from "lucide-react";
-import { useInView } from "react-intersection-observer";
 import { useSearchParams } from "next/navigation";
 
 import dynamic from "next/dynamic";
@@ -55,6 +54,7 @@ export function GamesClient({
   const [isLuckyModalOpen, setIsLuckyModalOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [openGame, setOpenGame] = useState<Game | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { lists } = useLists();
   const { setStats } = useStats();
@@ -69,6 +69,19 @@ export function GamesClient({
       setListFilter(listParam);
     }
   }, [searchParams]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    searchQuery,
+    topicFilter,
+    listFilter,
+    sortBy,
+    showHidden,
+    embedOnly,
+    hidePlayedToday,
+  ]);
 
   // Fetch preset lists
   useEffect(() => {
@@ -319,6 +332,7 @@ export function GamesClient({
     setListFilter("all");
     setSortBy("playCount");
     setEmbedOnly(false);
+    setCurrentPage(1);
   };
 
   const handleRandomGame = () => {
@@ -526,6 +540,10 @@ export function GamesClient({
           onHide={isAuthenticated ? handleHide : undefined}
           onMarkPlayed={handleModalPlay}
           onUnmarkPlayed={unmarkAsPlayed}
+          currentPage={currentPage}
+          onPageChange={(page) => {
+            setCurrentPage(page);
+          }}
         />
       ) : (
         <div className="flex flex-col items-center justify-center py-16 text-center">

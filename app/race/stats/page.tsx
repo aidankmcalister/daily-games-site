@@ -2,6 +2,12 @@ import { getSession } from "@/lib/auth-helpers";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { RaceStatsClient } from "@/app/race/stats/race-stats-client";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Race Stats",
+  description: "View your race history, wins, and statistics on dles.fun.",
+};
 
 export default async function RaceStatsPage() {
   const session = await getSession();

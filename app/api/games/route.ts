@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getCurrentUser, canManageGames } from "@/lib/auth-helpers";
 import type { Topic, Prisma } from "@/app/generated/prisma/client";
+import { gameSchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
 
@@ -97,27 +98,19 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const {
-      title,
-      link,
-      topic,
-      description = "",
-    } = body as {
-      title: string;
-      link: string;
-      topic: Topic;
-      description?: string;
-    };
+    const result = gameSchema.safeParse(body);
 
-    if (!title || !link || !topic) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+    if (!result.success) {
+      const errorMessage = result.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
 
+    const { title, link, topic, description } = result.data;
+
     const game = await prisma.game.create({
-      data: { title, link, topic, description },
+      data: { title, link, topic: topic as Topic, description },
     });
 
     return NextResponse.json(game, { status: 201 });

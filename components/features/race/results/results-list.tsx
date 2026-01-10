@@ -200,10 +200,10 @@ export function ResultsList({
                 <div className="h-8 w-px bg-white/5 mx-2" />
 
                 {/* Game Info */}
-                <div className="flex flex-col min-w-0 flex-1">
+                <div className="flex flex-col min-w-0 flex-1 w-0">
                   <span
                     className={cn(
-                      "truncate font-bold text-sm",
+                      "truncate max-w-full font-bold text-sm",
                       isCompleted ? "text-white" : "text-zinc-500"
                     )}
                   >
@@ -272,10 +272,10 @@ export function ResultsList({
                   <div className="h-8 w-px bg-white/5 mx-2" />
 
                   {/* Game Info */}
-                  <div className="flex flex-col min-w-0 flex-1 items-end">
+                  <div className="flex flex-col min-w-0 flex-1 w-0 items-end">
                     <span
                       className={cn(
-                        "truncate font-bold text-sm",
+                        "truncate max-w-full font-bold text-sm",
                         oppCompleted ? "text-white" : "text-zinc-500"
                       )}
                     >

@@ -112,6 +112,23 @@ export const GameCard = React.memo(function GameCard({
   const cardContent = (
     <Card
       onClick={handleClick}
+      role={minimal ? undefined : "button"}
+      tabIndex={minimal ? undefined : 0}
+      onKeyDown={
+        minimal
+          ? undefined
+          : (e: React.KeyboardEvent) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleClick();
+              }
+            }
+      }
+      aria-label={
+        minimal
+          ? undefined
+          : `Play ${title}${isPlayed ? ", already played today" : ""}`
+      }
       style={{
         animationDelay: `${index * 30}ms`,
         animationFillMode: "both",
@@ -120,6 +137,8 @@ export const GameCard = React.memo(function GameCard({
         "cursor-pointer transition-all duration-200 ease-out group relative overflow-hidden border-border h-full flex flex-col justify-center",
         "animate-in fade-in slide-in-from-bottom-2 duration-200",
         "hover:-translate-y-0.5",
+        !minimal &&
+          "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
         isPlayed
           ? "bg-muted/40 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 border-dashed"
           : cn("bg-card hover:bg-card", TOPIC_COLORS[topic]) // Apply specific topic color style

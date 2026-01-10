@@ -186,3 +186,60 @@ import { toast } from "sonner";
 toast.success("Done!");
 toast.error("Failed");
 ```
+
+---
+
+## 14. Security
+
+- All API routes MUST use Zod validation for input (see `lib/validation.ts`)
+- URLs MUST be validated with `safeUrlSchema` to prevent XSS via `javascript:` URLs
+- User-generated content MUST use `cleanText()` from `lib/filter`
+- Bulk update operations MUST whitelist allowed fields
+- Admin routes MUST check `canManageGames()` or `canManageUsers()`
+
+```tsx
+import { gameSchema } from "@/lib/validation";
+
+const result = gameSchema.safeParse(body);
+if (!result.success) {
+  return NextResponse.json(
+    { error: result.error.issues[0].message },
+    { status: 400 }
+  );
+}
+```
+
+---
+
+## 15. Accessibility
+
+- Icon-only buttons MUST have `aria-label`
+- Clickable non-button elements MUST have `role="button"`, `tabIndex={0}`, and keyboard handlers
+- Focus states: use `focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none`
+- The skip link targets `#main-content` (set on `<main>` in `ClientLayout`)
+
+```tsx
+<button aria-label="Add to list">
+  <ListPlus className="h-4 w-4" />
+</button>
+
+<Card
+  role="button"
+  tabIndex={0}
+  onKeyDown={(e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  }}
+  aria-label={`Play ${title}`}
+>
+```
+
+---
+
+## 16. SEO
+
+- All pages MUST export `metadata` or use `generateMetadata`
+- Client components: use a layout.tsx file for metadata
+- Sitemap excludes: `/admin/*`, `/dashboard/*`, `/api/*`

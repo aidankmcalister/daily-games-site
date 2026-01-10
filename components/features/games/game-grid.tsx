@@ -6,8 +6,9 @@ import {
 } from "@/components/features/games/game-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardHeader } from "@/components/ui/card";
-import React, { useState, useEffect, useMemo } from "react";
-import { useInView } from "react-intersection-observer";
+import React, { useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface GameGridProps {
   games: Omit<
@@ -19,14 +20,15 @@ interface GameGridProps {
   onHide?: (id: string) => void;
   onMarkPlayed?: (id: string) => void;
   onUnmarkPlayed?: (id: string) => void;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+  gamesPerPage?: number;
 }
 
 const GRID_CLASSES =
   "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6";
 
-const INITIAL_BATCH = 48; // Ensure full screen coverage
-const LOAD_INCREMENT = 48;
-const ROOT_MARGIN = "800px"; // Load well before bottom
+const DEFAULT_GAMES_PER_PAGE = 48;
 
 export const GameGrid = React.memo(function GameGrid({
   games,
@@ -35,51 +37,81 @@ export const GameGrid = React.memo(function GameGrid({
   onHide,
   onMarkPlayed,
   onUnmarkPlayed,
+  currentPage,
+  onPageChange,
+  gamesPerPage = DEFAULT_GAMES_PER_PAGE,
 }: GameGridProps) {
-  const [visibleCount, setVisibleCount] = useState(INITIAL_BATCH);
-  const { ref, inView } = useInView({
-    rootMargin: ROOT_MARGIN,
-  });
+  const totalPages = Math.ceil(games.length / gamesPerPage);
 
-  // Reset rendering when the game list changes (filtering)
-  useEffect(() => {
-    setVisibleCount(INITIAL_BATCH);
-  }, [games]);
+  const paginatedGames = useMemo(() => {
+    const start = (currentPage - 1) * gamesPerPage;
+    const end = start + gamesPerPage;
+    return games.slice(start, end);
+  }, [games, currentPage, gamesPerPage]);
 
-  // Load more games when sentinel comes into view
-  useEffect(() => {
-    if (inView) {
-      setVisibleCount((prev) => Math.min(prev + LOAD_INCREMENT, games.length));
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [inView, games.length]);
+  };
 
-  const visibleGames = useMemo(
-    () => games.slice(0, visibleCount),
-    [games, visibleCount]
-  );
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      onPageChange(currentPage + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
-    <div className={GRID_CLASSES}>
-      {visibleGames.map((game, index) => (
-        <GameCard
-          key={game.id}
-          index={index % LOAD_INCREMENT}
-          {...game}
-          isPlayed={playedIds.has(game.id)}
-          onPlay={onPlay}
-          onHide={onHide}
-          onMarkPlayed={onMarkPlayed}
-          onUnmarkPlayed={onUnmarkPlayed}
-        />
-      ))}
+    <div className="space-y-6">
+      <div className={GRID_CLASSES}>
+        {paginatedGames.map((game, index) => (
+          <GameCard
+            key={game.id}
+            index={index}
+            {...game}
+            isPlayed={playedIds.has(game.id)}
+            onPlay={onPlay}
+            onHide={onHide}
+            onMarkPlayed={onMarkPlayed}
+            onUnmarkPlayed={onUnmarkPlayed}
+          />
+        ))}
+      </div>
 
-      {/* Sentinel for lazy loading */}
-      {visibleCount < games.length && (
-        <div
-          ref={ref}
-          className="col-span-full h-20 w-full opacity-0 pointer-events-none"
-          aria-hidden="true"
-        />
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 pt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            className="gap-1"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Previous
+          </Button>
+
+          <span className="text-sm text-muted-foreground">
+            Page{" "}
+            <span className="font-semibold text-foreground">{currentPage}</span>{" "}
+            of{" "}
+            <span className="font-semibold text-foreground">{totalPages}</span>
+          </span>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="gap-1"
+          >
+            Next
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       )}
     </div>
   );

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth-helpers";
 import { Topic } from "@/app/generated/prisma/client";
 import { cleanText } from "@/lib/filter";
+import { submissionSchema } from "@/lib/validation";
 
 export async function POST(request: Request) {
   try {
@@ -41,14 +42,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const { title, link, topic, description } = await request.json();
+    const body = await request.json();
+    const result = submissionSchema.safeParse(body);
 
-    if (!title || !link || !topic) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+    if (!result.success) {
+      const errorMessage = result.error.issues
+        .map((issue) => issue.message)
+        .join(", ");
+      return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
+
+    const { title, link, topic, description } = result.data;
 
     const submission = await prisma.gameSubmission.create({
       data: {
