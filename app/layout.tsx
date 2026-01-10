@@ -74,6 +74,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={jetbrainsMono.variable} suppressHydrationWarning>
+      <head>
+        <script
+          defer
+          src="https://cloud.umami.is/script.js"
+          data-website-id="2ce02139-c430-4934-9546-f333cb23011e"
+        ></script>
+      </head>
       <body className={`${jetbrainsMono.className} antialiased`}>
         {/* Skip to content link for accessibility */}
         <a
